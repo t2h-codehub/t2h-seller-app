@@ -1,0 +1,34 @@
+!! PLEASE REVIEW THIS LOG FOR SENSITIVE INFORMATION BEFORE SHARING !!
+
+Dart Code extension: 3.60.1
+Flutter extension: 3.60.0 (activated)
+
+App: Visual Studio Code
+Version: 1.74.3
+Platform: mac
+
+HTTP_PROXY: undefined
+NO_PROXY: undefined
+
+Logging Categories:
+    FlutterDaemon
+
+Mon Jul 17 2023 [20:50:19 GMT+0530 (India Standard Time)] Log file started
+[8:50:19 PM] [FlutterDaemon] [Info] Spawning /opt/homebrew/Caskroom/flutter/3.3.10/flutter/bin/flutter with args ["daemon"]
+[8:50:19 PM] [FlutterDaemon] [Info] ..  in /opt/homebrew/Caskroom/flutter/3.3.10/flutter
+[8:50:19 PM] [FlutterDaemon] [Info] ..  with {"toolEnv":{"FLUTTER_HOST":"VSCode","PUB_ENVIRONMENT":"vscode.dart-code"}}
+[8:50:19 PM] [FlutterDaemon] [Info]     PID: 8590
+[8:50:19 PM] [FlutterDaemon] [Info] ==> [{"id":"1","method":"emulator.getEmulators"}]
+[8:50:20 PM] [FlutterDaemon] [Info] <== [{"event":"daemon.connected","params":{"version":"0.6.1","pid":92140}}]
+[8:50:20 PM] [FlutterDaemon] [Info] ==> [{"id":"2","method":"device.enable"}]
+[8:50:20 PM] [FlutterDaemon] [Info] <== [{"event":"daemon.logMessage","params":{"level":"status","message":"Starting device daemon..."}}]
+[8:50:22 PM] [FlutterDaemon] [Info] <== [{"id":"2"}]
+[8:50:22 PM] [FlutterDaemon] [Info] <== [{"id":"1","result":[{"id":"apple_ios_simulator","name":"iOS Simulator","category":"mobile","platformType":"ios"},{"id":"Pixel_4_XL_API_30","name":"Pixel 4 XL API 30","category":"mobile","platformType":"android"},{"id":"Pixel_6_Pro_API_30","name":"Pixel 6 Pro API 30","category":"mobile","platformType":"android"}]}]
+[8:50:24 PM] [FlutterDaemon] [Info] <== [{"event":"device.added","params":{"id":"emulator-5554","name":"sdk gphone arm64","platform":"android-arm64","emulator":true,"category":"mobile","platformType":"android","ephemeral":true,"emulatorId":"Pixel_6_Pro_API_30","sdk":"Android 11 (API 30)","capabilities":{"hotReload":true,"hotRestart":true,"screenshot":true,"fastStart":true,"flutterExit":true,"hardwareRendering":true,"startPaused":true}}}]
+[8:50:24 PM] [FlutterDaemon] [Info] ==> [{"id":"3","method":"daemon.getSupportedPlatforms","params":{"projectRoot":"/Users/swapnilchatterjee/Documents/hello-app"}}]
+[8:50:24 PM] [FlutterDaemon] [Info] <== [{"id":"3","result":{"platforms":["ios","android"]}}]
+[8:50:26 PM] [FlutterDaemon] [Info] <== [{"event":"device.added","params":{"id":"macos","name":"macOS","platform":"darwin","emulator":false,"category":"desktop","platformType":"macos","ephemeral":false,"emulatorId":null,"sdk":"macOS 13.4.1 22F770820d darwin-arm64","capabilities":{"hotReload":true,"hotRestart":true,"screenshot":false,"fastStart":false,"flutterExit":true,"hardwareRendering":true,"startPaused":true}}}]
+[8:50:27 PM] [FlutterDaemon] [Info] <== [{"event":"device.added","params":{"id":"chrome","name":"Chrome","platform":"web-javascript","emulator":false,"category":"web","platformType":"web","ephemeral":false,"emulatorId":null,"sdk":"Google Chrome 114.0.5735.198","capabilities":{"hotReload":true,"hotRestart":true,"screenshot":false,"fastStart":false,"flutterExit":false,"hardwareRendering":true,"startPaused":true}}}]
+[8:57:15 PM] [FlutterDaemon] [Info] ==> [{"id":"4","method":"daemon.shutdown"}]
+[8:57:15 PM] [FlutterDaemon] [Info] <== [{"id":"4"}]
+Mon Jul 17 2023 [20:57:15 GMT+0530 (India Standard Time)] Log file ended

@@ -1,0 +1,108 @@
+!! PLEASE REVIEW THIS LOG FOR SENSITIVE INFORMATION BEFORE SHARING !!
+
+Dart Code extension: 3.60.1
+Flutter extension: 3.60.0 (activated)
+
+App: Visual Studio Code
+Version: 1.74.3
+Platform: mac
+
+HTTP_PROXY: undefined
+NO_PROXY: undefined
+
+Logging Categories:
+    DAP
+
+Mon Jul 17 2023 [20:50:19 GMT+0530 (India Standard Time)] Log file started
+[8:50:19 PM] [DAP] [Info] <== {"seq":235,"type":"event","event":"dart.serviceRegistered","body":{"service":"launchDevTools","method":"s2.launchDevTools"}}
+[8:50:25 PM] [DAP] [Info] ==> {"command":"hotReload","arguments":{"debounce":true,"onlyFlutter":true,"reason":"save"},"type":"request","seq":18}
+[8:50:25 PM] [DAP] [Info] <== {"seq":236,"type":"event","event":"dart.log","body":{"message":"==> [{\"id\":\"9\",\"method\":\"app.restart\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"fullRestart\":false,\"pause\":true,\"reason\":\"save\",\"debounce\":true}}]\r\n","severity":0,"category":9}}
+[8:50:25 PM] [DAP] [Info] <== {"seq":237,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"19\",\"progressId\":\"hot.reload\",\"message\":\"Performing hot reload...\",\"finished\":false}}]\r\n","severity":0,"category":9}}
+[8:50:25 PM] [DAP] [Info] <== {"seq":238,"type":"event","event":"dart.progressStart","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-hot.reload","message":"Performing hot reload..."}}
+[8:50:25 PM] [DAP] [Info] <== {"seq":239,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"20\",\"progressId\":null,\"message\":\"Syncing files to device sdk gphone arm64...\",\"finished\":false}}]\r\n","severity":0,"category":9}}
+[8:50:25 PM] [DAP] [Info] <== {"seq":240,"type":"event","event":"dart.progressStart","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-null","message":"Syncing files to device sdk gphone arm64..."}}
+[8:50:26 PM] [DAP] [Info] <== {"seq":241,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"20\",\"progressId\":null,\"finished\":true}}]\r\n","severity":0,"category":9}}
+[8:50:26 PM] [DAP] [Info] <== {"seq":242,"type":"event","event":"dart.progressEnd","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-null"}}
+[8:50:27 PM] [DAP] [Info] <== {"seq":243,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"19\",\"progressId\":\"hot.reload\",\"finished\":true}}]\r\n","severity":0,"category":9}}
+[8:50:27 PM] [DAP] [Info] <== {"seq":244,"type":"event","event":"dart.progressEnd","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-hot.reload","message":"Hot Reload complete!"}}
+[8:50:27 PM] [DAP] [Info] <== {"seq":245,"type":"event","event":"dart.log","body":{"message":"<== Reloaded 1 of 1857 libraries in 1,675ms (compile: 261 ms, reload: 657 ms, reassemble: 602 ms).\r\n","severity":0,"category":9}}
+[8:50:27 PM] [DAP] [Info] <== {"seq":246,"type":"event","event":"output","body":{"category":"stdout","output":"Reloaded 1 of 1857 libraries in 1,675ms (compile: 261 ms, reload: 657 ms, reassemble: 602 ms).\n"}}
+[8:50:27 PM] [DAP] [Info] <== {"seq":247,"type":"event","event":"dart.log","body":{"message":"<== [{\"id\":\"9\",\"result\":{\"code\":0,\"message\":\"Reloaded 1 of 1857 libraries\"}}]\r\n","severity":0,"category":9}}
+[8:50:27 PM] [DAP] [Info] <== {"seq":248,"type":"response","request_seq":18,"command":"hotReload","success":true}
+[8:51:23 PM] [DAP] [Info] ==> {"command":"hotReload","arguments":{"debounce":true,"onlyFlutter":true,"reason":"save"},"type":"request","seq":19}
+[8:51:23 PM] [DAP] [Info] <== {"seq":249,"type":"event","event":"dart.log","body":{"message":"==> [{\"id\":\"10\",\"method\":\"app.restart\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"fullRestart\":false,\"pause\":true,\"reason\":\"save\",\"debounce\":true}}]\r\n","severity":0,"category":9}}
+[8:51:23 PM] [DAP] [Info] <== {"seq":250,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"21\",\"progressId\":\"hot.reload\",\"message\":\"Performing hot reload...\",\"finished\":false}}]\r\n","severity":0,"category":9}}
+[8:51:23 PM] [DAP] [Info] <== {"seq":251,"type":"event","event":"dart.progressStart","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-hot.reload","message":"Performing hot reload..."}}
+[8:51:23 PM] [DAP] [Info] <== {"seq":252,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"22\",\"progressId\":null,\"message\":\"Syncing files to device sdk gphone arm64...\",\"finished\":false}}]\r\n","severity":0,"category":9}}
+[8:51:23 PM] [DAP] [Info] <== {"seq":253,"type":"event","event":"dart.progressStart","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-null","message":"Syncing files to device sdk gphone arm64..."}}
+[8:51:24 PM] [DAP] [Info] <== {"seq":254,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"22\",\"progressId\":null,\"finished\":true}}]\r\n","severity":0,"category":9}}
+[8:51:24 PM] [DAP] [Info] <== {"seq":255,"type":"event","event":"dart.progressEnd","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-null"}}
+[8:51:24 PM] [DAP] [Info] ==> {"command":"hotReload","arguments":{"debounce":true,"onlyFlutter":true,"reason":"save"},"type":"request","seq":20}
+[8:51:24 PM] [DAP] [Info] <== {"seq":256,"type":"event","event":"output","body":{"category":"stderr","output":"Reload already in progress, ignoring request"}}
+[8:51:24 PM] [DAP] [Info] <== {"seq":257,"type":"response","request_seq":20,"command":"hotReload","success":true}
+[8:51:24 PM] [DAP] [Info] <== {"seq":258,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"21\",\"progressId\":\"hot.reload\",\"finished\":true}}]\r\n","severity":0,"category":9}}
+[8:51:24 PM] [DAP] [Info] <== {"seq":259,"type":"event","event":"dart.progressEnd","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-hot.reload","message":"Hot Reload complete!"}}
+[8:51:24 PM] [DAP] [Info] <== {"seq":260,"type":"event","event":"dart.log","body":{"message":"<== Reloaded 16 of 1857 libraries in 1,122ms (compile: 277 ms, reload: 383 ms, reassemble: 385 ms).\r\n","severity":0,"category":9}}
+[8:51:24 PM] [DAP] [Info] <== {"seq":261,"type":"event","event":"output","body":{"category":"stdout","output":"Reloaded 16 of 1857 libraries in 1,122ms (compile: 277 ms, reload: 383 ms, reassemble: 385 ms).\n"}}
+[8:51:24 PM] [DAP] [Info] <== {"seq":262,"type":"event","event":"dart.log","body":{"message":"<== [{\"id\":\"10\",\"result\":{\"code\":0,\"message\":\"Reloaded 16 of 1857 libraries\"}}]\r\n","severity":0,"category":9}}
+[8:51:24 PM] [DAP] [Info] <== {"seq":263,"type":"response","request_seq":19,"command":"hotReload","success":true}
+[8:52:37 PM] [DAP] [Info] ==> {"command":"hotReload","arguments":{"debounce":true,"onlyFlutter":true,"reason":"save"},"type":"request","seq":21}
+[8:52:37 PM] [DAP] [Info] <== {"seq":264,"type":"event","event":"dart.log","body":{"message":"==> [{\"id\":\"11\",\"method\":\"app.restart\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"fullRestart\":false,\"pause\":true,\"reason\":\"save\",\"debounce\":true}}]\r\n","severity":0,"category":9}}
+[8:52:37 PM] [DAP] [Info] <== {"seq":265,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"23\",\"progressId\":\"hot.reload\",\"message\":\"Performing hot reload...\",\"finished\":false}}]\r\n","severity":0,"category":9}}
+[8:52:37 PM] [DAP] [Info] <== {"seq":266,"type":"event","event":"dart.progressStart","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-hot.reload","message":"Performing hot reload..."}}
+[8:52:37 PM] [DAP] [Info] <== {"seq":267,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"24\",\"progressId\":null,\"message\":\"Syncing files to device sdk gphone arm64...\",\"finished\":false}}]\r\n","severity":0,"category":9}}
+[8:52:37 PM] [DAP] [Info] <== {"seq":268,"type":"event","event":"dart.progressStart","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-null","message":"Syncing files to device sdk gphone arm64..."}}
+[8:52:37 PM] [DAP] [Info] <== {"seq":269,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"24\",\"progressId\":null,\"finished\":true}}]\r\n","severity":0,"category":9}}
+[8:52:37 PM] [DAP] [Info] <== {"seq":270,"type":"event","event":"dart.progressEnd","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-null"}}
+[8:52:38 PM] [DAP] [Info] <== {"seq":271,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"23\",\"progressId\":\"hot.reload\",\"finished\":true}}]\r\n","severity":0,"category":9}}
+[8:52:38 PM] [DAP] [Info] <== {"seq":272,"type":"event","event":"dart.progressEnd","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-hot.reload","message":"Hot Reload complete!"}}
+[8:52:38 PM] [DAP] [Info] <== {"seq":273,"type":"event","event":"dart.log","body":{"message":"<== Reloaded 1 of 1857 libraries in 1,170ms (compile: 119 ms, reload: 689 ms, reassemble: 275 ms).\r\n","severity":0,"category":9}}
+[8:52:38 PM] [DAP] [Info] <== {"seq":274,"type":"event","event":"output","body":{"category":"stdout","output":"Reloaded 1 of 1857 libraries in 1,170ms (compile: 119 ms, reload: 689 ms, reassemble: 275 ms).\n"}}
+[8:52:38 PM] [DAP] [Info] <== {"seq":275,"type":"event","event":"dart.log","body":{"message":"<== [{\"id\":\"11\",\"result\":{\"code\":0,\"message\":\"Reloaded 1 of 1857 libraries\"}}]\r\n","severity":0,"category":9}}
+[8:52:38 PM] [DAP] [Info] <== {"seq":276,"type":"response","request_seq":21,"command":"hotReload","success":true}
+[8:52:51 PM] [DAP] [Info] ==> {"command":"hotReload","arguments":{"debounce":true,"onlyFlutter":true,"reason":"save"},"type":"request","seq":22}
+[8:52:51 PM] [DAP] [Info] <== {"seq":277,"type":"event","event":"dart.log","body":{"message":"==> [{\"id\":\"12\",\"method\":\"app.restart\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"fullRestart\":false,\"pause\":true,\"reason\":\"save\",\"debounce\":true}}]\r\n","severity":0,"category":9}}
+[8:52:51 PM] [DAP] [Info] <== {"seq":278,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"25\",\"progressId\":\"hot.reload\",\"message\":\"Performing hot reload...\",\"finished\":false}}]\r\n","severity":0,"category":9}}
+[8:52:51 PM] [DAP] [Info] <== {"seq":279,"type":"event","event":"dart.progressStart","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-hot.reload","message":"Performing hot reload..."}}
+[8:52:51 PM] [DAP] [Info] <== {"seq":280,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"26\",\"progressId\":null,\"message\":\"Syncing files to device sdk gphone arm64...\",\"finished\":false}}]\r\n","severity":0,"category":9}}
+[8:52:51 PM] [DAP] [Info] <== {"seq":281,"type":"event","event":"dart.progressStart","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-null","message":"Syncing files to device sdk gphone arm64..."}}
+[8:52:51 PM] [DAP] [Info] <== {"seq":282,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"26\",\"progressId\":null,\"finished\":true}}]\r\n","severity":0,"category":9}}
+[8:52:51 PM] [DAP] [Info] <== {"seq":283,"type":"event","event":"dart.progressEnd","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-null"}}
+[8:52:52 PM] [DAP] [Info] ==> {"command":"hotReload","arguments":{"debounce":true,"onlyFlutter":true,"reason":"save"},"type":"request","seq":23}
+[8:52:52 PM] [DAP] [Info] <== {"seq":284,"type":"event","event":"output","body":{"category":"stderr","output":"Reload already in progress, ignoring request"}}
+[8:52:52 PM] [DAP] [Info] <== {"seq":285,"type":"response","request_seq":23,"command":"hotReload","success":true}
+[8:52:52 PM] [DAP] [Info] <== {"seq":286,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"25\",\"progressId\":\"hot.reload\",\"finished\":true}}]\r\n","severity":0,"category":9}}
+[8:52:52 PM] [DAP] [Info] <== {"seq":287,"type":"event","event":"dart.progressEnd","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-hot.reload","message":"Hot Reload complete!"}}
+[8:52:52 PM] [DAP] [Info] <== {"seq":288,"type":"event","event":"dart.log","body":{"message":"<== Reloaded 1 of 1857 libraries in 657ms (compile: 105 ms, reload: 270 ms, reassemble: 209 ms).\r\n","severity":0,"category":9}}
+[8:52:52 PM] [DAP] [Info] <== {"seq":289,"type":"event","event":"output","body":{"category":"stdout","output":"Reloaded 1 of 1857 libraries in 657ms (compile: 105 ms, reload: 270 ms, reassemble: 209 ms).\n"}}
+[8:52:52 PM] [DAP] [Info] <== {"seq":290,"type":"event","event":"dart.log","body":{"message":"<== [{\"id\":\"12\",\"result\":{\"code\":0,\"message\":\"Reloaded 1 of 1857 libraries\"}}]\r\n","severity":0,"category":9}}
+[8:52:52 PM] [DAP] [Info] <== {"seq":291,"type":"response","request_seq":22,"command":"hotReload","success":true}
+[8:54:47 PM] [DAP] [Info] ==> {"command":"hotReload","arguments":{"debounce":true,"onlyFlutter":true,"reason":"save"},"type":"request","seq":24}
+[8:54:47 PM] [DAP] [Info] <== {"seq":292,"type":"event","event":"dart.log","body":{"message":"==> [{\"id\":\"13\",\"method\":\"app.restart\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"fullRestart\":false,\"pause\":true,\"reason\":\"save\",\"debounce\":true}}]\r\n","severity":0,"category":9}}
+[8:54:47 PM] [DAP] [Info] <== {"seq":293,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"27\",\"progressId\":\"hot.reload\",\"message\":\"Performing hot reload...\",\"finished\":false}}]\r\n","severity":0,"category":9}}
+[8:54:47 PM] [DAP] [Info] <== {"seq":294,"type":"event","event":"dart.progressStart","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-hot.reload","message":"Performing hot reload..."}}
+[8:54:47 PM] [DAP] [Info] <== {"seq":295,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"28\",\"progressId\":null,\"message\":\"Syncing files to device sdk gphone arm64...\",\"finished\":false}}]\r\n","severity":0,"category":9}}
+[8:54:47 PM] [DAP] [Info] <== {"seq":296,"type":"event","event":"dart.progressStart","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-null","message":"Syncing files to device sdk gphone arm64..."}}
+[8:54:48 PM] [DAP] [Info] <== {"seq":297,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"28\",\"progressId\":null,\"finished\":true}}]\r\n","severity":0,"category":9}}
+[8:54:48 PM] [DAP] [Info] <== {"seq":298,"type":"event","event":"dart.progressEnd","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-null"}}
+[8:54:48 PM] [DAP] [Info] <== {"seq":299,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"27\",\"progressId\":\"hot.reload\",\"finished\":true}}]\r\n","severity":0,"category":9}}
+[8:54:48 PM] [DAP] [Info] <== {"seq":300,"type":"event","event":"dart.progressEnd","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-hot.reload","message":"Hot Reload complete!"}}
+[8:54:48 PM] [DAP] [Info] <== {"seq":301,"type":"event","event":"dart.log","body":{"message":"<== Reloaded 1 of 1857 libraries in 720ms (compile: 103 ms, reload: 360 ms, reassemble: 185 ms).\r\n","severity":0,"category":9}}
+[8:54:48 PM] [DAP] [Info] <== {"seq":302,"type":"event","event":"output","body":{"category":"stdout","output":"Reloaded 1 of 1857 libraries in 720ms (compile: 103 ms, reload: 360 ms, reassemble: 185 ms).\n"}}
+[8:54:48 PM] [DAP] [Info] <== {"seq":303,"type":"event","event":"dart.log","body":{"message":"<== [{\"id\":\"13\",\"result\":{\"code\":0,\"message\":\"Reloaded 1 of 1857 libraries\"}}]\r\n","severity":0,"category":9}}
+[8:54:48 PM] [DAP] [Info] <== {"seq":304,"type":"response","request_seq":24,"command":"hotReload","success":true}
+[8:56:48 PM] [DAP] [Info] ==> {"command":"hotReload","arguments":{"debounce":true,"onlyFlutter":true,"reason":"save"},"type":"request","seq":25}
+[8:56:48 PM] [DAP] [Info] <== {"seq":305,"type":"event","event":"dart.log","body":{"message":"==> [{\"id\":\"14\",\"method\":\"app.restart\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"fullRestart\":false,\"pause\":true,\"reason\":\"save\",\"debounce\":true}}]\r\n","severity":0,"category":9}}
+[8:56:48 PM] [DAP] [Info] <== {"seq":306,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"29\",\"progressId\":\"hot.reload\",\"message\":\"Performing hot reload...\",\"finished\":false}}]\r\n","severity":0,"category":9}}
+[8:56:48 PM] [DAP] [Info] <== {"seq":307,"type":"event","event":"dart.progressStart","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-hot.reload","message":"Performing hot reload..."}}
+[8:56:48 PM] [DAP] [Info] <== {"seq":308,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"30\",\"progressId\":null,\"message\":\"Syncing files to device sdk gphone arm64...\",\"finished\":false}}]\r\n","severity":0,"category":9}}
+[8:56:48 PM] [DAP] [Info] <== {"seq":309,"type":"event","event":"dart.progressStart","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-null","message":"Syncing files to device sdk gphone arm64..."}}
+[8:56:48 PM] [DAP] [Info] <== {"seq":310,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"30\",\"progressId\":null,\"finished\":true}}]\r\n","severity":0,"category":9}}
+[8:56:48 PM] [DAP] [Info] <== {"seq":311,"type":"event","event":"dart.progressEnd","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-null"}}
+[8:56:49 PM] [DAP] [Info] <== {"seq":312,"type":"event","event":"dart.log","body":{"message":"<== [{\"event\":\"app.progress\",\"params\":{\"appId\":\"75006834-affb-4a2e-bc9e-719c04fccc0d\",\"id\":\"29\",\"progressId\":\"hot.reload\",\"finished\":true}}]\r\n","severity":0,"category":9}}
+[8:56:49 PM] [DAP] [Info] <== {"seq":313,"type":"event","event":"dart.progressEnd","body":{"progressId":"flutter-75006834-affb-4a2e-bc9e-719c04fccc0d-hot.reload","message":"Hot Reload complete!"}}
+[8:56:49 PM] [DAP] [Info] <== {"seq":314,"type":"event","event":"dart.log","body":{"message":"<== Reloaded 1 of 1857 libraries in 681ms (compile: 94 ms, reload: 313 ms, reassemble: 200 ms).\r\n","severity":0,"category":9}}
+[8:56:49 PM] [DAP] [Info] <== {"seq":315,"type":"event","event":"output","body":{"category":"stdout","output":"Reloaded 1 of 1857 libraries in 681ms (compile: 94 ms, reload: 313 ms, reassemble: 200 ms).\n"}}
+[8:56:49 PM] [DAP] [Info] <== {"seq":316,"type":"event","event":"dart.log","body":{"message":"<== [{\"id\":\"14\",\"result\":{\"code\":0,\"message\":\"Reloaded 1 of 1857 libraries\"}}]\r\n","severity":0,"category":9}}
+[8:56:49 PM] [DAP] [Info] <== {"seq":317,"type":"response","request_seq":25,"command":"hotReload","success":true}
+Mon Jul 17 2023 [20:57:15 GMT+0530 (India Standard Time)] Log file ended
