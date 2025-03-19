@@ -1,0 +1,71 @@
+{
+  "project_info": {
+    "project_number": "82267455961",
+    "project_id": "hello-e79ba",
+    "storage_bucket": "hello-e79ba.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:82267455961:android:6ee772ea32cbbb37af59c8",
+        "android_client_info": {
+          "package_name": "com.tapto.hello"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "82267455961-0677gv7t6ti0akh037jv5gkukilc27ug.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tapto.hello",
+            "certificate_hash": "c7bdff96a988b3098c73e0c83fad7327f971cba2"
+          }
+        },
+        {
+          "client_id": "82267455961-lkcr7adj8b7f08tfkt6d43jq4l1eess4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tapto.hello",
+            "certificate_hash": "050d0ceee1d1bce2d22f57d03ab3ac3427183b9d"
+          }
+        },
+        {
+          "client_id": "82267455961-mvknhp4b8dclpnmsib1qgi25qkfei2qu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tapto.hello",
+            "certificate_hash": "e6ddba64ed8b2c197f8716bc6f9b697a86a9d6f4"
+          }
+        },
+        {
+          "client_id": "82267455961-bdesg5igcfkpr43sddnpj03heka8tg16.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD70o2wtDT8-HDUOK59r6D-luAs2VKvAGA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "82267455961-bdesg5igcfkpr43sddnpj03heka8tg16.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "82267455961-rko9f85jmn1ltgl56nt7sehubfm36s08.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.clearsocial.name",
+                "app_store_id": "123456789"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
