@@ -86,7 +86,7 @@ dependencies:
   flutter_html: ^3.0.0-beta.2
   html_editor_plus: ^0.0.5
   fluttertoast: ^8.2.10
-  pro_image_editor: ^8.1.4
+  # pro_image_editor: ^8.1.4
   flutter_image_compress: ^2.4.0
   animated_text_kit: ^4.2.3
   freezed_annotation: ^2.4.4
@@ -94,6 +94,8 @@ dependencies:
   carousel_slider: ^5.0.0
   reorderable_grid: ^1.0.10
   flutter_dotenv: ^5.2.1
+  pro_image_editor: ^8.2.0
+  # multi_image_picker: ^4.8.01
   # google_mlkit_barcode_scanning: ^0.13.0
  
   

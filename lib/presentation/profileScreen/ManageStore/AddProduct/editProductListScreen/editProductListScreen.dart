@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:dots_indicator/dots_indicator.dart';
@@ -11,7 +10,6 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pro_image_editor/pro_image_editor.dart';
-import 'package:provider/provider.dart';
 import 'package:taptohello/core/app_export.dart';
 import 'package:taptohello/data/productCategoryModel/awsPhotoUploadApiResModel.dart';
 import 'package:taptohello/data/productCategoryModel/deleteProductApiResModel.dart';
@@ -25,7 +23,6 @@ import 'package:taptohello/presentation/home/home_view.dart';
 import 'package:taptohello/presentation/profileScreen/ManageStore/AddProduct/AddProductController/addProductController.dart';
 import 'package:taptohello/presentation/profileScreen/ManageStore/AddProduct/addProductDialog.dart';
 import 'package:taptohello/presentation/profileScreen/ManageStore/ManageVariants/ManageVariantController.dart';
-import 'package:taptohello/presentation/profileScreen/ManageStore/ManageVariants/manage_variant_provider.dart';
 import 'package:taptohello/presentation/profileScreen/ManageStore/SizeChart/sizeChartScreen.dart';
 import 'package:taptohello/presentation/profileScreen/ManageStore/ManageCollection/ManageCollectionController/manageCollectionController.dart';
 import 'package:taptohello/presentation/profileScreen/ManageStore/ManageVariants/manageVariantsScreen.dart';
@@ -37,7 +34,6 @@ import '../../../../../helper/locator.dart';
 import '../../../../../helper/user_detail_service.dart';
 import '../../ManageAttributes/manageAttributesScreen.dart';
 import 'package:html_editor_plus/html_editor.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // import 'package:html/parser.dart'; // For parsing HTML
@@ -2116,107 +2112,158 @@ String? findIdByTitle(String title) {
   //   }
   // }
 
-  Future<void> _pickImage() async {
-  
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+ Future<void> _pickImage() async {
+  Navigator.pop(context);  // Dismiss the bottom sheet
 
-    // if (pickedFile != null) {
-    //   setState(() {
-    //     _imageFile = File(pickedFile.path);
-    //   });
+  // Allow the user to pick multiple images
+  final pickedFiles = await ImagePicker().pickMultiImage();
 
-    if (pickedFile != null) {
+  if (pickedFiles.isNotEmpty) {
+    List<XFile> selectedImagesTemp = [];
+
+    // Show loading indicator before processing images
+    setState(() {
+      // You can define isLoading as a boolean variable
+    });
+
+    for (var pickedFile in pickedFiles) {
       setState(() {
         _imageFile = File(pickedFile.path);
       });
 
-      // Open ProImageEditor using Navigator
-      final editedImage = await Navigator.push(
-        
+      // Open ProImageEditor for each picked image
+      final editedImagePath = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => ProImageEditor.file(
             File(pickedFile.path),
-            
             configs: ProImageEditorConfigs(),
             callbacks: ProImageEditorCallbacks(
-             
-      //         onImageEditingComplete: (editedImagePath) async {
+              onImageEditingComplete: (editedImageData) async {
+  try {
+    // Save the image data and get the file path
+    final String imagePath = await saveImage(editedImageData);
+    print("✅ Image Path: $imagePath");
 
-      //   //           final cropImage = await _cropImage(File(image.path), context);
-      //   // if (cropImage != null) {
-      //   //   XFile croppedXFile = XFile(cropImage.path);
-      //   //   setState(() {
-      //   //     selectedImages.add(croppedXFile); // Add the cropped image, not the original one
-      //   //     totalSelectedImageVideos.add(croppedXFile);
-      //   //   });
+    // Create a XFile for the edited image
+    XFile croppedXFile = XFile(imagePath);
 
-      //   //   // String? mimeType = lookupMimeType(cropImage.path); // e.g., "image/jpeg"
-      //   //   // if (mimeType != null) {
-      //   //   //   String fileType = mimeType.split('/').last; // e.g., "image"
-      //   //   //   print("File type: $fileType");
-      //   //   // }
-      //   // }
-      //   // selectedItemsIndex = selectedImages.length + selectedVideos.length;
-        
-      //   setState(() {
-      //   _imageFile = File(editedImagePath.toString());
-        
-      //      XFile croppedXFile = XFile(_imageFile!.path);
-          
-      //       selectedImages.add(croppedXFile); // Add the cropped image, not the original one
-      //       totalSelectedImageVideos.add(croppedXFile);
-      //      // Update the UI with the edited image
-      // });
+    // Upload the image (ensure that this is awaited before continuing)
+    final res = await awsDocumentUpload(croppedXFile.path);
+    print("✅ Upload Response: $res");
 
-      //           print("✅ Edited Image Path: $editedImagePath");
-      //         Navigator.pop(context, editedImagePath);
-      //       /*
-      //         Your code to handle the edited image. Upload it to your server as an example.
-      //         You can choose to use await, so that the loading-dialog remains visible until your code is ready, or no async, so that the loading-dialog closes immediately.
-      //         By default, the bytes are in `jpg` format.
-      //       */
-           
-      //     },
+    // Add the uploaded image to the selectedImages list
+    setState(() {
+      selectedImages.add(res); // Add the uploaded image reference
+    });
 
-      onImageEditingComplete: (editedImageData) async {
-  // Save the image data and get the file path
-  final String imagePath = await saveImage(editedImageData);
-  
-  print("✅ Image Path: $imagePath");
-     
-          // setState(() {
-          //   selectedImages.add(res);
-          //   selectedImageVideos.add(res);
-          // });
-       XFile croppedXFile = XFile(imagePath);
-            final res = await awsDocumentUpload(croppedXFile.path);
-           setState(() {
-            
-            selectedImages.add(res); // Add the cropped image, not the original one
-           // totalSelectedImageVideos.add(croppedXFile);
-          });
+    // You can now use the image path (for example, pass it to the previous screen)
+    Navigator.pop(context, imagePath);  // Close the editor and return the image path
 
-  // You can now use the image path (for example, pass it to the previous screen)
-  Navigator.pop(context, imagePath);
+  } catch (e) {
+    print("Error occurred during image processing or upload: $e");
+
+    // Optionally, show an error message to the user
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Error"),
+        content: Text("An error occurred while processing the image. Please try again."),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("OK"),
+          ),
+        ],
+      ),
+    );
+  }
 },
-            
-              onCloseEditor: () {
-                 print("❌ Editing Cancelled");
-                Navigator.pop(context, null);
-              },
-             
+
             ),
           ),
         ),
       );
 
-      if (editedImage != null) {
-        print("✅ Final Edited Image: $editedImage");
+      // If the user edited the image, the edited image path is returned
+      if (editedImagePath != null) {
+        print("✅ Final Edited Image: $editedImagePath");
       }
-      return;
     }
-    }
+
+    // After all images are processed, update the state with the selected images
+    setState(() {
+      selectedImages.addAll(selectedImagesTemp);
+     // Hide loading indicator
+    });
+
+    print("✅ All Edited Images: $selectedImages");
+  } else {
+    print("No images selected.");
+  }
+}
+
+
+
+//   Future<void> _pickImage() async {
+  
+//     final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+//     // if (pickedFile != null) {
+//     //   setState(() {
+//     //     _imageFile = File(pickedFile.path);
+//     //   });
+
+//     if (pickedFile != null) {
+//       setState(() {
+//         _imageFile = File(pickedFile.path);
+//       });
+
+//       // Open ProImageEditor using Navigator
+//       final editedImage = await Navigator.push(
+        
+//         context,
+//         MaterialPageRoute(
+//           builder: (context) => ProImageEditor.file(
+//             File(pickedFile.path),
+            
+//             configs: ProImageEditorConfigs(),
+//             callbacks: ProImageEditorCallbacks(
+             
+     
+
+//       onImageEditingComplete: (editedImageData) async {
+//   // Save the image data and get the file path
+//   final String imagePath = await saveImage(editedImageData);
+  
+//   print("✅ Image Path: $imagePath");
+     
+      
+//        XFile croppedXFile = XFile(imagePath);
+//             final res = await awsDocumentUpload(croppedXFile.path);
+//            setState(() {
+            
+//             selectedImages.add(res); // Add the cropped image, not the original one
+           
+//           });
+
+//   // You can now use the image path (for example, pass it to the previous screen)
+//   Navigator.pop(context, imagePath);
+// },
+            
+             
+             
+//             ),
+//           ),
+//         ),
+//       );
+
+//       if (editedImage != null) {
+//         print("✅ Final Edited Image: $editedImage");
+//       }
+//       return;
+//     }
+//     }
 
   /// Add Video in a list
   Future<void> _pickVideo() async {

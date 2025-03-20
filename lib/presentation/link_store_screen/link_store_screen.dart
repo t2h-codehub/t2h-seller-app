@@ -61,6 +61,9 @@ class _LinkStoreScreenState extends ConsumerState<LinkStoreScreen>
       //   }
       // }
     });
+
+    print(_viewModel.userServicesResponse?.services);
+    print("hiii");
   }
 
   final UserDetailService _userDetailService = getIt<UserDetailService>();
@@ -1673,6 +1676,9 @@ class _Listtype1ItemWidgetState extends ConsumerState<Listtype1ItemWidget>
               trailing: !isExpanded
                   ? (_viewModel.userServicesResponse!.services!.any(
                           (element) => element.title == widget.value.title))
+
+  
+
                       ? SizedBox(
                           height: 24,
                           width: 45,

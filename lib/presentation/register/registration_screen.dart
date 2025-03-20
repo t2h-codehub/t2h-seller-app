@@ -54,6 +54,14 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen>
     );
   }
 
+   // Email validation function
+  bool validateEmail(String email) {
+    RegExp emailRegExp = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+    return emailRegExp.hasMatch(email);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -111,14 +119,15 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen>
                       SizedBox(height: 16),
 
                       /// Email textfield
-                      CustomTextFormField(
+                      
+                       CustomTextFormField(
                         suffix: Icon(
                           Icons.email_outlined,
                           size: 26,
                         ),
                         controller: emailController,
-                        maxLines: 100,
-                        maxlength: 50 ,
+                        maxLines: 1,
+                        maxlength: 50,
                         label: "Email ID",
                         hintText: "Enter email address",
                         margin: getMargin(
@@ -126,6 +135,22 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen>
                         ),
                         textInputType: TextInputType.emailAddress,
                       ),
+
+                      // CustomTextFormField(
+                      //   suffix: Icon(
+                      //     Icons.email_outlined,
+                      //     size: 26,
+                      //   ),
+                      //   controller: emailController,
+                      //   maxLines: 100,
+                      //   maxlength: 50 ,
+                      //   label: "Email ID",
+                      //   hintText: "Enter email address",
+                      //   margin: getMargin(
+                      //     top: 9,
+                      //   ),
+                      //   textInputType: TextInputType.emailAddress,
+                      // ),
                       SizedBox(height: 16),
 
                       /// Password textfield
@@ -264,7 +289,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen>
                                 ),
                               ),
                             ),
-                            InkWell(
+                           InkWell(
                               onTap: checkbox
                                   ? () async {
                                       FocusScopeNode currentFocus =
@@ -280,7 +305,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen>
                                         showSnackbar(
                                             "Password and confirm password are not same");
                                       } else if (emailController.text.isEmpty ||
-                                          !emailController.text.contains("@")) {
+                                          !validateEmail(emailController.text)) {
                                         showSnackbar(
                                             "Please enter a valid email");
                                       } else if (passwordController
@@ -375,154 +400,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen>
                         ),
                       ),
 
-                      /// Google and facebook login button
-                      /*SizedBox(height: 12),
-                      Container(
-                        padding: getPadding(
-                          left: 32,
-                          top: 16,
-                          right: 32,
-                          bottom: 16,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppCol.lightestgrey,
-                          borderRadius: BorderRadiusStyle.roundedBorder5,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/newIcons/google.png",
-                              height: 19,
-                            ),
-                            Padding(
-                              padding: getPadding(
-                                left: 14,
-                                top: 2,
-                              ),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "Continue with ",
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.left,
-                                    style: AppStyle.txtPoppinsMedium15
-                                        .copyWith(fontWeight: FontWeight.w400),
-                                  ),
-                                  Text(
-                                    "Google",
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.left,
-                                    style: AppStyle.txtPoppinsMedium15
-                                        .copyWith(fontWeight: FontWeight.w900),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 12),
-                      Container(
-                        padding: getPadding(
-                          left: 32,
-                          top: 16,
-                          right: 32,
-                          bottom: 16,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppCol.lightestgrey,
-                          borderRadius: BorderRadiusStyle.roundedBorder5,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/newIcons/facebook.png",
-                              height: 19,
-                            ),
-                            Padding(
-                              padding: getPadding(
-                                left: 14,
-                                top: 2,
-                              ),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "Continue with ",
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.left,
-                                    style: AppStyle.txtPoppinsMedium15
-                                        .copyWith(fontWeight: FontWeight.w400),
-                                  ),
-                                  Text(
-                                    "Facebook",
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.left,
-                                    style: AppStyle.txtPoppinsMedium15
-                                        .copyWith(fontWeight: FontWeight.w900),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),*/
-
-                      /// Already have an account text
-                      /*InkWell(
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Padding(
-                          padding: getPadding(
-                            top: 54,
-                          ),
-                          child: RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: "Already have an account? ",
-                                  style: TextStyle(
-                                    color: AppCol.gray900,
-                                    fontSize: getFontSize(
-                                      15,
-                                    ),
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: "Sign in",
-                                  style: TextStyle(
-                                    color: AppCol.primary,
-                                    fontSize: getFontSize(
-                                      15,
-                                    ),
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: ".",
-                                  style: TextStyle(
-                                    color: AppCol.gray900,
-                                    fontSize: getFontSize(
-                                      15,
-                                    ),
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                      ),*/
-
+                     
                       /// Image View
                       Align(
                         alignment: Alignment.center,
@@ -655,3 +533,5 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen>
     nameController.dispose();
   }
 }
+
+

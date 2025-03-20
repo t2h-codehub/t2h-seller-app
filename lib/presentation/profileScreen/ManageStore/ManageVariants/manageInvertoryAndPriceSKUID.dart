@@ -318,211 +318,269 @@ List<Widget> _getDynamicHeaders(dynamic response) {
 ),
 
 
-
-
-
-
-
-      
-// Container(
-//   padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-//   decoration: BoxDecoration(
-//     color: Colors.grey.shade200,
-//     borderRadius: BorderRadius.circular(8),
-//   ),
-//   child: Row(
-//     children: [
-//       Expanded(
-//         child: Text(
-//           manageInventorySkuidPriceApiResModel.combinations?.firstOrNull?.variants?[0].title ?? 'Variant 1',
-//           style: TextStyle(fontWeight: FontWeight.bold),
-//         ),
-//       ),
-//       Expanded(
-//   child: Text(
-//     (manageInventorySkuidPriceApiResModel.combinations?.firstOrNull?.variants != null &&
-//             manageInventorySkuidPriceApiResModel.combinations!.firstOrNull!.variants!.length > 1)
-//         ? manageInventorySkuidPriceApiResModel.combinations!.firstOrNull!.variants![1].title ?? 'Variant 2'
-//         : 'Variant 2',
-//     style: TextStyle(fontWeight: FontWeight.bold),
-//   ),
-// ),
-
-//       Expanded(child: Text('Stock', style: TextStyle(fontWeight: FontWeight.bold))),
-//       Expanded(child: Text('Action', style: TextStyle(fontWeight: FontWeight.bold))),
-//     ],
-//   ),
-// ),
-
-
-
-      // Container(
-      //   padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-      //   decoration: BoxDecoration(
-      //     color: Colors.grey.shade200,
-      //     borderRadius: BorderRadius.circular(8),
-      //   ),
-      //   child: Row(
-      //     children: [
-      //       Expanded(child: Text('Size', style: TextStyle(fontWeight: FontWeight.bold))),
-      //       Expanded(child: Text('Color', style: TextStyle(fontWeight: FontWeight.bold))),
-      //       Expanded(child: Text('Stock', style: TextStyle(fontWeight: FontWeight.bold))),
-      //       Expanded(child: Text('Action', style: TextStyle(fontWeight: FontWeight.bold))),
-      //     ],
-      //   ),
-      // ),
-
       if (_isLoading)
             Center(child: CircularProgressIndicator())
           else
 
-Expanded(
+          Expanded(
   child: ListView.builder(
     itemCount: manageInventorySkuidPriceApiResModel.combinations?.length ?? 0,
     itemBuilder: (context, index) {
       final item = manageInventorySkuidPriceApiResModel.combinations![index];
 
-      // Skip if the row is disabled
-     // if (item.isDisabled == true) return SizedBox.shrink();
-
       final variants = item.variants ?? [];
       final weight = variants.isNotEmpty ? variants[0].value?.title ?? '' : '';
       final color = variants.length > 1 ? variants[1].value?.title ?? '' : '';
 
-      return Container(
-        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-        margin: EdgeInsets.only(top: 10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Colors.grey.shade300),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
-          children: [
-            if (variants.length == 2) ...[
-              Expanded(child: Text(weight, style: TextStyle(color: Colors.black))),
-              Expanded(child: Text(color, style: TextStyle(color: Colors.black))),
-            ] else
-              Expanded(child: Text(weight, style: TextStyle(color: Colors.black))),
+      return Opacity(
+        opacity: item.isDisabled == true ? 0.5 : 1.0, // Reduce opacity if disabled
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+          margin: EdgeInsets.only(top: 10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: Colors.grey.shade300),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            children: [
+              if (variants.length == 2) ...[
+                Expanded(
+                  child: Text(
+                    weight,
+                    style: TextStyle(color: item.isDisabled == true ? Colors.grey : Colors.black),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    color,
+                    style: TextStyle(color: item.isDisabled == true ? Colors.grey : Colors.black),
+                  ),
+                ),
+              ] else
+                Expanded(
+                  child: Text(
+                    weight,
+                    style: TextStyle(color: item.isDisabled == true ? Colors.grey : Colors.black),
+                  ),
+                ),
 
-            Expanded(
-              child: Text(
-                item.stock == 0
-                    ? '0'
-                    : (item.unlimitedStock == true ? '-' : item.stock.toString()),
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: Colors.black),
+              Expanded(
+                child: Text(
+                  item.stock == 0
+                      ? '0'
+                      : (item.unlimitedStock == true ? '-' : item.stock.toString()),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: item.isDisabled == true ? Colors.grey : Colors.black,
+                  ),
+                ),
               ),
-            ),
-            // Expanded(
-            //   child: IconButton(
-            //     icon: Icon(Icons.edit, size: 22, color: Colors.blueAccent),
-            //     onPressed: () {
-            //       // Edit logic
-            //     },
-            //   ),
-            // ),
-             Expanded(
-              child: item.isDisabled == true
-                  ? Icon(Icons.block, color: Colors.red, size: 22) // Disabled icon
-                  : IconButton(
-                      icon: Icon(Icons.edit, size: 22, color: Colors.blueAccent),
-                      onPressed: () async {
-                        var selectedItem = manageInventorySkuidPriceApiResModel.combinations?.firstWhere(
-                          (combination) => combination.sId == item.sId,
-                          orElse: () => Combinations(),
-                        );
 
-                        if (selectedItem != null) {
-                          // String size = selectedItem.variants?[0].value?.title ?? "";
-                          // String color = selectedItem.variants?[1].value?.title ?? "";
-                          String size = "";
-String color = "";
+              Expanded(
+                child: item.isDisabled == true
+                    ? Icon(Icons.block, color: Colors.red, size: 22) // Disabled icon
+                    : IconButton(
+                        icon: Icon(Icons.edit, size: 22, color: Colors.blueAccent),
+                        onPressed: () async {
+                          var selectedItem = manageInventorySkuidPriceApiResModel.combinations?.firstWhere(
+                            (combination) => combination.sId == item.sId,
+                            orElse: () => Combinations(),
+                          );
 
-// Check if variants list is not null and has at least 1 element for size
-if (selectedItem.variants != null && selectedItem.variants!.isNotEmpty) {
-  size = selectedItem.variants![0].value?.title ?? "";
-}
+                          if (selectedItem != null) {
+                            String size = "";
+                            String color = "";
 
-// Check if variants list has at least 2 elements for color
-if (selectedItem.variants != null && selectedItem.variants!.length > 1) {
-  color = selectedItem.variants![1].value?.title ?? "";
-}
+                            if (selectedItem.variants != null && selectedItem.variants!.isNotEmpty) {
+                              size = selectedItem.variants![0].value?.title ?? "";
+                            }
 
+                            if (selectedItem.variants != null && selectedItem.variants!.length > 1) {
+                              color = selectedItem.variants![1].value?.title ?? "";
+                            }
 
-                          // var result = await showDialog(
-                          //   context: context,
-                          //   builder: (context) => ManageInventoryPriceAndSKUIdDialog(
-                          //     size: size,
-                          //     color: color,
-                          //     stock: selectedItem.stock?.toString() ?? '0',
-                          //     firstVariantName: selectedItem.variants?[0].title ?? "",
-                          //     secondVariantName: selectedItem.variants?[1].title ?? "",
-                          //     body: (updatedData) {
-                          //       Navigator.pop(context, updatedData);
-                          //     },
-                          //     image: selectedItem.images,
-                          //     skuid: selectedItem.sId ?? '',
-                          //     mrp: selectedItem.mrp?.toString() ?? '0',
-                          //     discountPrice: selectedItem.price?.toString() ?? '0',
-                          //     productId: selectedItem.sId ?? '',
-                          //   ),
-                          // );
-                          var result = await showDialog(
-  context: context,
-  builder: (context) => ManageInventoryPriceAndSKUIdDialog(
-    size: size,
-    color: color,
-    stock: selectedItem.stock?.toString() ?? '0',
-    firstVariantName: selectedItem.variants?.isNotEmpty == true
-        ? selectedItem.variants![0].title ?? ""
-        : "", 
-    secondVariantName: selectedItem.variants!.length > 1
-        ? selectedItem.variants![1].title ?? ""
-        : "",
-    body: (updatedData) {
-      Navigator.pop(context, updatedData);
-    },
-    image: selectedItem.images,
-    skuid: selectedItem.sId ?? '',
-    mrp: selectedItem.mrp?.toString() ?? '0',
-    discountPrice: selectedItem.price?.toString() ?? '0',
-    productId: selectedItem.sId ?? '',
-  ),
-);
+                            var result = await showDialog(
+                              context: context,
+                              builder: (context) => ManageInventoryPriceAndSKUIdDialog(
+                                size: size,
+                                color: color,
+                                stock: selectedItem.stock?.toString() ?? '0',
+                                firstVariantName: selectedItem.variants?.isNotEmpty == true
+                                    ? selectedItem.variants![0].title ?? ""
+                                    : "",
+                                secondVariantName: selectedItem.variants!.length > 1
+                                    ? selectedItem.variants![1].title ?? ""
+                                    : "",
+                                body: (updatedData) {
+                                  Navigator.pop(context, updatedData);
+                                },
+                                image: selectedItem.images,
+                                skuid: selectedItem.sId ?? '',
+                                mrp: selectedItem.mrp?.toString() ?? '0',
+                                discountPrice: selectedItem.price?.toString() ?? '0',
+                                productId: selectedItem.sId ?? '',
+                              ),
+                            );
 
+                            if (result != null) {
+                              setState(() {
+                                selectedItem.stock = int.parse(result['stock'] ?? '0');
+                                selectedItem.sId = result['sku_id'] ?? '';
+                                selectedItem.mrp = int.parse(result['price'] ?? '0');
+                                selectedItem.price = int.parse(result['discount'] ?? '0');
+                                selectedItem.images = result['selectedImages'] ?? '';
 
-                          if (result != null) {
-                            setState(() {
-                              selectedItem.stock = int.parse(result['stock'] ?? '0');
-                              selectedItem.sId = result['sku_id'] ?? '';
-                              selectedItem.mrp = int.parse(result['price'] ?? '0');
-                              
-                              selectedItem.price = int.parse(result['discount'] ?? '0');
-                              selectedItem.images = result['selectedImages'] ?? '';
-                             
-                              int index = manageInventorySkuidPriceApiResModel.combinations?.indexWhere((item) => item.sId == selectedItem.sId) ?? -1;
-                              if (index != -1) {
-                                manageInventorySkuidPriceApiResModel.combinations![index] = selectedItem;
-                              }
+                                int index = manageInventorySkuidPriceApiResModel.combinations
+                                        ?.indexWhere((item) => item.sId == selectedItem.sId) ??
+                                    -1;
+                                if (index != -1) {
+                                  manageInventorySkuidPriceApiResModel.combinations![index] =
+                                      selectedItem;
+                                }
 
-                              _isChanged = true;
-                            });
+                                _isChanged = true;
+                              });
 
-                            var payloadToSend = getPayload();
-                            print("Updated Payload: $payloadToSend");
+                              var payloadToSend = getPayload();
+                              print("Updated Payload: $payloadToSend");
+                            }
                           }
-                        }
-                      }, 
-                    ),
-            ),
-
-          ],
+                        },
+                      ),
+              ),
+            ],
+          ),
         ),
       );
     },
   ),
 ),
+
+
+// Expanded(
+//   child: ListView.builder(
+//     itemCount: manageInventorySkuidPriceApiResModel.combinations?.length ?? 0,
+//     itemBuilder: (context, index) {
+//       final item = manageInventorySkuidPriceApiResModel.combinations![index];
+
+//       // Skip if the row is disabled
+//      // if (item.isDisabled == true) return SizedBox.shrink();
+
+//       final variants = item.variants ?? [];
+//       final weight = variants.isNotEmpty ? variants[0].value?.title ?? '' : '';
+//       final color = variants.length > 1 ? variants[1].value?.title ?? '' : '';
+
+//       return Container(
+//         padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+//         margin: EdgeInsets.only(top: 10),
+//         decoration: BoxDecoration(
+//           color: Colors.white,
+//           border: Border.all(color: Colors.grey.shade300),
+//           borderRadius: BorderRadius.circular(8),
+//         ),
+//         child: Row(
+//           children: [
+//             if (variants.length == 2) ...[
+//               Expanded(child: Text(weight, style: TextStyle(color: Colors.black))),
+//               Expanded(child: Text(color, style: TextStyle(color: Colors.black))),
+//             ] else
+//               Expanded(child: Text(weight, style: TextStyle(color: Colors.black))),
+
+//             Expanded(
+//               child: Text(
+//                 item.stock == 0
+//                     ? '0'
+//                     : (item.unlimitedStock == true ? '-' : item.stock.toString()),
+//                 textAlign: TextAlign.center,
+//                 style: TextStyle(fontSize: 14, color: Colors.black),
+//               ),
+//             ),
+           
+//              Expanded(
+//               child: item.isDisabled == true
+//                   ? Icon(Icons.block, color: Colors.red, size: 22) // Disabled icon
+//                   : IconButton(
+//                       icon: Icon(Icons.edit, size: 22, color: Colors.blueAccent),
+//                       onPressed: () async {
+//                         var selectedItem = manageInventorySkuidPriceApiResModel.combinations?.firstWhere(
+//                           (combination) => combination.sId == item.sId,
+//                           orElse: () => Combinations(),
+//                         );
+
+//                         if (selectedItem != null) {
+//                           // String size = selectedItem.variants?[0].value?.title ?? "";
+//                           // String color = selectedItem.variants?[1].value?.title ?? "";
+//                           String size = "";
+// String color = "";
+
+// // Check if variants list is not null and has at least 1 element for size
+// if (selectedItem.variants != null && selectedItem.variants!.isNotEmpty) {
+//   size = selectedItem.variants![0].value?.title ?? "";
+// }
+
+// // Check if variants list has at least 2 elements for color
+// if (selectedItem.variants != null && selectedItem.variants!.length > 1) {
+//   color = selectedItem.variants![1].value?.title ?? "";
+// }
+
+
+//                           var result = await showDialog(
+//   context: context,
+//   builder: (context) => ManageInventoryPriceAndSKUIdDialog(
+//     size: size,
+//     color: color,
+//     stock: selectedItem.stock?.toString() ?? '0',
+//     firstVariantName: selectedItem.variants?.isNotEmpty == true
+//         ? selectedItem.variants![0].title ?? ""
+//         : "", 
+//     secondVariantName: selectedItem.variants!.length > 1
+//         ? selectedItem.variants![1].title ?? ""
+//         : "",
+//     body: (updatedData) {
+//       Navigator.pop(context, updatedData);
+//     },
+//     image: selectedItem.images,
+//     skuid: selectedItem.sId ?? '',
+//     mrp: selectedItem.mrp?.toString() ?? '0',
+//     discountPrice: selectedItem.price?.toString() ?? '0',
+//     productId: selectedItem.sId ?? '',
+//   ),
+// );
+
+
+//                           if (result != null) {
+//                             setState(() {
+//                               selectedItem.stock = int.parse(result['stock'] ?? '0');
+//                               selectedItem.sId = result['sku_id'] ?? '';
+//                               selectedItem.mrp = int.parse(result['price'] ?? '0');
+                              
+//                               selectedItem.price = int.parse(result['discount'] ?? '0');
+//                               selectedItem.images = result['selectedImages'] ?? '';
+                             
+//                               int index = manageInventorySkuidPriceApiResModel.combinations?.indexWhere((item) => item.sId == selectedItem.sId) ?? -1;
+//                               if (index != -1) {
+//                                 manageInventorySkuidPriceApiResModel.combinations![index] = selectedItem;
+//                               }
+
+//                               _isChanged = true;
+//                             });
+
+//                             var payloadToSend = getPayload();
+//                             print("Updated Payload: $payloadToSend");
+//                           }
+//                         }
+//                       }, 
+//                     ),
+//             ),
+
+//           ],
+//         ),
+//       );
+//     },
+//   ),
+// ),
 
 
 

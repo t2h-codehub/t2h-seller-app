@@ -30,9 +30,7 @@ import 'package:taptohello/data/productCategoryModel/productCategoryApiResModel.
 import '../../../../core/utils/commonFun.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:html_editor_plus/html_editor.dart';
-import 'dart:io';
 import 'dart:typed_data';
-import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
@@ -70,13 +68,14 @@ var currentIndex = 0;
   bool isUnlimitedStock = false;
   bool isDisplayOn = false;
   bool isAdditionalInformation = false;
+  
   // late quill.QuillController _productDescriptionController;
    final HtmlEditorController _productDescriptionController = HtmlEditorController();
   
 
     final List<String> variants = ["Type A", "Type B", "Type C", "Type D"];
 
-  File? _imageFile;
+ 
   bool isProductPost = false;
   bool isButtonDisabled = false;
 
@@ -85,7 +84,6 @@ var currentIndex = 0;
   List<VideoPlayerController> videoControllers = [];
 
   final ImagePicker _picker = ImagePicker();
-  final bool _isLoading = false;
 
   bool isApiDataAvailable = false;
   late Future _future;
@@ -143,7 +141,16 @@ var currentIndex = 0;
   bool isVideoUpload = false;
   // var json = jsonEncode("");
   String json = "";
+   File? _imageFile;
 
+  bool _isEditing = false;
+   List<XFile> _images = [];
+  List<File> _editedImages = [];
+   int _currentImageIndex = 0;
+
+ 
+ final ImagePicker _imagePicker = ImagePicker();
+  List<XFile>? _imageFileList = [];
   SizeChartFirstTimeData sizeChartFirstTimeData = SizeChartFirstTimeData();
 int _state = 0;
  bool isPageLoading = false;
@@ -175,6 +182,22 @@ int _state = 0;
 
       
   }
+
+ @override
+void didChangeDependencies() {
+  super.didChangeDependencies();
+
+  // Retrieve the edited images passed back
+  final editedImages = ModalRoute.of(context)?.settings.arguments as List<String>?;
+  
+  if (editedImages != null) {
+    setState(() {
+     // _editedImagesList = editedImages; // Update the state with the edited images
+    });
+  }
+}
+
+
 
 //   void imageload(){
 // DialogBuilder(navigatorKey.currentContext ?? context)
@@ -502,264 +525,8 @@ String? findIdByTitle(String title) {
             ),
           ],
       
-         
-          // actions: [
-          //   /// View Hello Store Button
-          //   InkWell(
-          //     onTap: () async {
-          //       submitClick.value = true;
-          //       selectedImageVideos.clear();
-          //       for (var images in selectedImages) {
-          //         debugPrint('My real Image is: ${images.path}');
-          //         final res = await awsDocumentUpload(images.path);
-          //         debugPrint('My Image is: $res');
-          //         selectedImageVideos.add(res);
-          //       }
-          //       for (var videos in selectedVideos) {
-          //         final res = await awsDocumentUpload(videos.path);
-          //         selectedImageVideos.add(res);
-          //       }
-      
-          //       debugPrint('My images updated url is: $selectedImageVideos');
-      
-          //       manageCollectionApiResModel.sellerCollections?.forEach((element) {
-          //         if (_addToCollectionController.text == element.title) {
-          //           selectedNewVariant = element.sId ?? '';
-          //           setState(() {});
-          //         }
-          //       });
-          //       if (selectedImageVideos.isNotEmpty) {
-          //         if (_formKey.currentState!.validate()) {
-          //           if (selectedNewVariant.isNotEmpty) {
-          //             addProduct({
-          //               "title": _productTitleController.text,
-          //               "description": _productDescriptionController.text,
-          //               "images": selectedImageVideos.map((e) => e).toList(),
-          //               "mrp": _mrpController.text,
-          //               "price": _discountPriceController.text.isEmpty
-          //                   ? 0
-          //                   : _discountPriceController.text,
-          //               "stock":
-          //                   isUnlimitedStock ? 100000 : _inventoryController.text,
-          //               "unlimitedStock": isUnlimitedStock,
-          //               "category": selectedCategoryId,
-          //               "subcategory": selectedSubCategoryId,
-          //               "active": isDisplayOn,
-          //               "skuId": _SKUIDController.text.isEmpty
-          //                   ? ""
-          //                   : _SKUIDController.text,
-          //               "productCollection": selectedNewVariant,
-          //               "tags": productTags,
-          //               "sizeChart": sizeChart
-          //             }, false);
-          //           } else {
-          //             addProduct({
-          //               "title": _productTitleController.text,
-          //               "description": _productDescriptionController.text,
-          //               "images": selectedImageVideos.map((e) => e).toList(),
-          //               "mrp": _mrpController.text,
-          //               "price": _discountPriceController.text.isEmpty
-          //                   ? 0
-          //                   : _discountPriceController.text,
-          //               "stock":
-          //                   isUnlimitedStock ? 100000 : _inventoryController.text,
-          //               "unlimitedStock": isUnlimitedStock,
-          //               "category": selectedCategoryId,
-          //               "subcategory": selectedSubCategoryId,
-          //               "active": isDisplayOn,
-          //               "skuId": _SKUIDController.text.isEmpty
-          //                   ? ""
-          //                   : _SKUIDController.text,
-          //               "tags": productTags,
-          //               "sizeChart": sizeChart
-          //             }, false);
-          //           }
-          //         }
-          //       } else {
-          //         ScaffoldMessenger.of(context).showSnackBar(
-          //             SnackBar(content: Text('Please select atleast one image')));
-          //       }
-          //     },
-          //     child: ValueListenableBuilder(
-          //         valueListenable: submitClick,
-          //         builder: (context, value, child) {
-          //           Future.delayed(
-          //             Duration(seconds: 3),
-          //             () {
-          //               submitClick.value = false;
-          //             },
-          //           );
-          //           return Visibility(
-          //             visible: submitClick.value ? false : true,
-          //             child: Padding(
-          //               padding: const EdgeInsets.only(right: 14, top: 20),
-          //               child: 
-                       
-             
-          //               Text(
-          //                 'Submit',
-          //                 style: TextStyle(
-          //                   color: value != null ? AppCol.primary : AppCol.primary,
-          //                   fontSize: 14,
-          //                   fontWeight: FontWeight.w500,
-          //                 ),
-          //               ),
-          //             ),
-          //           );
-          //         }),
-          //   ),
-          // ],
         ),
-      //       appBar: AppBar(
-      //         backgroundColor: Colors.white,
-      //         iconTheme: IconThemeData(
-      //           color: Colors.grey,
-      //         ),
-      //         title: Text(
-      //           'Add Product',
-      //           style: TextStyle(
-      //             color: Colors.black,
-      //             fontSize: 18,
-      //           ),
-      //         ),
-      //         automaticallyImplyLeading: false,
-      //         /*iconTheme: IconThemeData(
-      //           color: Colors.grey,
-      //         ),*/
-      //         leading: InkWell(
-      //           onTap: () async {
-      //             debugPrint("testttt656");
-      //             // Navigator.of(context).pop();
-      //              final value = await showDialog<bool>(
-      //         context: context,
-      //         builder: (context){
-      //           return AlertDialog(
-      //             title: Text("Confirm"),
-      //             content: Text("Do you want to Exit ?."),
-      //             actions: [
-      //               TextButton(onPressed: (){
-      //                 Navigator.of(context).pop(false);
-      //               }, child: Text("No")),
-      //               TextButton(onPressed: (){
-      //                 Navigator.of(context).pop(true);
-      //                 Navigator.of(context).pop(true);
-      //               }, child: Text("Yes")),
-      //             ],
-      //           );
-      //         });
-      //           },
-      //           child: Padding(
-      //               padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-      //               child: Image.asset(
-      //                 "assets/images/back.png",
-      //                 height: 24,
-      //               )),
-      //         ),
-      //         actions: [
-      //           /// View Hello Store Button
-      //           MaterialButton(
-              
-      //             onPressed: () async {
-               
-      //                 if (_state == 0) {
-      //               submitClick.value = true;
-      //               selectedImageVideos.clear();
-      //               for (var images in selectedImages) {
-      //                 debugPrint('My real Image is: ${images.path}');
-      //                 final res = await awsDocumentUpload(images.path);
-      //                 debugPrint('My Image is: $res');
-      //                 setState(()    {
-      //                 selectedImageVideos.add(res);
-      //                  });
-      //               }
-      //               for (var videos in selectedVideos) {
-      //                 final res = await awsDocumentUpload(videos.path);
-      //                 setState(()    {
-      //                 selectedImageVideos.add(res);
-      //                  });
-      //               }
-      // setState(()    {
-      //               debugPrint('My images updated url is: $selectedImageVideos');
-      
-      //               manageCollectionApiResModel.sellerCollections?.forEach((element) {
-      //                 if (_addToCollectionController.text == element.title) {
-      //                   selectedNewVariant = element.sId ?? '';
-      //                   setState(() {});
-      //                 }
-      //               });
-      //               if (selectedImageVideos.isNotEmpty) {
-      //                 if (_formKey.currentState!.validate()) {
-      //                   if(selectedNewVariant.isNotEmpty) {
-      //                     animateButton();
-      //                     addProduct({
-                        
-      //                       "title": _productTitleController.text,
-      //                       "description": _productDescriptionController.text,
-      //                       "images": selectedImageVideos.map((e) => e).toList(),
-      //                       "mrp": _mrpController.text,
-      //                       "price": _discountPriceController.text.isEmpty ? 0 : _discountPriceController.text,
-      //                       "stock": isUnlimitedStock ? 100000 : _inventoryController.text,
-      //                       "unlimitedStock": isUnlimitedStock,
-      //                       "category": selectedCategoryId,
-      //                       "subcategory": selectedSubCategoryId,
-      //                       "active": isDisplayOn,
-      //                       "skuId": _SKUIDController.text.isEmpty ? "" : _SKUIDController.text,
-      //                       "productCollection": selectedNewVariant,
-      //                       "tags": productTags,
-      //                       "sizeChart" : sizeChart
-      //                     }, false);
-      //                   } else {
-      //                     addProduct({
-      //                       "title": _productTitleController.text,
-      //                       "description": _productDescriptionController.text,
-      //                       "images": selectedImageVideos.map((e) => e).toList(),
-      //                       "mrp": _mrpController.text,
-      //                       "price": _discountPriceController.text.isEmpty ? 0 : _discountPriceController.text,
-      //                       "stock": isUnlimitedStock ? 100000 : _inventoryController.text,
-      //                       "unlimitedStock": isUnlimitedStock,
-      //                       "category": selectedCategoryId,
-      //                       "subcategory": selectedSubCategoryId,
-      //                       "active": isDisplayOn,
-      //                       "skuId": _SKUIDController.text.isEmpty ? "" : _SKUIDController.text,
-      //                       "tags": productTags,
-      //                       "sizeChart" : sizeChart
-      //                     }, false);
-      //                   }
-      //                 }
-      //               } else {
-      //                 ScaffoldMessenger.of(context).showSnackBar(
-      //                     SnackBar(content: Text('Please select atleast one image')));
-      //               }
-      //                });
-      //                 }
-                  
-      //             },
-      //             child: setUpButtonChild(),
-      //             // ValueListenableBuilder(
-      //             //   valueListenable: submitClick,
-      //             //   builder: (context, value, child) {
-      //             //     Future.delayed(Duration(seconds: 3), () {
-      //             //       submitClick.value = false;
-      //             //     },);
-      //             //     return Visibility(
-      //             //       visible: submitClick.value ? false : true,
-      //             //       child: Padding(
-      //             //         padding: const EdgeInsets.only(right: 14, top: 20),
-      //             //         child: Text(
-      //             //           'Submit',
-      //             //           style: TextStyle(
-      //             //             color: value ? Colors.grey :  AppCol.primary,
-      //             //             fontSize: 14,
-      //             //             fontWeight: FontWeight.w500,
-      //             //           ),
-      //             //         ),
-      //             //       ),
-      //             //     );
-      //             //   }
-      //             // ),
-      //           ),
-      //         ],
-      //       ),
+     
         body: isProductAdd ? Center(child: CircularProgressIndicator(),) : isVideoUpload ? Center(child: CircularProgressIndicator()) : SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.only(left: 24, right: 24),
@@ -890,53 +657,7 @@ String? findIdByTitle(String title) {
                                       // Display image
                                       return Image.file(File(totalSelectedImageVideos[index].path));
                                     }
-                                    /*if (index < selectedImages.length) {
-                                      return Image.file(
-                                          File(selectedImages[index].path));
-                                    } else {
-                                      int videoIndex =
-                                          index - selectedImages.length;
-                                      return Stack(
-                                        children: [
-                                          videoControllers[videoIndex]
-                                                  .value
-                                                  .isInitialized
-                                              ? Center(
-                                                  child: AspectRatio(
-                                                    aspectRatio: videoControllers[
-                                                            videoIndex]
-                                                        .value
-                                                        .aspectRatio,
-                                                    child: VideoPlayer(
-                                                        videoControllers[
-                                                            videoIndex]),
-                                                  ),
-                                                )
-                                              : const Center(
-                                                  child:
-                                                      CircularProgressIndicator()),
-                                          Center(
-                                            child: IconButton(
-                                              icon: const Icon(Icons.play_arrow,
-                                                  color: Colors.white),
-                                              onPressed: () {
-                                                setState(() {
-                                                  videoControllers[videoIndex]
-                                                          .value
-                                                          .isPlaying
-                                                      ? videoControllers[
-                                                              videoIndex]
-                                                          .pause()
-                                                      : videoControllers[
-                                                              videoIndex]
-                                                          .play();
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    }*/
+                                  
                                   },
                                 ),
                               ),
@@ -957,107 +678,105 @@ String? findIdByTitle(String title) {
                   SizedBox(height: 24),
       
                   /// Click to Add Product Image/Video
-                  InkWell(
-                    onTap: () => showModalBottomSheet(
-                      context: context,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      builder: (context) => Container(
-                        // height: MediaQuery.of(context).size.height / 4,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 24, right: 24),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(height: 4),
-                              Container(
-                                height: 6,
-                                width: 45,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.withOpacity(.4),
-                                  borderRadius: BorderRadius.circular(50),
-                                ),
-                              ),
-                              SizedBox(height: 16),
-      
-                              /// Image Select Button
-                              InkWell(
-                                onTap: _pickImage,
-                                child: Container(
-                                  padding: EdgeInsets.all(14),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(14),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(.1),
-                                        blurRadius: 10,
-                                        spreadRadius: 1,
-                                      ),
-                                    ],
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.image_rounded),
-                                      SizedBox(width: 16),
-                                      Text('Image'),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 16),
-      
-                              /// Video Select Button
-                              InkWell(
-                                onTap: _pickVideo,
-                                child: Container(
-                                  padding: EdgeInsets.all(14),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(14),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(.1),
-                                        blurRadius: 10,
-                                        spreadRadius: 1,
-                                      ),
-                                    ],
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.video_camera_back_rounded),
-                                      SizedBox(width: 16),
-                                      Text('Video'),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 16),
-                            ],
-                          ),
-                        ),
-                      ),
+                 InkWell(
+  onTap: () => showModalBottomSheet(
+    context: context,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(14),
+    ),
+    builder: (context) => Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 24, right: 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: 4),
+            Container(
+              height: 6,
+              width: 45,
+              decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(.4),
+                borderRadius: BorderRadius.circular(50),
+              ),
+            ),
+            SizedBox(height: 16),
+
+            /// Image Select Button
+            InkWell(
+              onTap: _pickImage,
+              child: Container(
+                padding: EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(.1),
+                      blurRadius: 10,
+                      spreadRadius: 1,
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset('assets/newIcons/add_out.png',
-                            height: 20, width: 20),
-                        SizedBox(width: 10),
-                        Text(
-                          'Click to add product image/video',
-                          style: TextStyle(
-                            color: AppCol.primary,
-                            fontWeight: FontWeight.w200,
-                          ),
-                        ),
-                      ],
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.image_rounded),
+                    SizedBox(width: 16),
+                    Text('Image'),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+
+            /// Video Select Button
+            InkWell(
+              onTap: _pickVideo,
+              child: Container(
+                padding: EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(.1),
+                      blurRadius: 10,
+                      spreadRadius: 1,
                     ),
-                  ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.video_camera_back_rounded),
+                    SizedBox(width: 16),
+                    Text('Video'),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+          ],
+        ),
+      ),
+    ),
+  ),
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Image.asset('assets/newIcons/add_out.png', height: 20, width: 20),
+      SizedBox(width: 10),
+      Text(
+        'Click to add product image/video',
+        style: TextStyle(
+          color: AppCol.primary,
+          fontWeight: FontWeight.w200,
+        ),
+      ),
+    ],
+  ),
+),
                   SizedBox(height: 34),
       
                   /// Product Title Field
@@ -1445,30 +1164,7 @@ String? findIdByTitle(String title) {
                           ),
                         ),
                         SizedBox(width: 16),
-      
-                        /// Toggle button
-                        /*Container(
-                          height: 24,
-                          width: 45,
-                          child: AnimatedToggleSwitch<bool>.dual(
-                            current: isSizeChart,
-                            first: false,
-                            second: true,
-                            innerColor: isSizeChart
-                                ? AppCol.primary
-                                : Color(0xFFD0D5DD),
-                            dif: 1.0,
-                            borderColor: Colors.transparent,
-                            // borderWidth: 2.0,
-                            // height: 20,
-                            indicatorSize: Size(17, 18),
-                            indicatorColor: Colors.white,
-                            onChanged: (b) {
-                              isSizeChart = b;
-                              setState(() {});
-                            },
-                          ),
-                        ),*/
+    
       
                         /// Add/Edit button
                         InkWell(
@@ -1570,29 +1266,7 @@ String? findIdByTitle(String title) {
                   ),
                   SizedBox(height: 24),
       
-                  /// Add to Collection field
-                  // Container(
-                  //   child: TextFormField(
-                  //     controller: _addToCollectionController,
-                  //     readOnly: true,
-                  //     decoration: InputDecoration(
-                  //       labelText: 'Add to Collection(Optional)',
-                  //       floatingLabelBehavior: FloatingLabelBehavior.always,
-                  //       border: OutlineInputBorder(
-                  //         borderRadius: BorderRadius.circular(10),
-                  //       ),
-                  //       suffixIcon: Icon(
-                  //         Icons.keyboard_arrow_down_rounded,
-                  //       ),
-                  //     ),
-                  //     onTap: () async {
-                  //       final res = await showAdminCollectionModalSheet(context);
-                  //       debugPrint('My selected collection: $res');
-                  //       _addToCollectionController.text = res;
-                  //       selectedNewVariant = _addToCollectionController.text;
-                  //     },
-                  //   ),
-                  // ),
+                
                    Container(
   child: TextFormField(
     controller: _addToCollectionController,
@@ -1755,22 +1429,7 @@ String? findIdByTitle(String title) {
                                     "tags": productTags,
                                     "sizeChart" : sizeChart
                                   }, true);
-                                  /*addAttributeWithProduct({
-                              "title": _productTitleController.text,
-                              "description": _productDescriptionController.text,
-                              "images": selectedImageVideos.map((e) => e).toList(),
-                              "mrp": _mrpController.text,
-                              "price": _discountPriceController.text,
-                              "stock":
-                              isUnlimitedStock ? 0 : _inventoryController.text,
-                              "unlimitedStock": isUnlimitedStock,
-                              "category": selectedCategoryId,
-                              "subcategory": selectedSubCategoryId,
-                              "active": isDisplayOn,
-                              "skuId": _SKUIDController.text.isEmpty ? "" : _SKUIDController.text,
-                              "tags": productTags,
-                              "sizeChart" : sizeChart
-                            });*/
+                              
                                 }
                               }
                               else {
@@ -1782,18 +1441,12 @@ String? findIdByTitle(String title) {
                               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                   content: Text('Please fill the MRP price')));
                             }
-                          // }
-                          // else {
-                          //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          //       content: Text('Please fill the product description')));
-                          // }
+                          
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text('Please fill the product title')));
                         }
-                        // if (_formKey.currentState.validate()) {
-                        //
-                        // }
+                       
                       }
                       else {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -1916,11 +1569,7 @@ String? findIdByTitle(String title) {
                               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                   content: Text('Please fill the MRP price')));
                             }
-                          // }
-                          // else {
-                          //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          //       content: Text('Please fill the product description')));
-                          // }
+                          
                         }
                         else {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -1962,104 +1611,130 @@ String? findIdByTitle(String title) {
     );
   }
 
-  
-
+ 
+ 
 Future<void> _pickImage() async {
-  
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+  // Dismiss the bottom sheet after a slight delay
+Future.delayed(Duration(seconds: 1), () {
+  Navigator.pop(context); // Dismiss the bottom sheet
+});
 
-    // if (pickedFile != null) {
-    //   setState(() {
-    //     _imageFile = File(pickedFile.path);
-    //   });
+  // Allow the user to pick multiple images
+  final pickedFiles = await ImagePicker().pickMultiImage();
 
-    if (pickedFile != null) {
+  if (pickedFiles.isNotEmpty) {
+    List<XFile> selectedImagesTemp = [];
+
+    for (var pickedFile in pickedFiles) {
       setState(() {
         _imageFile = File(pickedFile.path);
       });
 
-      // Open ProImageEditor using Navigator
-      final editedImage = await Navigator.push(
-        
+      // Open ProImageEditor for each picked image
+      final editedImagePath = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => ProImageEditor.file(
             File(pickedFile.path),
-            
             configs: ProImageEditorConfigs(),
             callbacks: ProImageEditorCallbacks(
-             
-      //         onImageEditingComplete: (editedImagePath) async {
+              onImageEditingComplete: (editedImageData) async {
+                // Save the image data and get the file path
+                final String imagePath = await saveImage(editedImageData);
+                print("✅ Image Path: $imagePath");
 
-      //   //           final cropImage = await _cropImage(File(image.path), context);
-      //   // if (cropImage != null) {
-      //   //   XFile croppedXFile = XFile(cropImage.path);
-      //   //   setState(() {
-      //   //     selectedImages.add(croppedXFile); // Add the cropped image, not the original one
-      //   //     totalSelectedImageVideos.add(croppedXFile);
-      //   //   });
+                // Add the edited image to the list
+                selectedImagesTemp.add(XFile(imagePath));
 
-      //   //   // String? mimeType = lookupMimeType(cropImage.path); // e.g., "image/jpeg"
-      //   //   // if (mimeType != null) {
-      //   //   //   String fileType = mimeType.split('/').last; // e.g., "image"
-      //   //   //   print("File type: $fileType");
-      //   //   // }
-      //   // }
-      //   // selectedItemsIndex = selectedImages.length + selectedVideos.length;
-        
-      //   setState(() {
-      //   _imageFile = File(editedImagePath.toString());
-        
-      //      XFile croppedXFile = XFile(_imageFile!.path);
-          
-      //       selectedImages.add(croppedXFile); // Add the cropped image, not the original one
-      //       totalSelectedImageVideos.add(croppedXFile);
-      //      // Update the UI with the edited image
-      // });
+                // Pop the editor screen with the image path
+                Navigator.pop(context, imagePath);
 
-      //           print("✅ Edited Image Path: $editedImagePath");
-      //         Navigator.pop(context, editedImagePath);
-      //       /*
-      //         Your code to handle the edited image. Upload it to your server as an example.
-      //         You can choose to use await, so that the loading-dialog remains visible until your code is ready, or no async, so that the loading-dialog closes immediately.
-      //         By default, the bytes are in `jpg` format.
-      //       */
-           
-      //     },
-
-      onImageEditingComplete: (editedImageData) async {
-  // Save the image data and get the file path
-  final String imagePath = await saveImage(editedImageData);
-  
-  print("✅ Image Path: $imagePath");
-  
-
-           setState(() {
-            XFile croppedXFile = XFile(imagePath);
-            selectedImages.add(croppedXFile); // Add the cropped image, not the original one
-            totalSelectedImageVideos.add(croppedXFile);
-          });
-
-  // You can now use the image path (for example, pass it to the previous screen)
-  Navigator.pop(context, imagePath);
-},
-            
-              onCloseEditor: () {
-                 print("❌ Editing Cancelled");
-                Navigator.pop(context, null);
+                // Delay the bottom sheet dismissal by 1 second
+                // Future.delayed(Duration(seconds: 1), () {
+                //   // Dismiss the bottom sheet after the delay
+                //   Navigator.pop(context);
+                // });
               },
-             
             ),
           ),
         ),
       );
 
-      if (editedImage != null) {
-        print("✅ Final Edited Image: $editedImage");
+      // If the user edited the image, the edited image path is returned
+      if (editedImagePath != null) {
+        print("✅ Final Edited Image: $editedImagePath");
       }
-      return;
     }
-    }
+
+    // After all images are processed, update the state with the selected images
+    setState(() {
+      selectedImages.addAll(selectedImagesTemp);
+      totalSelectedImageVideos.addAll(selectedImagesTemp);
+    });
+
+    print("✅ All Edited Images: $selectedImages");
+  } else {
+    print("No images selected.");
+  }
+}
+
+
+
+
+
+  
+
+// Future<void> _pickImage() async {
+  
+//     final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+//     if (pickedFile != null) {
+//       setState(() {
+//         _imageFile = File(pickedFile.path);
+//       });
+
+//       // Open ProImageEditor using Navigator
+//       final editedImage = await Navigator.push(
+        
+//         context,
+//         MaterialPageRoute(
+//           builder: (context) => ProImageEditor.file(
+//             File(pickedFile.path),
+            
+//             configs: ProImageEditorConfigs(),
+//             callbacks: ProImageEditorCallbacks(
+             
+
+//       onImageEditingComplete: (editedImageData) async {
+//   // Save the image data and get the file path
+//   final String imagePath = await saveImage(editedImageData);
+  
+//   print("✅ Image Path: $imagePath");
+  
+
+//            setState(() {
+//             XFile croppedXFile = XFile(imagePath);
+//             selectedImages.add(croppedXFile); // Add the cropped image, not the original one
+//             totalSelectedImageVideos.add(croppedXFile);
+//           });
+
+//   // You can now use the image path (for example, pass it to the previous screen)
+//   Navigator.pop(context, imagePath);
+// },
+            
+              
+             
+//             ),
+//           ),
+//         ),
+//       );
+
+//       if (editedImage != null) {
+//         print("✅ Final Edited Image: $editedImage");
+//       }
+//       return;
+//     }
+//     }
   
 
   /// Add Image in a list
@@ -2141,50 +1816,7 @@ Future<void> _pickImage() async {
     }
   }
 
-// void _openEditor(File file, BuildContext context) {
-//   Navigator.push(
-//     context,
-//     MaterialPageRoute(
-//       builder: (context) => ProImageEditor.network(
-//         file,
-//         callbacks: ProImageEditorCallbacks(
-//           onImageEditingComplete: (Uint8List bytes) async {
-//             /*
-//               Your code to handle the edited image. Upload it to your server as an example.
-//               You can choose to use await, so that the loading-dialog remains visible until your code is ready, or no async, so that the loading-dialog closes immediately.
-//               By default, the bytes are in `jpg` format.
-//             */
-//             Navigator.pop(context);
-//           },
-//         ),
-//       ),
-//     ),
-//   );
-// }
-  /// crop image
-  Future<CroppedFile?> _cropImage(File imageToCrop, BuildContext context) async {
-    final CroppedFile? croppedImage = await ImageCropper().cropImage(
-      sourcePath: imageToCrop.path,
-      //cropStyle: CropStyle.rectangle,
-     // compressQuality: 100,
-      aspectRatio: CropAspectRatio(ratioX: 1080, ratioY: 1360),
-      uiSettings: [
-        AndroidUiSettings(
-            toolbarTitle: 'Crop Image',
-            toolbarColor: Colors.deepOrange,
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: true),
-        IOSUiSettings(
-          title: 'Crop Image',
-        ),
-        WebUiSettings(
-          context: context,
-        ),
-      ],
-    );
-    return croppedImage;
-  }
+
 
   /// Load Api data
   Future<bool> loadData() async {

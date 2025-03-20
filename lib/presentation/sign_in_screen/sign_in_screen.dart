@@ -403,63 +403,63 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                     ),*/
 
 
-                    Visibility(
-                        visible: Platform.isIOS, child: SizedBox(height: 12)),
-                    Visibility(
-                      visible: Platform.isIOS,
-                      child: InkWell(
-                        onTap: () {
-                          _viewModel.signInWithApple(context);
-                        },
-                        child: Container(
-                          padding: getPadding(
-                            left: 32,
-                            top: 16,
-                            right: 32,
-                            bottom: 16,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppCol.lightestgrey,
-                            borderRadius: BorderRadiusStyle.roundedBorder5,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                "assets/newIcons/apple.webp",
-                                height: 19,
-                              ),
-                              Padding(
-                                padding: getPadding(
-                                  left: 14,
-                                  top: 2,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      "Continue with ",
-                                      overflow: TextOverflow.ellipsis,
-                                      textAlign: TextAlign.left,
-                                      style: AppStyle.txtPoppinsMedium15
-                                          .copyWith(
-                                              fontWeight: FontWeight.w400),
-                                    ),
-                                    Text(
-                                      "Apple",
-                                      overflow: TextOverflow.ellipsis,
-                                      textAlign: TextAlign.left,
-                                      style: AppStyle.txtPoppinsMedium15
-                                          .copyWith(
-                                              fontWeight: FontWeight.w900),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                    // Visibility(
+                    //     visible: Platform.isIOS, child: SizedBox(height: 12)),
+                    // Visibility(
+                    //   visible: Platform.isIOS,
+                    //   child: InkWell(
+                    //     onTap: () {
+                    //       _viewModel.signInWithApple(context);
+                    //     },
+                    //     child: Container(
+                    //       padding: getPadding(
+                    //         left: 32,
+                    //         top: 16,
+                    //         right: 32,
+                    //         bottom: 16,
+                    //       ),
+                    //       decoration: BoxDecoration(
+                    //         color: AppCol.lightestgrey,
+                    //         borderRadius: BorderRadiusStyle.roundedBorder5,
+                    //       ),
+                    //       child: Row(
+                    //         mainAxisAlignment: MainAxisAlignment.center,
+                    //         children: [
+                    //           Image.asset(
+                    //             "assets/newIcons/apple.webp",
+                    //             height: 19,
+                    //           ),
+                    //           Padding(
+                    //             padding: getPadding(
+                    //               left: 14,
+                    //               top: 2,
+                    //             ),
+                    //             child: Row(
+                    //               children: [
+                    //                 Text(
+                    //                   "Continue with ",
+                    //                   overflow: TextOverflow.ellipsis,
+                    //                   textAlign: TextAlign.left,
+                    //                   style: AppStyle.txtPoppinsMedium15
+                    //                       .copyWith(
+                    //                           fontWeight: FontWeight.w400),
+                    //                 ),
+                    //                 Text(
+                    //                   "Apple",
+                    //                   overflow: TextOverflow.ellipsis,
+                    //                   textAlign: TextAlign.left,
+                    //                   style: AppStyle.txtPoppinsMedium15
+                    //                       .copyWith(
+                    //                           fontWeight: FontWeight.w900),
+                    //                 ),
+                    //               ],
+                    //             ),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
 
                     /// new Sign in page sign up text
                     Padding(

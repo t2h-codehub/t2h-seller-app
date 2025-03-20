@@ -33,12 +33,22 @@ class _FeaturedBannerScreenState extends State<FeaturedBannerScreen> {
 
   final ScrollController _scrollController = ScrollController();
 
+  TextEditingController _urlController = TextEditingController();
+
+
 
   @override
   void initState() {
     super.initState();
     Future.microtask(() => getFeatureBanner());
+
+    //  _urlController.text = ''; 
   }
+
+  // When user wants to change URL manually
+// void updateUrlField(String filePath) {
+//   _urlController.text = _imageLinks[filePath].toString();
+// }
 
 
 
@@ -61,22 +71,7 @@ class _FeaturedBannerScreenState extends State<FeaturedBannerScreen> {
     }
   }
 
-  // Future<void> _pickImages() async {
-  //   final ImagePicker picker = ImagePicker();
-  //   final List<XFile>? images = await picker.pickMultiImage();
-
-  //   if (images != null && images.isNotEmpty) {
-  //     setState(() {
-  //       for (var img in images) {
-  //         File file = File(img.path);
-  //         String filePath = file.path;
-  //         _selectedImages.insert(0, file); // Newly uploaded images appear first
-  //         _imageTitles[filePath] = TextEditingController();
-  //         _imageLinks[filePath] = TextEditingController();
-  //       }
-  //     });
-  //   }
-  // }
+  
 
   Future<void> _pickImages() async {
   final ImagePicker picker = ImagePicker();
@@ -89,7 +84,7 @@ class _FeaturedBannerScreenState extends State<FeaturedBannerScreen> {
         String filePath = file.path;
         _selectedImages.insert(0, file); // Add new images at the top
         _imageTitles[filePath] = TextEditingController();
-        _imageLinks[filePath] = TextEditingController();
+         _imageLinks[filePath] = TextEditingController();
       }
     });
 
@@ -112,16 +107,15 @@ class _FeaturedBannerScreenState extends State<FeaturedBannerScreen> {
     return uri != null && uri.hasScheme && uri.hasAuthority;
   }
 
- Future<void> _uploadBanners() async {
+  Future<void> _uploadBanners() async {
   List<Map<String, dynamic>> banners = [];
-  int orderCounter = 1; // Default order counter
+  int orderCounter = 1;
 
-  // Find the highest existing order
   if (getProductApiResModel.data != null) {
     for (var seller in getProductApiResModel.data!) {
       if (seller.banners != null) {
         for (var banner in seller.banners!) {
-          if (!(banner.isDeleted ?? false)) { 
+          if (!(banner.isDeleted ?? false)) {
             orderCounter = banner.order != null && banner.order! >= orderCounter
                 ? banner.order! + 1
                 : orderCounter;
@@ -137,38 +131,26 @@ class _FeaturedBannerScreenState extends State<FeaturedBannerScreen> {
       if (banner.isDeleted == true) {
         banners.add({"status": "DELETED", "_id": banner.sId});
       } else {
-        // Get the new title from the UI input field
         String newTitle = _imageTitles[banner.sId]?.text ?? banner.title ?? "";
+        String newLink = _imageLinks[banner.sId]?.text ?? banner.link ?? ""; // ✅ Ensure link is fetched from controller
 
-        // Maintain the existing order
-          banners.add({
-                 "status": "UPDATED",
-              "_id": banner.sId,
-              "link": banner.link ?? "",
-              "title": newTitle,
-              "order": banner.order ?? orderCounter++,
-              "banner_image": banner.bannerImage ?? "",
-                 // Update title only
-              });
-        // banners.add({
-        //   "status": newTitle != banner.title ? "UPDATED" : "UNCHANGED",
-        //   "_id": banner.sId,
-        //   "link": banner.link ?? "",
-        //   "title": newTitle,
-        //   "order": banner.order ?? orderCounter++, // Keep the existing order
-        //   "banner_image": banner.bannerImage ?? "",
-        // });
-
-        
+        banners.add({
+          "status": "UPDATED",
+          "_id": banner.sId,
+          "link": newLink, // ✅ Use the updated link value
+          "title": newTitle,
+          "order": banner.order ?? orderCounter++,
+          "banner_image": banner.bannerImage ?? "",
+        });
       }
     }
   }
 
-  // Handle newly uploaded banners (starting from the next available order)
+  // Handle newly uploaded banners
   for (var file in _selectedImages) {
     String filePath = file.path;
     String title = _imageTitles[filePath]?.text ?? '';
-    String link = _imageLinks[filePath]?.text ?? '';
+    String link = _imageLinks[filePath]?.text ?? ''; // ✅ Ensure this captures user input
 
     if (link.isNotEmpty && !_isValidUrl(link)) {
       Fluttertoast.showToast(msg: "Invalid URL: $link");
@@ -178,11 +160,11 @@ class _FeaturedBannerScreenState extends State<FeaturedBannerScreen> {
     String uploadedLink = await _productController.awsDocumentUpload(context, filePath);
 
     banners.add({
-      "link": uploadedLink.isNotEmpty ? uploadedLink : "https://defaulturl.com",
+      "link": link,
       "title": title,
-      "order": orderCounter++, // New banners start from the next available order
+      "order": orderCounter++,
       "status": "NEW",
-      "banner_image": filePath.split('/').last,
+      "banner_image": uploadedLink.isNotEmpty ? uploadedLink : "https://defaulturl.com",
     });
   }
 
@@ -191,13 +173,99 @@ class _FeaturedBannerScreenState extends State<FeaturedBannerScreen> {
     return;
   }
 
-  // Send the updated banners
-  Map<String, dynamic> payload = {
-    "banners": banners
-  };
+  Map<String, dynamic> payload = {"banners": banners};
 
   _productController.postFeatureBanner(context, payload);
 }
+
+
+//  Future<void> _uploadBanners() async {
+//   List<Map<String, dynamic>> banners = [];
+//   int orderCounter = 1; // Default order counter
+
+//   // Find the highest existing order
+//   if (getProductApiResModel.data != null) {
+//     for (var seller in getProductApiResModel.data!) {
+//       if (seller.banners != null) {
+//         for (var banner in seller.banners!) {
+//           if (!(banner.isDeleted ?? false)) { 
+//             orderCounter = banner.order != null && banner.order! >= orderCounter
+//                 ? banner.order! + 1
+//                 : orderCounter;
+//           }
+//         }
+//       }
+//     }
+//   }
+
+//   // Handle existing banners first
+//   for (var seller in getProductApiResModel.data ?? []) {
+//     for (var banner in seller.banners ?? []) {
+//       if (banner.isDeleted == true) {
+//         banners.add({"status": "DELETED", "_id": banner.sId});
+//       } else {
+//         // Get the new title from the UI input field
+//         String newTitle = _imageTitles[banner.sId]?.text ?? banner.title ?? "";
+
+//         // Maintain the existing order
+//           banners.add({
+//                  "status": "UPDATED",
+//               "_id": banner.sId,
+//               "link": banner.link ?? "",
+//               "title": newTitle,
+//               "order": banner.order ?? orderCounter++,
+//               "banner_image": banner.bannerImage ?? "",
+//                  // Update title only
+//               });
+//         // banners.add({
+//         //   "status": newTitle != banner.title ? "UPDATED" : "UNCHANGED",
+//         //   "_id": banner.sId,
+//         //   "link": banner.link ?? "",
+//         //   "title": newTitle,
+//         //   "order": banner.order ?? orderCounter++, // Keep the existing order
+//         //   "banner_image": banner.bannerImage ?? "",
+//         // });
+
+        
+//       }
+//     }
+//   }
+
+//   // Handle newly uploaded banners (starting from the next available order)
+//   for (var file in _selectedImages) {
+//     String filePath = file.path;
+//     String title = _imageTitles[filePath]?.text ?? '';
+//     String link = _imageLinks[filePath]?.text ?? '';
+
+//     if (link.isNotEmpty && !_isValidUrl(link)) {
+//       Fluttertoast.showToast(msg: "Invalid URL: $link");
+//       return;
+//     }
+
+//     String uploadedLink = await _productController.awsDocumentUpload(context, filePath);
+
+//     banners.add({
+//       "link": link,
+//       "title": title,
+//       "order": orderCounter++, // New banners start from the next available order
+//       "status": "NEW",
+//       "banner_image":  uploadedLink.isNotEmpty ? uploadedLink : "https://defaulturl.com",
+//       //filePath.split('/').last,
+//     });
+//   }
+
+//   if (banners.isEmpty) {
+//     Fluttertoast.showToast(msg: "No banners to upload.");
+//     return;
+//   }
+
+//   // Send the updated banners
+//   Map<String, dynamic> payload = {
+//     "banners": banners
+//   };
+
+//   _productController.postFeatureBanner(context, payload);
+// }
 
 void _confirmDeleteBanner(int index, {bool isNewUpload = false, String? bannerId}) {
   showDialog(
@@ -263,105 +331,6 @@ void _confirmDeleteBanner(int index, {bool isNewUpload = false, String? bannerId
     ),
   );
 }
-
-
-
-// void _confirmDeleteBanner(int index, {bool isNewUpload = false, String? bannerId}) {
-//   showDialog(
-//     context: context,
-//     builder: (context) => AlertDialog(
-//       title: const Text("Confirm Deletion"),
-//       content: const Text("Are you sure you want to delete this banner?"),
-//       actions: [
-//         TextButton(
-//           onPressed: () => Navigator.of(context).pop(),
-//           child: const Text("Cancel"),
-//         ),
-//         TextButton(
-//           onPressed: () {
-//             Navigator.of(context).pop();
-//             setState(() {
-//               if (isNewUpload) {
-//                 // **Deleting a newly uploaded banner**
-//                 var file = _selectedImages[index];
-//                 _selectedImages.removeAt(index);
-//                 _imageTitles.remove(file.path);
-//                 _imageLinks.remove(file.path);
-//               } else {
-//                 // **Deleting an existing banner using bannerId**
-//                 for (var seller in getProductApiResModel.data ?? []) {
-//                   seller.banners?.removeWhere((banner) => banner.sId == bannerId);
-//                 }
-//               }
-//             });
-//           },
-//           child: const Text("Delete", style: TextStyle(color: Colors.red)),
-//         ),
-//       ],
-//     ),
-//   );
-// }
-
-
-//  void _confirmDeleteBanner(int index, {bool isNewUpload = false}) {
-//   showDialog(
-//     context: context,
-//     builder: (context) => AlertDialog(
-//       title: const Text("Confirm Deletion"),
-//       content: const Text("Are you sure you want to delete this banner?"),
-//       actions: [
-//         TextButton(
-//           onPressed: () => Navigator.of(context).pop(),
-//           child: const Text("Cancel"),
-//         ),
-//         TextButton(
-//           onPressed: () {
-//             Navigator.of(context).pop();
-//             setState(() {
-//               if (isNewUpload) {
-//                 // Removing a newly uploaded banner
-//                 var file = _selectedImages[index];
-//                 _selectedImages.removeAt(index);
-//                 _imageTitles.remove(file.path);
-//                 _imageLinks.remove(file.path);
-//               } else {
-//                 // 1. Recompute `existingBanners` dynamically
-//                 var allBanners = getProductApiResModel.data!
-//                     ?.expand((seller) => seller.banners ?? [])
-//                     .toList() ?? [];
-
-//                 allBanners.sort((a, b) => (b.order ?? 0).compareTo(a.order ?? 0));
-
-//                 // 2. Validate index before proceeding
-//                 if (index < 0 || index >= allBanners.length) {
-//                   debugPrint("Invalid index: $index for existingBanners.");
-//                   return;
-//                 }
-
-//                 // 3. Get the correct banner to delete
-//                 var bannerToDelete = allBanners[index];
-
-//                 // 4. Find its original instance in `getProductApiResModel` and mark as deleted
-//                 var originalBanner = getProductApiResModel.data!
-//                     ?.expand((seller) => seller.banners ?? [])
-//                     .firstWhere((b) => b.sId == bannerToDelete.sId, orElse: () => null);
-
-//                 if (originalBanner != null) {
-//                   originalBanner.isDeleted = true;
-//                 }
-
-//                 // 5. Refresh the `existingBanners` list
-//                 setState(() {});
-//               }
-//             });
-//           },
-//           child: const Text("Delete", style: TextStyle(color: Colors.red)),
-//         ),
-//       ],
-//     ),
-//   );
-// }
-
 
 
   @override
@@ -511,7 +480,8 @@ void _confirmDeleteBanner(int index, {bool isNewUpload = false, String? bannerId
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
-                  controller: _imageLinks[file.path],
+                 controller: _imageLinks[file.path],
+               // controller: _urlController,
                   decoration: InputDecoration(
                                         contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0), // Adjust height
 
@@ -519,6 +489,7 @@ void _confirmDeleteBanner(int index, {bool isNewUpload = false, String? bannerId
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                   ),
                   keyboardType: TextInputType.url,
+                 
                 ),
               ],
             ),
@@ -561,7 +532,7 @@ void _confirmDeleteBanner(int index, {bool isNewUpload = false, String? bannerId
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: CachedNetworkImage(
-                        imageUrl: banner.link ?? '',
+                        imageUrl: banner.bannerImage ?? '',
                         width: double.infinity,
                         height: 140,
                         fit: BoxFit.cover,
@@ -614,12 +585,17 @@ _confirmDeleteBanner(index, bannerId: existingBanners[index].sId);
 
                 const SizedBox(height: 8),
                 TextFormField(
-                  controller: TextEditingController(text: banner.link ?? ''),
+                  controller: _imageLinks.putIfAbsent(
+    banner.sId, 
+    () => TextEditingController(text: banner.link ?? ''),
+  ),
+                  //TextEditingController(text: banner.link ?? ''),
                   decoration: InputDecoration(
                     labelText: 'URL (optional)',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                   ),
                   keyboardType: TextInputType.url,
+                 
                 ),
               ],
             ),
@@ -668,19 +644,7 @@ _confirmDeleteBanner(index, bannerId: existingBanners[index].sId);
   });
 },
 
-    // onReorder: (int oldIndex, int newIndex) {
-    //   setState(() {
-    //     if (oldIndex < newIndex) newIndex -= 1;
-    //     final file = _selectedImages.removeAt(oldIndex);
-    //     _selectedImages.insert(newIndex, file);
-
-    //     // Reorder text controllers too
-    //     final titleController = _imageTitles.remove(file.path);
-    //     final linkController = _imageLinks.remove(file.path);
-    //     _imageTitles[file.path] = titleController!;
-    //     _imageLinks[file.path] = linkController!;
-    //   });
-    // },
+   
   ),
 ),
       
