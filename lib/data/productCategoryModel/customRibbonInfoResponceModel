@@ -1,0 +1,54 @@
+
+
+class CustomRibbonInfoResponceModel {
+  String? message;
+  bool? success;
+  List<CustomRibbonInfo>? customRibbonInfo;
+
+  CustomRibbonInfoResponceModel(
+      {this.message, this.success, this.customRibbonInfo});
+
+  CustomRibbonInfoResponceModel.fromJson(Map<String, dynamic> json) {
+    message = json['message'];
+    success = json['success'];
+    if (json['customRibbonInfo'] != null) {
+      customRibbonInfo = <CustomRibbonInfo>[];
+      json['customRibbonInfo'].forEach((v) {
+        customRibbonInfo!.add(new CustomRibbonInfo.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['message'] = this.message;
+    data['success'] = this.success;
+    if (this.customRibbonInfo != null) {
+      data['customRibbonInfo'] =
+          this.customRibbonInfo!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class CustomRibbonInfo {
+  String? title;
+  int? order;
+  String? sId;
+
+  CustomRibbonInfo({this.title, this.order, this.sId});
+
+  CustomRibbonInfo.fromJson(Map<String, dynamic> json) {
+    title = json['title'];
+    order = json['order'];
+    sId = json['_id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['title'] = this.title;
+    data['order'] = this.order;
+    data['_id'] = this.sId;
+    return data;
+  }
+}
