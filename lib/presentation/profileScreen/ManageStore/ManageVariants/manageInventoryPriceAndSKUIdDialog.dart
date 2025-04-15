@@ -65,6 +65,22 @@ class _ManageInventoryPriceAndSKUIdDialogState
     selectedImages = widget.image ?? [];
   }
 
+  bool get isDiscountValid {
+  final discountText = discountController.text;
+  final priceText = priceController.text;
+
+  if (discountText.isEmpty || priceText.isEmpty) return true;
+
+  try {
+    final discount = double.parse(discountText);
+    final price = double.parse(priceText);
+    return discount <= price;
+  } catch (e) {
+    return true; // fallback: allow submit when parsing fails
+  }
+}
+
+
   @override
   Widget build(BuildContext context) {
     // final selectedImagesDynamic = ref.watch(manageVariantProvider);
@@ -107,23 +123,69 @@ SizedBox(height: 8),
                 keyboardType: TextInputType.number,
               ),
               SizedBox(height: 8),
+              // TextField(
+              //   controller: priceController,
+              //   decoration: InputDecoration(
+              //     labelText: 'Price',
+              //     border: OutlineInputBorder(),
+              //   ),
+              //   keyboardType: TextInputType.numberWithOptions(decimal: true),
+              // ),
               TextField(
-                controller: priceController,
-                decoration: InputDecoration(
-                  labelText: 'Price',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-              ),
+  controller: priceController,
+  decoration: InputDecoration(
+    labelText: 'Price',
+    border: OutlineInputBorder(),
+  ),
+  keyboardType: TextInputType.numberWithOptions(decimal: true),
+  onChanged: (_) => setState(() {}), // 👈 triggers live validation on price change
+),
+
               SizedBox(height: 8),
+              // TextField(
+              //   controller: discountController,
+              //   decoration: InputDecoration(
+              //     labelText: 'Discount Price',
+              //     border: OutlineInputBorder(),
+              //     errorText: discountController
+              //                             .text.isNotEmpty &&
+              //                         double.parse(
+              //                                 discountController.text) >
+              //                             double.parse(priceController.text)
+              //                     ? 'Discount price cannot be greater than MRP price'
+              //                     : null,
+              //   ),
+                
+              //   keyboardType: TextInputType.numberWithOptions(decimal: true),
+              // ),
               TextField(
-                controller: discountController,
-                decoration: InputDecoration(
-                  labelText: 'Discount Price',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-              ),
+  controller: discountController,
+  decoration: InputDecoration(
+    labelText: 'Discount Price',
+    border: OutlineInputBorder(),
+    errorText: () {
+      final discountText = discountController.text;
+      final priceText = priceController.text;
+
+      if (discountText.isEmpty || priceText.isEmpty) return null;
+
+      try {
+        final discount = double.parse(discountText);
+        final price = double.parse(priceText);
+        if (discount > price) {
+          return 'Discount price cannot be greater than MRP price';
+        }
+      } catch (e) {
+        return null;
+      }
+
+      return null;
+    }(),
+  ),
+  keyboardType: TextInputType.numberWithOptions(decimal: true),
+  onChanged: (_) => setState(() {}), // 👈 live validation
+),
+
               SizedBox(height: 8),
               TextField(
                 controller: skuIdController,
@@ -195,18 +257,33 @@ SizedBox(height: 8),
           onPressed: () => Navigator.pop(context),
           child: Text('Cancel'),
         ),
+        // TextButton(
+        //   onPressed: () {
+        //     widget.body({
+        //       'price': priceController.text,
+        //       'sku_id': skuIdController.text,
+        //       'discount': discountController.text,
+        //       'stock': stockController.text,
+        //       'selectedImages': selectedImages,
+        //     });
+        //   },
+        //   child: Text('Submit'),
+        // ),
         TextButton(
-          onPressed: () {
-            widget.body({
-              'price': priceController.text,
-              'sku_id': skuIdController.text,
-              'discount': discountController.text,
-              'stock': stockController.text,
-              'selectedImages': selectedImages,
-            });
-          },
-          child: Text('Submit'),
-        ),
+  onPressed: isDiscountValid
+      ? () {
+          widget.body({
+            'price': priceController.text,
+            'sku_id': skuIdController.text,
+            'discount': discountController.text,
+            'stock': stockController.text,
+            'selectedImages': selectedImages,
+          });
+        }
+      : null, // 👈 disables the button if discount is invalid
+  child: Text('Submit'),
+),
+
       ],
     );
   }

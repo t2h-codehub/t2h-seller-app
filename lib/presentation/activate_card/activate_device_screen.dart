@@ -119,9 +119,9 @@ class _ActivateDeviceScreenState extends ConsumerState<ActivateDeviceScreen> {
                         ),
                       ));
                     } else {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => PremiumView(),
-                      ));
+                      // Navigator.of(context).push(MaterialPageRoute(
+                      //   builder: (context) => PremiumView(),
+                      // ));
                     }
                   }
                 },
@@ -244,9 +244,9 @@ class _ActivateDeviceScreenState extends ConsumerState<ActivateDeviceScreen> {
                         ),
                       ));
                     } else {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => PremiumView(),
-                      ));
+                      // Navigator.of(context).push(MaterialPageRoute(
+                      //   builder: (context) => PremiumView(),
+                      // ));
                     }
                   }
                 },

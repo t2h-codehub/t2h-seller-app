@@ -19,13 +19,24 @@ class AppConstants {
   static const String terms =
       "https://docs.google.com/document/d/1AyyLOFDupdu0Poswi73HJC_Ii3jWOU-xk9uOkl1WEiY";
  // static const String baseUrl = "https://api.taptohello.com/";
-// static const String baseUrl = "https://api.socioshop.in/";
+  // static const String baseUrl = "https://api.socioshop.in/";
 //  static const String storeUrl = "https://myhello.store/";
- static const String domainName = "myhello.store";
-   static const String baseUrl = "https://api.mysocio.shop/";
-  static const String storeUrl = "https://Mysocio.shop/";
-  static const String websiteUrl = "https://taptohello.com/";
+//   static const String domainName = "myhello.store";
+  // static const String domainName = "mysocio.shop";
   
+  //  static const String baseUrl = "https://api.mysocio.shop/";
+ 
+  // static const String storeUrl = "https://test.mysocio.shop/";
+  // static const String websiteUrl = "https://taptohello.com/";
+  static const String websiteUrl = "https://socioshop.in/";
+  //Test- Url
+  static const String baseUrl = "https://api.mysocio.shop/";
+  static const String domainName = "mysocio.shop";
+  static const String storeUrl = "https://test.mysocio.shop/";
+  //Live- Url
+  // static const String baseUrl = "https://api.socioshop.in/";
+  // static const String domainName = "mysocio.shop";
+  //  static const String storeUrl = "https://mysocio.shop/";
   
   
   // ${AppConstants.storeUrl}

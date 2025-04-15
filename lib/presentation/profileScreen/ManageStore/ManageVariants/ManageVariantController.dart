@@ -109,7 +109,7 @@ class ManageVariantController {
   try {
     // API Call
     var response = await dio.request(
-      'https://api.mysocio.shop/user/sync-product-variants',
+      '${AppConstants.baseUrl}user/sync-product-variants',
       options: Options(
         method: 'POST',
         headers: headers,

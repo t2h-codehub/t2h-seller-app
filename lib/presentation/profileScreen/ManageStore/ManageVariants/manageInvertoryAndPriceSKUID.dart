@@ -117,6 +117,7 @@ class _ManageInventoryAndPriceSKUIDScreenState
         "price": item.price,
         "images": item.images,
         "isDisabled": item.isDisabled,
+        "sku_id": item.skuId
       };
     }).toList(),
   };
@@ -150,6 +151,7 @@ Map<String, dynamic> getPayload() {
           "price": item.price,
           "images": item.images,
           "isDisabled": item.isDisabled,
+          "sku_id": item.skuId
         };
       }).toList(),
     };
@@ -421,7 +423,8 @@ if (selectedItem.variants != null && selectedItem.variants!.length > 1) {
       Navigator.pop(context, updatedData);
     },
     image: selectedItem.images,
-    skuid: selectedItem.sId ?? '',
+    //: selectedItem.sId ?? '',
+    skuid: selectedItem.skuId ?? '',
     mrp: selectedItem.mrp?.toString() ?? '0',
     discountPrice: selectedItem.price?.toString() ?? '0',
     productId: selectedItem.sId ?? '',
@@ -432,7 +435,8 @@ if (selectedItem.variants != null && selectedItem.variants!.length > 1) {
                           if (result != null) {
                             setState(() {
                               selectedItem.stock = int.parse(result['stock'] ?? '0');
-                              selectedItem.sId = result['sku_id'] ?? '';
+                              selectedItem.sId = selectedItem.sId;
+                              selectedItem.skuId = result['sku_id'] ?? '';
                               // selectedItem.mrp = int.parse(result['price'] ?? '0');
                               
                               // selectedItem.price = int.parse(result['discount'] ?? '0');

@@ -5,6 +5,7 @@ import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/helper/locator.dart';
 import 'package:taptohello/helper/user_detail_service.dart';
 import 'package:taptohello/presentation/profileScreen/ManageCoupons/view/manageDiscountCouponsMainScreen.dart';
+import 'package:taptohello/presentation/profileScreen/ManageDiscountCoupons/manageDiscountCouponsScreen.dart';
 import 'package:taptohello/presentation/profileScreen/ManageStore/AddProduct/addProductScreen.dart';
 import 'package:taptohello/presentation/profileScreen/ManageStore/CatalogueScreen/catalogueScreen.dart';
 import 'package:taptohello/presentation/profileScreen/ManageStore/ManageCollection/manageCollectionsScreen.dart';
@@ -202,12 +203,19 @@ class _ManageStoreScreenState extends State<ManageStoreScreen> {
                       );
                     } else if (storeFeatures[index] ==
                         'Manage Discount Coupons') {
+                      // Navigator.of(context).push(
+                      //   MaterialPageRoute(
+                      //     builder: (context) =>
+                      //         ManageDiscountCouponMainScreen(),
+                      //   ),
+                      // );
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) =>
-                              ManageDiscountCouponMainScreen(),
+                              CouponsScreen(),
                         ),
                       );
+                      
                     } else if (storeFeatures[index] == 'Shop Settings') {
                       Navigator.of(context).push(
                         MaterialPageRoute(

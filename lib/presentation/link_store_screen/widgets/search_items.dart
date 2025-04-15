@@ -78,9 +78,9 @@ class _Listtype1ItemWidgetSearchState
                     isExpanded = valu;
                   });
                 } else {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => PremiumView(),
-                  ));
+                  // Navigator.of(context).push(MaterialPageRoute(
+                  //   builder: (context) => PremiumView(),
+                  // ));
                   // Handle any other case
                 }
               },

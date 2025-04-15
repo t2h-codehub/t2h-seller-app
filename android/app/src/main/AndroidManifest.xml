@@ -1,5 +1,10 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tapto.hello">
+<!-- <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.socio.shop"> -->
+    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.socio.shop">
+
+    
         
     <application
         android:label="@string/app_name"
@@ -90,5 +95,9 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.NFC"/>
+    <!-- REMOVE Advertising ID permission if not needed -->
+<uses-permission
+    android:name="com.google.android.gms.permission.AD_ID"
+    tools:node="remove"/>
 
 </manifest>

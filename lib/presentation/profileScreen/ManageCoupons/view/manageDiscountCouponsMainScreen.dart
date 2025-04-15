@@ -75,7 +75,7 @@ class _ManageDiscountCouponMainScreenState
                     final res = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => CreateDiscountCoupons(),
+                          builder: (context) => CreateDiscountCoupons(isEdit: false,id: "",),
                         ));
                     isCreatedCoupons = res;
                     setState(() {});

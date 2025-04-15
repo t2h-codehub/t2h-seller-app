@@ -73,7 +73,7 @@ abstract class AuthRepo {
   Future<Either<ApiException, SuccessResponse>> reorderList(
       ReorderRequest reorderRequest);
   Future<Either<ApiException, SuccessResponse>> resetPassword(
-      ResetPasswordRequest resetPasswordRequest);
+      ResetPasswordRequest resetPasswordRequest,context);
   Future<Either<ApiException, ForgetPasswordResponse>> forgetPassword(
       ForgetPasswordRequest forgetPasswordRequest);
   Future<Either<ApiException, SocialSigninResponse>> socialSignin(

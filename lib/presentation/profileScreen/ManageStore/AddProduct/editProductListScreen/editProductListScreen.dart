@@ -1640,22 +1640,154 @@ String? findIdByTitle(String title) {
                                       ? true
                                       : false,
                                   child: InkWell(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) => ManageVariantsScreen(
-                                              productId:
-                                                  "${editProductApiResModel.product?.id}",
-                                              skuid:
-                                                  "${editProductApiResModel.product?.skuId}",
-                                              mrp:
-                                                  "${editProductApiResModel.product?.mrp}",
-                                              discountPrice:
-                                                  "${editProductApiResModel.product?.price}",
-                                              stock:
-                                                  "${editProductApiResModel.product?.stock}"),
-                                        ),
-                                      );
+                                    onTap: () async {
+                                       Future.delayed(Duration.zero, () {
+  // Safely convert List<dynamic> to List<String>
+  List<String> images = List<String>.from(selectedImages);
+
+  // Add the images to the provider
+  ref.read(manageVariantProvider.notifier).addImage(images);
+  print("Images added: $images");
+});
+
+
+                                        submitClick.value = true;
+                  debugPrint('My real Image is: ${_mrpController.text}');
+                  debugPrint('My real Image is: ${_discountPriceController.text}');
+                  String? categoryId = "";
+                  String? subCategoryId = "";
+                  Map<String, dynamic> body = {};
+                  selectedImageVideos.clear();
+                  for (var images in selectedImages) {
+                    debugPrint('My real Image is: $images');
+                    /*final res = await awsDocumentUpload(images.path);
+                    debugPrint('My Image is: $res');*/
+                    selectedImageVideos.add(images);
+                    
+                  }
+                  for (var videos in selectedVideos) {
+                    debugPrint('My videos are: $videos');
+                    // final res = await awsDocumentUpload(videos.path);
+                    selectedImageVideos.add(videos);
+                  }
+      
+                  debugPrint('My all image and videos is: $selectedImageVideos');
+                  productCategoryApiResModel.categories?.forEach((element) {
+                    if (element.title == _productCategoryController.text) {
+                      categoryId = element.sId;
+                    }
+                  });
+                  for (var element in adminSubCategories) {
+                    if (element["title"] == _productSubCategoryController.text) {
+                      subCategoryId = element["_id"];
+                    }
+                  }
+      
+                  manageCollectionApiResModel.collections?.forEach((element) {
+                    if (_addToCollectionController.text == element.title) {
+                      selectedNewVariant = element.id ?? '';
+                      setState(() {});
+                    }
+                  });
+                  isPageLoading = true;
+                  Future.delayed(Duration(seconds: 2),() {
+                    setState(() {
+                      isPageLoading = false;
+                    });
+                  });
+      
+                  if(selectedImageVideos.isNotEmpty) {
+                    if (selectedNewVariant.isNotEmpty) {
+                      debugPrint('My mrp price is: ${_mrpController.text}');
+                      debugPrint('My mrp price is: ${_discountPriceController.text}');
+                      body = {
+                        "title": _productTitleController.text,
+                        "description": json,
+                        "images": selectedImageVideos.map((e) => e).toList(),
+                        "mrp": _mrpController.text,
+                        "price": _discountPriceController.text.isNotEmpty ? _discountPriceController.text : "0",
+                        "stock": isUnlimitedStock ? 100000 : _inventoryController.text,
+                        "unlimitedStock": isUnlimitedStock,
+                        "category": categoryId,
+                        "subcategory": subCategoryId,
+                        "active": isDisplayOn,
+                        "skuId": _SKUIDController.text,
+                        "productCollection": selectedNewVariant,
+                        "tags": productTags,
+                        "sizeChart" : sizeChart
+                      };
+                    }
+                    else {
+                      debugPrint('My mrp price is: ${_mrpController.text}');
+                      debugPrint('My mrp price is: ${_discountPriceController.text}');
+                      body = {
+                        "title": _productTitleController.text,
+                        "description": json,
+                        "images": selectedImageVideos.map((e) => e).toList(),
+                        "mrp": _mrpController.text,
+                        "price": _discountPriceController.text.isNotEmpty ? _discountPriceController.text : "0",
+                        "stock": isUnlimitedStock ? 100000 : _inventoryController.text,
+                        "unlimitedStock": isUnlimitedStock,
+                        "category": categoryId,
+                        "subcategory": subCategoryId,
+                        "active": isDisplayOn,
+                        "skuId": _SKUIDController.text,
+                        "tags": productTags,
+                        "sizeChart" : sizeChart
+                      };
+                    }
+                    debugPrint('My Final edit body list is: $body');
+                    editProductDetailsApiResModel = await _addProductController
+                        .editProduct(widget.productId, body);
+                    if (editProductDetailsApiResModel.success == true) {
+
+                      // showProductDialog();
+                      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      //     content: widget.isFromCatalogue
+                      //         ? Text("Product details saved")
+                      //         : Text("Product added successfully")));
+
+                      isPageLoading = true;
+                                          Future.delayed(Duration(seconds: 2),() {
+                                            setState(() {
+                                              isPageLoading = false;
+                                            });
+                                          });
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) => ManageVariantsScreen(
+                                                  productId:
+                                                      "${editProductApiResModel.product?.id}",
+                                                  skuid:
+                                                      "${editProductApiResModel.product?.skuId}",
+                                                  mrp:
+                                                      "${editProductApiResModel.product?.mrp}",
+                                                  discountPrice:
+                                                      "${editProductApiResModel.product?.price}",
+                                                  stock:
+                                                      "${editProductApiResModel.product?.stock}"),
+                                            ),
+                                          );
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Please select atleast one image')));
+                  }
+                                      // Navigator.of(context).push(
+                                      //   MaterialPageRoute(
+                                      //     builder: (context) => ManageVariantsScreen(
+                                      //         productId:
+                                      //             "${editProductApiResModel.product?.id}",
+                                      //         skuid:
+                                      //             "${editProductApiResModel.product?.skuId}",
+                                      //         mrp:
+                                      //             "${editProductApiResModel.product?.mrp}",
+                                      //         discountPrice:
+                                      //             "${editProductApiResModel.product?.price}",
+                                      //         stock:
+                                      //             "${editProductApiResModel.product?.stock}"),
+                                      //   ),
+                                      // );
                                     },
                                     child: Container(
                                       padding: EdgeInsets.all(18),
@@ -1700,7 +1832,108 @@ String? findIdByTitle(String title) {
                                       : false,
                                   child: InkWell(
                                     onTap: () async {
-                                      final res = await openScreenAndReturnValue(
+
+    Future.delayed(Duration.zero, () {
+  // Safely convert List<dynamic> to List<String>
+  List<String> images = List<String>.from(selectedImages);
+
+  // Add the images to the provider
+  ref.read(manageVariantProvider.notifier).addImage(images);
+  print("Images added: $images");
+});
+
+
+                                        submitClick.value = true;
+                  debugPrint('My real Image is: ${_mrpController.text}');
+                  debugPrint('My real Image is: ${_discountPriceController.text}');
+                  String? categoryId = "";
+                  String? subCategoryId = "";
+                  Map<String, dynamic> body = {};
+                  selectedImageVideos.clear();
+                  for (var images in selectedImages) {
+                    debugPrint('My real Image is: $images');
+                    /*final res = await awsDocumentUpload(images.path);
+                    debugPrint('My Image is: $res');*/
+                    selectedImageVideos.add(images);
+                    
+                  }
+                  for (var videos in selectedVideos) {
+                    debugPrint('My videos are: $videos');
+                    // final res = await awsDocumentUpload(videos.path);
+                    selectedImageVideos.add(videos);
+                  }
+      
+                  debugPrint('My all image and videos is: $selectedImageVideos');
+                  productCategoryApiResModel.categories?.forEach((element) {
+                    if (element.title == _productCategoryController.text) {
+                      categoryId = element.sId;
+                    }
+                  });
+                  for (var element in adminSubCategories) {
+                    if (element["title"] == _productSubCategoryController.text) {
+                      subCategoryId = element["_id"];
+                    }
+                  }
+      
+                  manageCollectionApiResModel.collections?.forEach((element) {
+                    if (_addToCollectionController.text == element.title) {
+                      selectedNewVariant = element.id ?? '';
+                      setState(() {});
+                    }
+                  });
+                  isPageLoading = true;
+                  Future.delayed(Duration(seconds: 2),() {
+                    setState(() {
+                      isPageLoading = false;
+                    });
+                  });
+      
+                  if(selectedImageVideos.isNotEmpty) {
+                    if (selectedNewVariant.isNotEmpty) {
+                      debugPrint('My mrp price is: ${_mrpController.text}');
+                      debugPrint('My mrp price is: ${_discountPriceController.text}');
+                      body = {
+                        "title": _productTitleController.text,
+                        "description": json,
+                        "images": selectedImageVideos.map((e) => e).toList(),
+                        "mrp": _mrpController.text,
+                        "price": _discountPriceController.text.isNotEmpty ? _discountPriceController.text : "0",
+                        "stock": isUnlimitedStock ? 100000 : _inventoryController.text,
+                        "unlimitedStock": isUnlimitedStock,
+                        "category": categoryId,
+                        "subcategory": subCategoryId,
+                        "active": isDisplayOn,
+                        "skuId": _SKUIDController.text,
+                        "productCollection": selectedNewVariant,
+                        "tags": productTags,
+                        "sizeChart" : sizeChart
+                      };
+                    }
+                    else {
+                      debugPrint('My mrp price is: ${_mrpController.text}');
+                      debugPrint('My mrp price is: ${_discountPriceController.text}');
+                      body = {
+                        "title": _productTitleController.text,
+                        "description": json,
+                        "images": selectedImageVideos.map((e) => e).toList(),
+                        "mrp": _mrpController.text,
+                        "price": _discountPriceController.text.isNotEmpty ? _discountPriceController.text : "0",
+                        "stock": isUnlimitedStock ? 100000 : _inventoryController.text,
+                        "unlimitedStock": isUnlimitedStock,
+                        "category": categoryId,
+                        "subcategory": subCategoryId,
+                        "active": isDisplayOn,
+                        "skuId": _SKUIDController.text,
+                        "tags": productTags,
+                        "sizeChart" : sizeChart
+                      };
+                    }
+                    debugPrint('My Final edit body list is: $body');
+                    editProductDetailsApiResModel = await _addProductController
+                        .editProduct(widget.productId, body);
+                    if (editProductDetailsApiResModel.success == true) {
+
+                            final res = await openScreenAndReturnValue(
                                           context,
                                           ManageAttributesScreen(
                                               productId:
@@ -1715,6 +1948,27 @@ String? findIdByTitle(String title) {
                                       if (res == true) {
                                         _future = getProductDetails();
                                       }
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Please select atleast one image')));
+                  }
+
+                                //       final res = await openScreenAndReturnValue(
+                                //           context,
+                                //           ManageAttributesScreen(
+                                //               productId:
+                                //                   "${editProductApiResModel.product?.id}"));
+                                //       /*Navigator.of(context).push(
+                                //   MaterialPageRoute(
+                                //     builder: (context) => ManageAttributesScreen(
+                                //         productId: "${editProductApiResModel.product?.id}"),
+                                //   ),
+                                // );*/
+                                //       debugPrint('Mt res is: $res');
+                                //       if (res == true) {
+                                //         _future = getProductDetails();
+                                //       }
                                     },
                                     child: Container(
                                       padding: EdgeInsets.all(18),

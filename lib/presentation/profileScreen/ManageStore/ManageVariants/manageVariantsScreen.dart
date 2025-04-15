@@ -8,6 +8,8 @@ import 'package:taptohello/data/productCategoryModel/getTempSellerVariantsApiRes
 import 'package:taptohello/data/productCategoryModel/manageVariantsApiResModel.dart';
 import 'package:taptohello/data/productCategoryModel/manageVariantsCollectionApiResModel.dart';
 import 'package:taptohello/presentation/profileScreen/ManageStore/AddProduct/AddProductController/addProductController.dart';
+import 'package:taptohello/presentation/profileScreen/ManageStore/AddProduct/editProductListScreen/editProductListScreen.dart';
+import 'package:taptohello/presentation/profileScreen/ManageStore/InstagramAuth/instagramEditProducts.dart';
 import 'package:taptohello/presentation/profileScreen/ManageStore/ManageVariants/ManageVariantController.dart';
 import 'package:taptohello/presentation/profileScreen/ManageStore/ManageVariants/editVariantsPopUpDialog.dart';
 import 'package:taptohello/presentation/profileScreen/ManageStore/ManageVariants/manageInvertoryAndPriceSKUID.dart';
@@ -220,7 +222,24 @@ class _ManageVariantsScreenState extends State<ManageVariantsScreen> {
     return WillPopScope(
       onWillPop: () async {
         // return true;
-         return await _showExitConfirmation(context);
+      //   return await _showExitConfirmation(context);
+          bool shouldExit = await _handleBackPress(context);
+            if (shouldExit) {
+              // Navigator.pop(context);
+                if(widget.isFromInstagram ?? false) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => InstagramEditProductListScreen(productId: widget.productId, isFrom: "Variants", isFromCatalogue: false,)));
+                  } else {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditProductListScreen(productId: widget.productId, isFrom: "Variants", isFromCatalogue: false,)));
+                  }
+            }
+
+            return true;
       },
       child: Scaffold(
         backgroundColor: Color(0xFFF0F1F6),
@@ -233,7 +252,18 @@ class _ManageVariantsScreenState extends State<ManageVariantsScreen> {
              onTap: () async {
             bool shouldExit = await _handleBackPress(context);
             if (shouldExit) {
-              Navigator.pop(context);
+              // Navigator.pop(context);
+                if(widget.isFromInstagram ?? false) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => InstagramEditProductListScreen(productId: widget.productId, isFrom: "Variants", isFromCatalogue: false,)));
+                  } else {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditProductListScreen(productId: widget.productId, isFrom: "Variants", isFromCatalogue: false,)));
+                  }
             }
           },
 

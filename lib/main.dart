@@ -41,27 +41,27 @@ Future<void> loadCertificate() async {
 Future<void> updateAppName() async {
   await dotenv.load();
   
-  // ✅ Get APP_NAME from the .env file
+  // Get APP_NAME from the .env file
   String appName = dotenv.env['APP_NAME'] ?? 'DefaultAppName';
 
-  /// ✅ Update Android strings.xml (without creating the file)
+  ///  Update Android strings.xml (without creating the file)
   final androidFile = File('android/app/src/main/res/values/strings.xml');
   
   if (!androidFile.existsSync()) {
-    print("❌ Android strings.xml file does not exist. Please create it manually.");
+    print("Android strings.xml file does not exist. Please create it manually.");
     return;
   }
 
-  // ✅ Update app_name in strings.xml using correct regex
+  // Update app_name in strings.xml using correct regex
   String androidContent = await androidFile.readAsString();
   androidContent = androidContent.replaceAllMapped(
     RegExp(r'<string name="app_name">.*?</string>'), 
     (match) => '<string name="app_name">$appName</string>'
   );
   await androidFile.writeAsString(androidContent);
-  print("✅ Android app name updated to: $appName");
+  print("Android app name updated to: $appName");
 
-  /// ✅ Update iOS Info.plist
+  ///  Update iOS Info.plist
   final iosFile = File('ios/Runner/Info.plist');
   
   if (!iosFile.existsSync()) {
@@ -89,6 +89,7 @@ void main() async {
   // print("datttta");
   // print(dotenv.env['APP_NAME']);
   
+   
   WidgetsFlutterBinding.ensureInitialized();
   await NfcManager.instance.isAvailable();
   await SharedPreferenceService.init();

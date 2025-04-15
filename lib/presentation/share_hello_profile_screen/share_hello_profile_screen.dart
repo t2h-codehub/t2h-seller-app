@@ -210,72 +210,73 @@ class _ShareHelloProfileScreenState extends State<ShareHelloProfileScreen>
                                             "assets/newIcons/qr_overlay.png")
                                       ],
                                     ),
-                                    SizedBox(height: 12),
-                                    InkWell(
-                                      onTap: () {
-                                        bool? isBranding = _userDetailService
-                                                .userDetailResponse
-                                                ?.user
-                                                ?.isCustomBranding ??
-                                            false;
-                                        if (isBranding) {
-                                          Navigator.of(context)
-                                              .push(MaterialPageRoute(
-                                            builder: (context) =>
-                                                CustomBrandingView(),
-                                          ));
-                                        } else {
-                                          showSnackbar(
-                                              "Please enable custom branding from edit profile section");
-                                        }
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            padding: getPadding(
-                                                left: 32,
-                                                top: 17,
-                                                right: 32,
-                                                bottom: 17),
-                                            decoration: AppDecoration
-                                                .outlineBlack9003f
-                                                .copyWith(
-                                                    borderRadius:
-                                                        BorderRadiusStyle
-                                                            .roundedBorder5,
-                                                    border: Border.all(
-                                                        color:
-                                                            Color(0xFFF05323))),
-                                            child: Row(children: [
-                                              Text("Edit HelloCode™ with",
-                                                  style: AppStyle
-                                                      .txtPoppinsSemiBold12
-                                                      .copyWith(
-                                                          fontSize: 14,
-                                                          color: Color(
-                                                              0xFFF05323))),
-                                              Text(" Pro",
-                                                  style: AppStyle
-                                                      .txtPoppinsSemiBold12
-                                                      .copyWith(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Color(
-                                                              0xFFF05323))),
-                                              SizedBox(width: 8),
-                                              Image.asset(
-                                                "assets/newIcons/premium.png",
-                                                height: 16,
-                                                width: 18,
-                                              )
-                                            ]),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                    
+                                    // SizedBox(height: 12),
+                                    // InkWell(
+                                    //   onTap: () {
+                                    //     bool? isBranding = _userDetailService
+                                    //             .userDetailResponse
+                                    //             ?.user
+                                    //             ?.isCustomBranding ??
+                                    //         false;
+                                    //     if (isBranding) {
+                                    //       Navigator.of(context)
+                                    //           .push(MaterialPageRoute(
+                                    //         builder: (context) =>
+                                    //             CustomBrandingView(),
+                                    //       ));
+                                    //     } else {
+                                    //       showSnackbar(
+                                    //           "Please enable custom branding from edit profile section");
+                                    //     }
+                                    //   },
+                                    //   child: Row(
+                                    //     mainAxisAlignment:
+                                    //         MainAxisAlignment.center,
+                                    //     children: [
+                                    //       Container(
+                                    //         padding: getPadding(
+                                    //             left: 32,
+                                    //             top: 17,
+                                    //             right: 32,
+                                    //             bottom: 17),
+                                    //         decoration: AppDecoration
+                                    //             .outlineBlack9003f
+                                    //             .copyWith(
+                                    //                 borderRadius:
+                                    //                     BorderRadiusStyle
+                                    //                         .roundedBorder5,
+                                    //                 border: Border.all(
+                                    //                     color:
+                                    //                         Color(0xFFF05323))),
+                                    //         child: Row(children: [
+                                    //           Text("Edit HelloCode™ with",
+                                    //               style: AppStyle
+                                    //                   .txtPoppinsSemiBold12
+                                    //                   .copyWith(
+                                    //                       fontSize: 14,
+                                    //                       color: Color(
+                                    //                           0xFFF05323))),
+                                    //           Text(" Pro",
+                                    //               style: AppStyle
+                                    //                   .txtPoppinsSemiBold12
+                                    //                   .copyWith(
+                                    //                       fontSize: 14,
+                                    //                       fontWeight:
+                                    //                           FontWeight.bold,
+                                    //                       color: Color(
+                                    //                           0xFFF05323))),
+                                    //           SizedBox(width: 8),
+                                    //           Image.asset(
+                                    //             "assets/newIcons/premium.png",
+                                    //             height: 16,
+                                    //             width: 18,
+                                    //           )
+                                    //         ]),
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    // ),
                                     InkWell(
                                       splashColor: Colors.transparent,
                                       highlightColor: Colors.transparent,

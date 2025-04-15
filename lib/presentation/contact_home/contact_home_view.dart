@@ -147,33 +147,33 @@ class _ContactHomeViewState extends ConsumerState<ContactHomeView>
                                   TextStyle(color: Colors.black, fontSize: 14),
                               textAlign: TextAlign.center,
                             ),
-                            SizedBox(
-                              height: 16,
-                            ),
-                            InkWell(
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => PremiumView(),
-                                ));
-                              },
-                              child: Container(
-                                margin: EdgeInsets.symmetric(horizontal: 16),
-                                width: double.infinity,
-                                padding: EdgeInsets.only(
-                                    bottom: 12, top: 12, right: 10, left: 10),
-                                decoration: BoxDecoration(
-                                    color: AppCol.primary,
-                                    borderRadius: BorderRadius.circular(23)),
-                                child: Center(
-                                  child: Text(
-                                    "Subscribe",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 14),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                            )
+                            // SizedBox(
+                            //   height: 16,
+                            // ),
+                            // InkWell(
+                            //   onTap: () {
+                            //     Navigator.of(context).push(MaterialPageRoute(
+                            //       builder: (context) => PremiumView(),
+                            //     ));
+                            //   },
+                            //   child: Container(
+                            //     margin: EdgeInsets.symmetric(horizontal: 16),
+                            //     width: double.infinity,
+                            //     padding: EdgeInsets.only(
+                            //         bottom: 12, top: 12, right: 10, left: 10),
+                            //     decoration: BoxDecoration(
+                            //         color: AppCol.primary,
+                            //         borderRadius: BorderRadius.circular(23)),
+                            //     child: Center(
+                            //       child: Text(
+                            //         "Subscribe",
+                            //         style: TextStyle(
+                            //             color: Colors.white, fontSize: 14),
+                            //         textAlign: TextAlign.center,
+                            //       ),
+                            //     ),
+                            //   ),
+                            // )
                           ]),
                         ),
                       ),
@@ -340,42 +340,42 @@ class _ContactHomeViewState extends ConsumerState<ContactHomeView>
                                                 fontSize: 14),
                                             textAlign: TextAlign.center,
                                           ),
-                                          SizedBox(
-                                            height: 16,
-                                          ),
-                                          InkWell(
-                                            onTap: () {
-                                              Navigator.of(context)
-                                                  .push(MaterialPageRoute(
-                                                builder: (context) =>
-                                                    PremiumView(),
-                                              ));
-                                            },
-                                            child: Container(
-                                              margin: EdgeInsets.symmetric(
-                                                  horizontal: 16),
-                                              width: double.infinity,
-                                              padding: EdgeInsets.only(
-                                                  bottom: 12,
-                                                  top: 12,
-                                                  right: 10,
-                                                  left: 10),
-                                              decoration: BoxDecoration(
-                                                  color: AppCol.primary,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          23)),
-                                              child: Center(
-                                                child: Text(
-                                                  "Subscribe",
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 14),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ),
-                                            ),
-                                          )
+                                          // SizedBox(
+                                          //   height: 16,
+                                          // ),
+                                          // InkWell(
+                                          //   onTap: () {
+                                          //     Navigator.of(context)
+                                          //         .push(MaterialPageRoute(
+                                          //       builder: (context) =>
+                                          //           PremiumView(),
+                                          //     ));
+                                          //   },
+                                          //   child: Container(
+                                          //     margin: EdgeInsets.symmetric(
+                                          //         horizontal: 16),
+                                          //     width: double.infinity,
+                                          //     padding: EdgeInsets.only(
+                                          //         bottom: 12,
+                                          //         top: 12,
+                                          //         right: 10,
+                                          //         left: 10),
+                                          //     decoration: BoxDecoration(
+                                          //         color: AppCol.primary,
+                                          //         borderRadius:
+                                          //             BorderRadius.circular(
+                                          //                 23)),
+                                          //     child: Center(
+                                          //       child: Text(
+                                          //         "Subscribe",
+                                          //         style: TextStyle(
+                                          //             color: Colors.white,
+                                          //             fontSize: 14),
+                                          //         textAlign: TextAlign.center,
+                                          //       ),
+                                          //     ),
+                                          //   ),
+                                          // )
                                         ]),
                                       ),
                                     )

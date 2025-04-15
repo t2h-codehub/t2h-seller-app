@@ -20,6 +20,7 @@ import 'package:taptohello/theme/app_style.dart';
 import 'package:taptohello/widgets/custom_checkbox.dart';
 import 'package:taptohello/widgets/custom_image_view.dart';
 import 'package:taptohello/widgets/custom_text_form_field.dart';
+import 'package:get_storage/get_storage.dart';
 
 // ignore: must_be_immutable
 class SignInScreen extends ConsumerStatefulWidget {
@@ -40,6 +41,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
   late AuthViewModel _viewModel;
   late ContactViewModel? _viewModel2;
 
+  final box = GetStorage();
+
   bool lang = false;
 
   @override
@@ -53,8 +56,20 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
   getEmailAndPass() {
 
     debugPrint('My email is: ${SharedPreferenceService.getString('signInPhoneAndEmail')}');
-    entermobilenumbController.text = SharedPreferenceService.getString('signInPhoneAndEmail') ?? '';
-    passwordController.text =  SharedPreferenceService.getString('signInPassword') ?? '';
+    // entermobilenumbController.text = SharedPreferenceService.getString('signInPhoneAndEmail') ?? '';
+    // passwordController.text =  SharedPreferenceService.getString('signInPassword') ?? '';
+//     final username = box.read('signInPhoneAndEmail') ?? "";
+// final password = box.read('signInPassword') ?? "";
+
+//     print('username, ${username}');
+//     entermobilenumbController.text = username;
+//     passwordController.text = password;
+ checkbox = box.read('rememberMe') ?? false; // Retrieve saved checkbox state
+
+  if (checkbox) {
+    entermobilenumbController.text = box.read('signInPhoneAndEmail') ?? '';
+    passwordController.text = box.read('signInPassword') ?? '';
+  }
     lang = SharedPreferenceService.getString("mylanguage") == '' ? false : true;
     debugPrint('My selected email and password is: ${entermobilenumbController.text}');
     // setState(() {});
@@ -71,18 +86,15 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
           child: Column(
             children: [
               SizedBox(height: 16),
-              Padding(
-                 padding: getPadding(left: 20, top: 15, right: 20, bottom: 20),
-                child: Container(
-                  height: getVerticalSize(150),
-                  // width:
-                  //     getHorizontalSize(280),
-                  // padding: getPadding(left: 10, top: 14, right: 10, bottom: 20),
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage("assets/images/Picture2.png"))),
-                ),
+              Container(
+                height: getVerticalSize(180),
+                // width:
+                //     getHorizontalSize(280),
+                // padding: getPadding(left: 10, top: 14, right: 10, bottom: 20),
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: AssetImage("assets/images/socioshopImage.jpeg"))),
               ),
               Container(
                 width: double.maxFinite,
@@ -108,7 +120,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                       maxlength: 50,
                       onChange: (val) {
                         
-                        SharedPreferenceService.setString('signInPhoneAndEmail', val);
+                       // SharedPreferenceService.setString('signInPhoneAndEmail', val);
+                       box.write('signInPhoneAndEmail', val);
                       },
                     ),
                     SizedBox(height: 16),
@@ -137,7 +150,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                       onChange: (pass) {
                         
                          
-                        SharedPreferenceService.setString('signInPassword', pass);
+                      //  SharedPreferenceService.setString('signInPassword', pass);
+                        box.write('signInPassword', pass);
                       },
                     ),
                     Padding(
@@ -150,44 +164,97 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           InkWell(
-                            onTap: () {
-                              setState(() {
-                                checkbox = !checkbox;
-                                if(checkbox == true) {
-                                  SharedPreferenceService.setString('signInPhoneAndEmail', entermobilenumbController.text);
-                                  // SharedPreferenceService.setString('signInPassword', passwordController.text);
-                                } else {
-                                 // SharedPreferenceService.setString('signInPhoneAndEmail', '');
-                                  // SharedPreferenceService.setString('signInPassword', '');
-                                }
-                                debugPrint('My saved email is: ${SharedPreferenceService.getString('signInPhoneAndEmail')}');
-                              });
-                            },
-                            child: CustomCheckbox(
-                              text: "Remember Me",
-                              iconSize: getHorizontalSize(
-                                15,
-                              ),
-                              value: checkbox,
-                              margin: getMargin(
-                                bottom: 1,
-                              ),
-                              fontStyle: CheckboxFontStyle.PoppinsRegular12,
-                              onChange: (value) {
-                                checkbox = value;
-                                setState(() {});
-                                print('Remember me --- : $checkbox');
-                               /* if(checkbox == true) {
-                                  SharedPreferenceService.setString('signInPhoneAndEmail', entermobilenumbController.text);
-                                  // SharedPreferenceService.setString('signInPassword', passwordController.text);
-                                } else {
-                                  SharedPreferenceService.setString('signInPhoneAndEmail', '');
-                                  // SharedPreferenceService.setString('signInPassword', '');
-                                }
-                                debugPrint('My saved email is: ${SharedPreferenceService.getString('signInPhoneAndEmail')}');*/
-                              },
-                            ),
-                          ),
+  onTap: () {
+    setState(() {
+      checkbox = !checkbox;
+      box.write('rememberMe', checkbox);  // Save checkbox state
+
+      if (checkbox) {
+        box.write('signInPhoneAndEmail', entermobilenumbController.text);
+        box.write('signInPassword', passwordController.text);
+      } else {
+        box.remove('signInPhoneAndEmail'); // Remove saved credentials
+        box.remove('signInPassword');
+      }
+    });
+  },
+  child: CustomCheckbox(
+    text: "Remember Me",
+    iconSize: getHorizontalSize(15),
+    value: checkbox,
+    margin: getMargin(bottom: 1),
+    fontStyle: CheckboxFontStyle.PoppinsRegular12,
+    onChange: (value) {
+      setState(() {
+        checkbox = value;
+        box.write('rememberMe', checkbox); // Save checkbox state
+
+        if (checkbox) {
+          box.write('signInPhoneAndEmail', entermobilenumbController.text);
+          box.write('signInPassword', passwordController.text);
+        } else {
+          box.remove('signInPhoneAndEmail');
+          box.remove('signInPassword');
+        }
+      });
+    },
+  ),
+),
+
+                          // InkWell(
+                          //   onTap: () {
+                          //     setState(() {
+                          //       checkbox = !checkbox;
+                          //       if(checkbox == true) {
+                          //         // SharedPreferenceService.setString('signInPhoneAndEmail', entermobilenumbController.text);
+                          //         //  SharedPreferenceService.setString('signInPassword', passwordController.text);
+
+                          //          box.write('signInPhoneAndEmail', entermobilenumbController.text);
+                          //          box.write('signInPassword', passwordController.text);
+                          //       } else {
+                          //       //  SharedPreferenceService.setString('signInPhoneAndEmail', '');
+                          //       //   SharedPreferenceService.setString('signInPassword', '');
+
+                          //       box.write('signInPhoneAndEmail', '');
+                          //          box.write('signInPassword', '');
+                          //       }
+                          //       debugPrint('My saved email is: ${SharedPreferenceService.getString('signInPhoneAndEmail')}');
+                          //     });
+                          //   },
+                          //   child: CustomCheckbox(
+                          //     text: "Remember Me",
+                          //     iconSize: getHorizontalSize(
+                          //       15,
+                          //     ),
+                          //     value: checkbox,
+                          //     margin: getMargin(
+                          //       bottom: 1,
+                          //     ),
+                          //     fontStyle: CheckboxFontStyle.PoppinsRegular12,
+                          //     onChange: (value) {
+                          //       checkbox = value;
+                          //       setState(() {});
+                          //       print('Remember me --- : $checkbox');
+                          //       if(checkbox == true) {
+
+                          //             box.write('signInPhoneAndEmail', entermobilenumbController.text);
+                          //          box.write('signInPassword', passwordController.text);
+                 
+                 
+
+                          //         // SharedPreferenceService.setString('signInPhoneAndEmail', entermobilenumbController.text);
+                          //         //  SharedPreferenceService.setString('signInPassword', passwordController.text);
+                          //       } else {
+                          //         // SharedPreferenceService.setString('signInPhoneAndEmail', '');
+                          //         //  SharedPreferenceService.setString('signInPassword', '');
+
+                          //          box.write('signInPhoneAndEmail', '');
+                          //          box.write('signInPassword', '');
+                          //       }
+                          //       debugPrint('My saved email is: ${SharedPreferenceService.getString('signInPhoneAndEmail')}');
+                          //     },
+                          //   ),
+                          // ),
                           InkWell(
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
@@ -231,13 +298,19 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                           showSnackbar("Please enter a password");
                         } else {
                           if(checkbox == true) {
-                            SharedPreferenceService.setString('signInPhoneAndEmail', entermobilenumbController.text);
-                            // SharedPreferenceService.setString('signInPassword', passwordController.text);
+                            // SharedPreferenceService.setString('signInPhoneAndEmail', entermobilenumbController.text);
+                            //  SharedPreferenceService.setString('signInPassword', passwordController.text);
+
+                             box.write('signInPhoneAndEmail', entermobilenumbController.text);
+                                   box.write('signInPassword', passwordController.text);
                           } else {
-                            SharedPreferenceService.setString('signInPhoneAndEmail', '');
-                            // SharedPreferenceService.setString('signInPassword', '');
+                            // SharedPreferenceService.setString('signInPhoneAndEmail', '');
+                            //  SharedPreferenceService.setString('signInPassword', '');
+
+                             box.write('signInPhoneAndEmail', '');
+                                   box.write('signInPassword', '');
                           }
-                          debugPrint('My saved email is: ${SharedPreferenceService.getString('signInPhoneAndEmail')}');
+                        //  debugPrint('My saved email is: ${SharedPreferenceService.getString('signInPhoneAndEmail')}');
                           onSave(_formKey, context);
                         }
                       },

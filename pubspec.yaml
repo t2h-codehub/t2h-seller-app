@@ -16,7 +16,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.1.8+34
+
+version: 1.0.1+11
 
 environment:
   sdk: ^3.6.1
@@ -72,18 +73,18 @@ dependencies:
   json_annotation: ^4.9.0
   file_picker: ^8.1.7
   syncfusion_flutter_pdfviewer: ^28.1.39
-  string_to_hex: ^0.2.2
+  # string_to_hex: ^0.2.2
   # image_gallery_saver: ^1.7.1
   flutter_colorpicker: ^1.1.0
   path_provider: ^2.1.5
   app_links: ^6.1.3
-  go_router: ^14.6.3
+  # go_router: ^14.6.3
   sign_in_with_apple: ^6.1.4
   http: ^1.2.2
   dots_indicator: ^3.0.0
   dropdown_search: ^6.0.0
-  markdown: ^7.3.0
-  flutter_html: ^3.0.0-beta.2
+  # markdown: ^7.3.0
+  # flutter_html: ^3.0.0-beta.2
   html_editor_plus: ^0.0.5
   fluttertoast: ^8.2.10
   pro_image_editor: ^8.1.4
@@ -91,9 +92,12 @@ dependencies:
   animated_text_kit: ^4.2.3
   freezed_annotation: ^2.4.4
   provider: ^6.1.2
-  carousel_slider: ^5.0.0
+  # carousel_slider: ^5.0.0
   reorderable_grid: ^1.0.10
   flutter_dotenv: ^5.2.1
+  get_storage: ^2.1.1
+  collection: ^1.19.0
+  
   # google_mlkit_barcode_scanning: ^0.13.0
  
   
@@ -110,9 +114,9 @@ flutter:
     - .env
     - assets/
     - assets/images/
-    - assets/shades/
+    # - assets/shades/
     - assets/newIcons/
-    - assets/final-screens/images/
+    # - assets/final-screens/images/
     - assets/how/
     - assets/api_taptohello_com.pem
 

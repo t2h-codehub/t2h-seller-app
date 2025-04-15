@@ -53,7 +53,7 @@ class _InstagramLoginScreenState extends State<InstagramLoginScreen> {
 
   /// Get authentication URL from the backend
   Future<void> _getAuthUrl() async {
-    final String url = 'https://api.mysocio.shop/user/auth/instagram';
+    final String url = '${AppConstants.baseUrl}user/auth/instagram';
     try {
       final response = await http.get(Uri.parse(url));
 

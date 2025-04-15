@@ -93,26 +93,26 @@ class _EditProfileScreenState extends ConsumerState<ProfileScreen>
             backgroundColor: AppCol.bgColor,
             appBar: AppBar(
               backgroundColor: Colors.white,
-              leading: InkWell(
-                onTap: () {
-                  showModalBottomSheet(
-                    isScrollControlled: true,
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(24),
-                            topRight: Radius.circular(24))),
-                    context: context,
-                    builder: (context) => SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.50,
-                        child: ProfileBottomSheet()),
-                  ).then((value) => _viewModel.getUserDetail());
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Image.asset("assets/newIcons/info.png"),
-                ),
-              ),
+              // leading: InkWell(
+              //   onTap: () {
+              //     showModalBottomSheet(
+              //       isScrollControlled: true,
+              //       backgroundColor: Colors.white,
+              //       shape: RoundedRectangleBorder(
+              //           borderRadius: BorderRadius.only(
+              //               topLeft: Radius.circular(24),
+              //               topRight: Radius.circular(24))),
+              //       context: context,
+              //       builder: (context) => SizedBox(
+              //           height: MediaQuery.of(context).size.height * 0.50,
+              //           child: ProfileBottomSheet()),
+              //     ).then((value) => _viewModel.getUserDetail());
+              //   },
+              //   child: Padding(
+              //     padding: const EdgeInsets.all(16.0),
+              //     child: Image.asset("assets/newIcons/info.png"),
+              //   ),
+              // ),
               actions: [
                 InkWell(
                   onTap: () {
@@ -897,34 +897,28 @@ class _EditProfileScreenState extends ConsumerState<ProfileScreen>
                    
 
                     /// Sign Out Button
-                    InkWell(
-                      onTap: () {
-                        SharedPreferenceService.clearAll();
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => SignInScreen(),
-                        ));
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/newIcons/sign_out.png",
-                              height: 24,
-                            ),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            Text(
-                              "Sign Out",
-                              style: TextStyle(
-                                  fontSize: 14, color: Color(0xffF05323)),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                   InkWell(
+  onTap: () {
+    _showSignOutDialog(context);
+  },
+  child: Padding(
+    padding: const EdgeInsets.only(top: 16.0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(
+          "assets/newIcons/sign_out.png",
+          height: 24,
+        ),
+        SizedBox(width: 8),
+        Text(
+          "Sign Out",
+          style: TextStyle(fontSize: 14, color: Color(0xffF05323)),
+        ),
+      ],
+    ),
+  ),
+),
                     SizedBox(
                       height: 20,
                     )
@@ -937,6 +931,42 @@ class _EditProfileScreenState extends ConsumerState<ProfileScreen>
   onTapArrowleft5(BuildContext context) {
     Navigator.pop(context);
   }
+
+  // Function to show the sign-out confirmation dialog
+void _showSignOutDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("Confirm Sign Out"),
+        content: Text("Are you sure you want to sign out?"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the dialog
+            },
+            child: Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              // Clear stored data
+              SharedPreferenceService.clearAll();
+
+              // Navigate to Sign In screen
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => SignInScreen()),
+              );
+            },
+            child: Text(
+              "Sign Out",
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
 
   /// add product dialog
   void showEditNamePopUp(username) {

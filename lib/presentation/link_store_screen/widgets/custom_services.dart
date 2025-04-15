@@ -369,23 +369,7 @@ class _CustomLinkWidgetState extends ConsumerState<CustomLinkWidget>
                   margin: EdgeInsets.only(left: 16),
                   // height: 45,
                   child: 
-                  // CustomTextFormField(
-                  //   maxlength: 300,
-                  //   // focusNode: focusNode,
-                  //   controller: linkController,
-      
-                  //   hintText: "Paste Link",
-                  //   validator: (value)  {
-                  //     // if(value!.isNotEmpty) {
-                  //     //  return hasValidUrl(value ?? '');
-                  //     // }
-                  //     if(value!.isNotEmpty){
-      
-                  //       return hasValidUrl(value);
-                  //     }
-                  //      return null;
-                  //   },
-                  // ),
+                 
                TextFormField(
         controller: linkController,
         decoration: InputDecoration(
@@ -404,18 +388,8 @@ class _CustomLinkWidgetState extends ConsumerState<CustomLinkWidget>
                 borderRadius: BorderRadius.circular(10),
                 borderSide: BorderSide(color: AppCol.primary, width: 1), // Turns black on focus
               ),
-      //  border: OutlineInputBorder(
-      //           borderRadius: BorderRadius.circular(10), // Circular border
-      //           borderSide: BorderSide.none, // Removes default border
-      //         ),
-      //         focusedBorder: OutlineInputBorder(
-      //           borderRadius: BorderRadius.circular(10),
-      //           borderSide: BorderSide(color: Colors.blue, width: 2), // Focus border color
-      //         ),
-      //         enabledBorder: OutlineInputBorder(
-      //           borderRadius: BorderRadius.circular(10),
-      //           borderSide: BorderSide(color: Colors.grey, width: 1), // Default border color
-      //         ),
+      
+      
       suffixIcon: Icon(Icons.link),
         ),
         keyboardType: TextInputType.url,
@@ -483,9 +457,9 @@ class _CustomLinkWidgetState extends ConsumerState<CustomLinkWidget>
                   imageController.clear();
                 }
               } else {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => PremiumView(),
-                ));
+                // Navigator.of(context).push(MaterialPageRoute(
+                //   builder: (context) => PremiumView(),
+                // ));
                 // Handle any other case
               }
             },

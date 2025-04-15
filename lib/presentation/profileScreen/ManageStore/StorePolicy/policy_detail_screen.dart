@@ -10,10 +10,12 @@ import 'package:taptohello/presentation/profileScreen/ManageStore/StorePolicy/sh
 
 class PolicyDetailScreen extends StatefulWidget {
   final Policies policy;
+  final String? policyHeader;
 
   const PolicyDetailScreen({
     super.key,
     required this.policy,
+    this.policyHeader,
     required void Function(String id) onDelete,
     required void Function(String id, String newHeader, String newDescription, String newType) onEdit,
   });
@@ -36,6 +38,7 @@ class _PolicyDetailScreenState extends State<PolicyDetailScreen> {
   @override
   void initState() {
     super.initState();
+    
     _headerController = TextEditingController(text: widget.policy.policyHeader);
     _descriptionController = TextEditingController(text: widget.policy.policyDescription);
     _policyTypeController = TextEditingController(text: widget.policy.policyType);
@@ -91,7 +94,7 @@ class _PolicyDetailScreenState extends State<PolicyDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Edit Policy"),
+        title:  Text(_headerController.text.trim()),
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
@@ -105,6 +108,7 @@ class _PolicyDetailScreenState extends State<PolicyDetailScreen> {
               const Text("Policy Type", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
               TextFormField(
                 controller: _policyTypeController,
+                readOnly: true,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -120,6 +124,7 @@ class _PolicyDetailScreenState extends State<PolicyDetailScreen> {
               const Text("Policy Header", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
               TextFormField(
                 controller: _headerController,
+                readOnly: true,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),

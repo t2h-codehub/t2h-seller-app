@@ -13,25 +13,7 @@ class EditProfileIconSuggestionScreen extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
             backgroundColor: AppCol.whiteA700,
-            // appBar: CustomAppBar(
-            //     height: getVerticalSize(60),
-            //     leadingWidth: 56,
-            //     leading: AppbarImage(
-            //         height: getVerticalSize(15),
-            //         width: getHorizontalSize(16),
-            //         svgPath: ImageConstant.imgArrowleft,
-            //         margin: getMargin(left: 40, top: 20, bottom: 20),
-            //         onTap: () => onTapArrowleft14(context)),
-            //     title: AppbarImage(
-            //         height: getVerticalSize(24),
-            //         width: getHorizontalSize(54),
-            //         imagePath: ImageConstant.imgLayer1,
-            //         margin: getMargin(left: 11)),
-            //     actions: [
-            //       AppbarButton(
-            //           margin:
-            //               getMargin(left: 54, top: 18, right: 54, bottom: 19))
-            //     ]),
+           
             body: SizedBox(
                 width: double.maxFinite,
                 child: Column(

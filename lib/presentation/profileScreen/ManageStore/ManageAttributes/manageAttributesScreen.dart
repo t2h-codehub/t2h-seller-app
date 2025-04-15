@@ -60,6 +60,7 @@ class _ManageAttributesScreenState extends State<ManageAttributesScreen> {
       });
     });
   }
+  bool _isChanged = false;
 
   bool isShowProgress = false;
 
@@ -70,6 +71,73 @@ class _ManageAttributesScreenState extends State<ManageAttributesScreen> {
     _future = getAttributes();
   }
 
+   Future<bool> _handleBackPress(BuildContext context) async {
+    if (_isChanged) {
+      return await _showExitConfirmation(context);
+    }
+    return true;
+  }
+
+  /// Function to show exit confirmation dialog
+Future<bool> _showExitConfirmation(BuildContext context) async {
+  return await showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Text(
+          'Exit from Manage Attributes?',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Color(0xFF666666),
+            fontSize: 15,
+            fontFamily: 'Roboto',
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        content: Text(
+          'Unsaved changes will be lost if you leave this screen without saving Attributes.',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[600],
+          ),
+        ),
+        actions: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              /// No Button
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+                child: Text(
+                  'No',
+                  style: TextStyle(color: AppCol.primary, fontSize: 16),
+                ),
+              ),
+              SizedBox(width: 20),
+              /// Yes Button
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+                child: Text(
+                  'Yes',
+                  style: TextStyle(color: Colors.red, fontSize: 16),
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    },
+  ) ?? false;
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,6 +146,38 @@ class _ManageAttributesScreenState extends State<ManageAttributesScreen> {
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(
           color: Colors.grey,
+        ),
+         leading: InkWell(
+          onTap: () async {
+             bool shouldExit = await _handleBackPress(context);
+            if (shouldExit) {
+              // Navigator.pop(context);
+               if(widget.inFromInstagram ?? false) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => InstagramEditProductListScreen(
+                  productId: widget.productId,
+                  isFrom: 'Attributes',
+                  isFromCatalogue: false,
+                )));
+      } else {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => EditProductListScreen(
+                  productId: widget.productId,
+                  isFrom: 'Attributes',
+                  isFromCatalogue: false,
+                )));
+      }
+            }
+          
+          },
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+            child: Image.asset("assets/images/back.png", height: 24),
+          ),
         ),
         title: Text(
           'Manage Attribute',

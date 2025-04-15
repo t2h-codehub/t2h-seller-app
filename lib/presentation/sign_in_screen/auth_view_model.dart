@@ -817,15 +817,22 @@ class AuthViewModel extends BaseViewModel<BaseScreenView> {
       ResetPasswordRequest resetPasswordRequest, BuildContext context) async {
     // toggleLoading();
 
-    await _authRepo.resetPassword(resetPasswordRequest).then(
+    await _authRepo.resetPassword(resetPasswordRequest,context).then(
           (value) => value.fold((l) {
             view?.showSnackbar(l.message, color: Colors.red);
           }, (r) async {
             notifyListeners();
+           ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(r.message.toString())),
+  );
             view?.showSnackbar(
                 "Login to your new account with the new password");
-            Navigator.of(context).pushReplacement(
+            
+            
+        
+Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (context) => SignInScreen()));
+
             // _userServicesResponse = r;
           }),
         );
@@ -841,6 +848,8 @@ class AuthViewModel extends BaseViewModel<BaseScreenView> {
             view?.showSnackbar(l.message, color: Colors.red);
           }, (r) async {
             notifyListeners();
+             ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("OTP sent successfully")));
             Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => ResetPasswordView(
                       userId: r.userId ?? "",

@@ -392,9 +392,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ));
                             },
                             child: Container(
-                                margin: getMargin(left: 16, top: 15, right: 16),
-                                padding: getPadding(
-                                    left: 8, top: 11, right: 8, bottom: 11),
+                                // margin: getMargin(left: 16, top: 15, right: 16),
+                                // padding: getPadding(
+                                //     left: 8, top: 11, right: 8, bottom: 11),
                                 decoration: AppDecoration.outlineBlack9003f
                                     .copyWith(
                                         borderRadius:
@@ -407,118 +407,118 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       /// Buy a Hello Device
-                                      Padding(
-                                          padding: getPadding(
-                                            left: 13,
-                                            top: 3,
-                                          ),
-                                          child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    Image.asset(
-                                                      "assets/newIcons/buy.png",
-                                                      height: 40,
-                                                    ),
-                                                    SizedBox(
-                                                      width: 16,
-                                                    ),
-                                                    Padding(
-                                                        padding: getPadding(
-                                                            top: 5, bottom: 6),
-                                                        child: Text(
-                                                            "Buy a Hello Device",
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            textAlign:
-                                                                TextAlign.left,
-                                                            style: AppStyle
-                                                                .txtPoppinsSemiBold12
-                                                                .copyWith(
-                                                                    fontSize:
-                                                                        16))),
-                                                  ],
-                                                ),
-                                                Icon(
-                                                  Icons.arrow_forward_ios,
-                                                  color: Color(0xFF858585),
-                                                  size: 20,
-                                                )
-                                              ])),
+                                      // Padding(
+                                      //     padding: getPadding(
+                                      //       left: 13,
+                                      //       top: 3,
+                                      //     ),
+                                      //     child: Row(
+                                      //         mainAxisAlignment:
+                                      //             MainAxisAlignment
+                                      //                 .spaceBetween,
+                                      //         children: [
+                                      //           Row(
+                                      //             children: [
+                                      //               Image.asset(
+                                      //                 "assets/newIcons/buy.png",
+                                      //                 height: 40,
+                                      //               ),
+                                      //               SizedBox(
+                                      //                 width: 16,
+                                      //               ),
+                                      //               Padding(
+                                      //                   padding: getPadding(
+                                      //                       top: 5, bottom: 6),
+                                      //                   child: Text(
+                                      //                       "Buy a Hello Device",
+                                      //                       overflow:
+                                      //                           TextOverflow
+                                      //                               .ellipsis,
+                                      //                       textAlign:
+                                      //                           TextAlign.left,
+                                      //                       style: AppStyle
+                                      //                           .txtPoppinsSemiBold12
+                                      //                           .copyWith(
+                                      //                               fontSize:
+                                      //                                   16))),
+                                      //             ],
+                                      //           ),
+                                      //           Icon(
+                                      //             Icons.arrow_forward_ios,
+                                      //             color: Color(0xFF858585),
+                                      //             size: 20,
+                                      //           )
+                                      //         ])),
 
-                                      /// Divider
-                                      Padding(
-                                          padding: getPadding(top: 8),
-                                          child: Divider(
-                                              height: getVerticalSize(1),
-                                              thickness: getVerticalSize(1),
-                                              color: AppCol.bgColor)),
+                                      // /// Divider
+                                      // Padding(
+                                      //     padding: getPadding(top: 8),
+                                      //     child: Divider(
+                                      //         height: getVerticalSize(1),
+                                      //         thickness: getVerticalSize(1),
+                                      //         color: AppCol.bgColor)),
 
                                       /// Activate a Hello Device
-                                      InkWell(
-                                        onTap: () {
-                                          Navigator.of(context)
-                                              .push(MaterialPageRoute(
-                                            builder: (context) =>
-                                                ActivateDeviceScreen(),
-                                          ));
-                                        },
-                                        child: Padding(
-                                            padding: getPadding(
-                                              left: 13,
-                                              top: 11,
-                                            ),
-                                            child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Image.asset(
-                                                        "assets/newIcons/activ.png",
-                                                        height: 40,
-                                                      ),
-                                                      SizedBox(
-                                                        width: 16,
-                                                      ),
-                                                      Padding(
-                                                          padding: getPadding(
-                                                              top: 4,
-                                                              bottom: 7),
-                                                          child: Text(
-                                                              "Activate a Hello Device",
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .left,
-                                                              style: AppStyle
-                                                                  .txtPoppinsSemiBold12
-                                                                  .copyWith(
-                                                                      fontSize:
-                                                                          16))),
-                                                    ],
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 10.0),
-                                                    child: Icon(
-                                                      Icons.arrow_forward_ios,
-                                                      size: 20,
-                                                      color: Color(0xFF858585),
-                                                    ),
-                                                  )
-                                                ])),
-                                      ),
+                                      // InkWell(
+                                      //   onTap: () {
+                                      //     Navigator.of(context)
+                                      //         .push(MaterialPageRoute(
+                                      //       builder: (context) =>
+                                      //           ActivateDeviceScreen(),
+                                      //     ));
+                                      //   },
+                                      //   child: Padding(
+                                      //       padding: getPadding(
+                                      //         left: 13,
+                                      //         top: 11,
+                                      //       ),
+                                      //       child: Row(
+                                      //           mainAxisAlignment:
+                                      //               MainAxisAlignment
+                                      //                   .spaceBetween,
+                                      //           crossAxisAlignment:
+                                      //               CrossAxisAlignment.start,
+                                      //           children: [
+                                      //             Row(
+                                      //               children: [
+                                      //                 Image.asset(
+                                      //                   "assets/newIcons/activ.png",
+                                      //                   height: 40,
+                                      //                 ),
+                                      //                 SizedBox(
+                                      //                   width: 16,
+                                      //                 ),
+                                      //                 Padding(
+                                      //                     padding: getPadding(
+                                      //                         top: 4,
+                                      //                         bottom: 7),
+                                      //                     child: Text(
+                                      //                         "Activate a Hello Device",
+                                      //                         overflow:
+                                      //                             TextOverflow
+                                      //                                 .ellipsis,
+                                      //                         textAlign:
+                                      //                             TextAlign
+                                      //                                 .left,
+                                      //                         style: AppStyle
+                                      //                             .txtPoppinsSemiBold12
+                                      //                             .copyWith(
+                                      //                                 fontSize:
+                                      //                                     16))),
+                                      //               ],
+                                      //             ),
+                                      //             Padding(
+                                      //               padding:
+                                      //                   const EdgeInsets.only(
+                                      //                       top: 10.0),
+                                      //               child: Icon(
+                                      //                 Icons.arrow_forward_ios,
+                                      //                 size: 20,
+                                      //                 color: Color(0xFF858585),
+                                      //               ),
+                                      //             )
+                                      //           ])),
+                                      // ),
 
                                      
                                      
@@ -527,114 +527,114 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           //new ui
 
                           /// Upgrade to Pro
-                          Visibility(
-                            visible: AppConstants.eligibility == true,
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => PremiumView(),
-                                ));
-                              },
-                              child: Container(
-                                  margin:
-                                      getMargin(left: 16, top: 15, right: 16),
-                                  padding: getPadding(
-                                      left: 8, top: 11, right: 8, bottom: 11),
-                                  decoration: AppDecoration.outlineBlack9003f
-                                      .copyWith(
-                                          borderRadius:
-                                              BorderRadiusStyle.roundedBorder5,
-                                          color: Colors.white),
-                                  child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        /// Upgarde to pro
-                                        Padding(
-                                            padding: getPadding(
-                                              left: 13,
-                                              top: 3,
-                                            ),
-                                            child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Image.asset(
-                                                        "assets/newIcons/upgrade.png",
-                                                        height: 40,
-                                                      ),
-                                                      SizedBox(
-                                                        width: 16,
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          Padding(
-                                                              padding:
-                                                                  getPadding(
-                                                                      top: 5,
-                                                                      bottom:
-                                                                          6),
-                                                              child: Text(
-                                                                  "Upgrade to",
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .left,
-                                                                  style: AppStyle
-                                                                      .txtPoppinsSemiBold12
-                                                                      .copyWith(
-                                                                          fontSize:
-                                                                              16))),
-                                                          Text(" Pro",
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .left,
-                                                              style: AppStyle
-                                                                  .txtPoppinsSemiBold12
-                                                                  .copyWith(
-                                                                      color: Color(
-                                                                          0xFFF05323),
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w800,
-                                                                      fontSize:
-                                                                          16)),
-                                                          Image.asset(
-                                                            "assets/newIcons/premium.png",
-                                                            height: 14,
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 8.0),
-                                                    child: Icon(
-                                                      Icons.arrow_forward_ios,
-                                                      size: 20,
-                                                      color: Color(0xFF858585),
-                                                    ),
-                                                  )
-                                                ])),
+                          // Visibility(
+                          //   visible: AppConstants.eligibility == true,
+                          //   child: InkWell(
+                          //     onTap: () {
+                          //       Navigator.of(context).push(MaterialPageRoute(
+                          //         builder: (context) => PremiumView(),
+                          //       ));
+                          //     },
+                          //     child: Container(
+                          //         margin:
+                          //             getMargin(left: 16, top: 15, right: 16),
+                          //         padding: getPadding(
+                          //             left: 8, top: 11, right: 8, bottom: 11),
+                          //         decoration: AppDecoration.outlineBlack9003f
+                          //             .copyWith(
+                          //                 borderRadius:
+                          //                     BorderRadiusStyle.roundedBorder5,
+                          //                 color: Colors.white),
+                          //         child: Column(
+                          //             mainAxisSize: MainAxisSize.min,
+                          //             crossAxisAlignment:
+                          //                 CrossAxisAlignment.start,
+                          //             mainAxisAlignment:
+                          //                 MainAxisAlignment.center,
+                          //             children: [
+                          //               /// Upgarde to pro
+                          //               Padding(
+                          //                   padding: getPadding(
+                          //                     left: 13,
+                          //                     top: 3,
+                          //                   ),
+                          //                   child: Row(
+                          //                       mainAxisAlignment:
+                          //                           MainAxisAlignment
+                          //                               .spaceBetween,
+                          //                       children: [
+                          //                         Row(
+                          //                           children: [
+                          //                             Image.asset(
+                          //                               "assets/newIcons/upgrade.png",
+                          //                               height: 40,
+                          //                             ),
+                          //                             SizedBox(
+                          //                               width: 16,
+                          //                             ),
+                          //                             Row(
+                          //                               children: [
+                          //                                 Padding(
+                          //                                     padding:
+                          //                                         getPadding(
+                          //                                             top: 5,
+                          //                                             bottom:
+                          //                                                 6),
+                          //                                     child: Text(
+                          //                                         "Upgrade to",
+                          //                                         overflow:
+                          //                                             TextOverflow
+                          //                                                 .ellipsis,
+                          //                                         textAlign:
+                          //                                             TextAlign
+                          //                                                 .left,
+                          //                                         style: AppStyle
+                          //                                             .txtPoppinsSemiBold12
+                          //                                             .copyWith(
+                          //                                                 fontSize:
+                          //                                                     16))),
+                          //                                 Text(" Pro",
+                          //                                     overflow:
+                          //                                         TextOverflow
+                          //                                             .ellipsis,
+                          //                                     textAlign:
+                          //                                         TextAlign
+                          //                                             .left,
+                          //                                     style: AppStyle
+                          //                                         .txtPoppinsSemiBold12
+                          //                                         .copyWith(
+                          //                                             color: Color(
+                          //                                                 0xFFF05323),
+                          //                                             fontWeight:
+                          //                                                 FontWeight
+                          //                                                     .w800,
+                          //                                             fontSize:
+                          //                                                 16)),
+                          //                                 Image.asset(
+                          //                                   "assets/newIcons/premium.png",
+                          //                                   height: 14,
+                          //                                 )
+                          //                               ],
+                          //                             ),
+                          //                           ],
+                          //                         ),
+                          //                         Padding(
+                          //                           padding:
+                          //                               const EdgeInsets.only(
+                          //                                   top: 8.0),
+                          //                           child: Icon(
+                          //                             Icons.arrow_forward_ios,
+                          //                             size: 20,
+                          //                             color: Color(0xFF858585),
+                          //                           ),
+                          //                         )
+                          //                       ])),
 
                                       
                                       
-                                      ])),
-                            ),
-                          ),
+                          //             ])),
+                          //   ),
+                          // ),
 
                
                

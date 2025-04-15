@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:82267455961:android:6ee772ea32cbbb37af59c8",
         "android_client_info": {
-          "package_name": "com.tapto.hello"
+          "package_name": "com.socio.shop"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "82267455961-0677gv7t6ti0akh037jv5gkukilc27ug.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.tapto.hello",
+            "package_name": "com.socio.shop",
             "certificate_hash": "c7bdff96a988b3098c73e0c83fad7327f971cba2"
           }
         },
@@ -25,7 +25,7 @@
           "client_id": "82267455961-lkcr7adj8b7f08tfkt6d43jq4l1eess4.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.tapto.hello",
+            "package_name": "com.socio.shop",
             "certificate_hash": "050d0ceee1d1bce2d22f57d03ab3ac3427183b9d"
           }
         },
@@ -33,7 +33,7 @@
           "client_id": "82267455961-mvknhp4b8dclpnmsib1qgi25qkfei2qu.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.tapto.hello",
+            "package_name": "com.socio.shop",
             "certificate_hash": "e6ddba64ed8b2c197f8716bc6f9b697a86a9d6f4"
           }
         },

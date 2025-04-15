@@ -37,7 +37,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 import 'editProductListScreen/editProductListScreen.dart';
-
+import 'dart:io';
+import 'dart:ui' as ui;
+import 'package:flutter/material.dart';
 
 
 
@@ -97,6 +99,7 @@ var currentIndex = 0;
 
   final ProductCategoryController _productCategoryListController =
       ProductCategoryController();
+      String selectedCategoryId = '';
 
   List<String> adminCategories = [];
   List adminSubCategories = [];
@@ -115,7 +118,7 @@ var currentIndex = 0;
 
   List<String> productTags = [];
 
-  String selectedCategoryId = '';
+  
   String selectedSubCategoryId = '';
   String selectedCollection = '';
 
@@ -261,7 +264,18 @@ Widget setUpButtonChild() {
     });
   }
 
+Future<ui.Image> getImageDimensions(File file) async {
+  final bytes = await file.readAsBytes();
+  final codec = await ui.instantiateImageCodec(bytes);
+  final frame = await codec.getNextFrame();
+  return frame.image;
+}
 
+// Usage
+void checkImageSize(File imageFile) async {
+  final image = await getImageDimensions(imageFile);
+  print('Width: ${image.width}, Height: ${image.height}');
+}
 
  Future<Object> uploadImage() async {
   try {
@@ -269,6 +283,7 @@ Widget setUpButtonChild() {
      selectedImageVideos.clear();
                     for (var images in selectedImages) {
                 debugPrint('My real Image is: ${images.path}');
+                
                 final res = await awsDocumentUpload(images.path);
                 debugPrint('My Image data is: $res');
                 selectedImageVideos.add(res);
@@ -1398,7 +1413,7 @@ String? findIdByTitle(String title) {
                         if(_productTitleController.text.isNotEmpty){
                           // if(_productDescriptionController.isNotEmpty) {
                             if(_mrpController.text.isNotEmpty) {
-                              if(_inventoryController.text.isNotEmpty) {
+                              if((_inventoryController.text.isNotEmpty && isUnlimitedStock == false) || (isUnlimitedStock == true)) {
                                 if(selectedNewVariant != "") {
                                   debugPrint('My selected mrp price is: ${_mrpController.text}');
                                   debugPrint('My selected mrp discount price is: ${_discountPriceController.text}');
@@ -1535,7 +1550,8 @@ String? findIdByTitle(String title) {
                         if (_productTitleController.text.isNotEmpty) {
                           // if(_productDescriptionController.text.isNotEmpty) {
                             if(_mrpController.text.isNotEmpty) {
-                              if(_inventoryController.text.isNotEmpty) {
+                             // if(_inventoryController.text.isNotEmpty) {
+                             if((_inventoryController.text.isNotEmpty && isUnlimitedStock == false) || (isUnlimitedStock == true)) {
                                 if(selectedNewVariant != "") {
                                   debugPrint('My Add Product From Variant Button MRP is: ${_mrpController.text}');
                                   debugPrint('My Add Product From Variant Button price is: ${_discountPriceController.text}');
@@ -2055,6 +2071,9 @@ Future.delayed(Duration(seconds: 1), () {
         });
       });
     }
+
+
+    
     // Map<String, dynamic> body = {};
     appProductApiResModel = await _addProductController.addSellerProduct(body);
     if (appProductApiResModel.success == true) {

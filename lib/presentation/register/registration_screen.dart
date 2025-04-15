@@ -26,6 +26,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen>
   bool checkbox = false;
   bool isPasswordObscure = true;
   bool isConfirmObscure = true;
+ 
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late AuthViewModel _viewModel;
@@ -69,6 +70,12 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen>
     return emailRegExp.hasMatch(email);
   }
 
+//   String? validateEmail(String? value) {
+//   if (value == null || value.isEmpty) return 'Please enter email';
+//   final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+//   return emailRegex.hasMatch(value) ? null : 'Enter a valid email';
+// }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -76,24 +83,23 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen>
         backgroundColor: AppCol.whiteA700,
         resizeToAvoidBottomInset: false,
         body: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
+          child: 
+          Form(
+             key: _formKey,
+  autovalidateMode: AutovalidateMode.onUserInteraction,
             child: Column(
               children: [
                 SizedBox(height: 16),
-                 Padding(
-                 padding: getPadding(left: 40, top: 15, right: 40, bottom: 20),
-                child: Container(
-                  height: getVerticalSize(150),
-                    // width:
-                    //     getHorizontalSize(280),
-                    // padding: getPadding(left: 10, top: 14, right: 10, bottom: 20),
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: AssetImage("assets/images/Picture2.png"))),
-                  ),
-                ),
+                 Container(
+                   height: getVerticalSize(180),
+                     // width:
+                     //     getHorizontalSize(280),
+                     // padding: getPadding(left: 10, top: 14, right: 10, bottom: 20),
+                     decoration: BoxDecoration(
+                         image: DecorationImage(
+                             fit: BoxFit.cover,
+                             image: AssetImage("assets/images/socioshopImage.jpeg"))),
+                   ),
                 Container(
                   width: double.maxFinite,
                   padding: getPadding(
@@ -104,89 +110,290 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       /// Name textfield
-                      CustomTextFormField(
-                        controller: nameController,
-                        suffix: Icon(
-                          Icons.person_outline,
-                          size: 26,
-                        ),
-                        label: "Name",
-                        hintText: "Enter name",
-                        margin: getMargin(
-                          top: 24,
-                        ),
-                        textInputAction: TextInputAction.done,
-                        textInputType: TextInputType.name,
-                        // isObscureText: true,
-                      ),
+                      // CustomTextFormField(
+                      //   controller: nameController,
+                      //   suffix: Icon(
+                      //     Icons.person_outline,
+                      //     size: 26,
+                      //   ),
+                      //   label: "Name",
+                      //   hintText: "Enter name",
+                      //   margin: getMargin(
+                      //     top: 24,
+                      //   ),
+                      //   validator: (value) {
+                      //     if (value == null || value.trim().isEmpty) {
+                      //       return "Please enter your name";
+                      //     }
+                      //     return null;
+                      //   },  
+                      //   textInputAction: TextInputAction.done,
+                      //   textInputType: TextInputType.name,
+                      //   // isObscureText: true,
+                      // ),
+                      TextFormField(
+  controller: nameController,
+  keyboardType: TextInputType.name,
+  textInputAction: TextInputAction.done,
+  validator: (value) {
+    if (value == null || value.trim().isEmpty) {
+      return "Please enter your name";
+    }
+    return null;
+  },
+  decoration: InputDecoration(
+    labelText: "Name",
+    hintText: "Enter name",
+    suffixIcon: Icon(Icons.person_outline, size: 26),
+    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.grey),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.grey.shade400),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.blue, width: 1.5),
+    ),
+    errorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.red),
+    ),
+  ),
+),
+
                       SizedBox(height: 16),
+
+                      TextFormField(
+  controller: emailController,
+  keyboardType: TextInputType.emailAddress,
+  validator: (value) {
+    if (value == null || value.trim().isEmpty) {
+      return "Please enter your email";
+    }
+    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+    if (!emailRegex.hasMatch(value.trim())) {
+      return "Enter a valid email";
+    }
+    return null;
+  },
+  decoration: InputDecoration(
+    labelText: "Email ID",
+    hintText: "Enter email address",
+    suffixIcon: Icon(Icons.email_outlined, size: 26),
+    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.grey),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.grey.shade400),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.blue, width: 1.5),
+    ),
+    errorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.red),
+    ),
+  ),
+),
+
 
                       /// Email textfield
-                      CustomTextFormField(
-                        suffix: Icon(
-                          Icons.email_outlined,
-                          size: 26,
-                        ),
-                        controller: emailController,
-                        maxLines: 100,
-                        maxlength: 50 ,
-                        label: "Email ID",
-                        hintText: "Enter email address",
-                        margin: getMargin(
-                          top: 9,
-                        ),
-                        textInputType: TextInputType.emailAddress,
-                      ),
+//                      CustomTextFormField(
+//   suffix: Icon(
+//     Icons.email_outlined,
+//     size: 26,
+//   ),
+//   controller: emailController,
+//   maxLines: 1, 
+//   maxlength: 50,// ✅ Fix
+//   // maxLength: 50,
+//   label: "Email ID",
+//   hintText: "Enter email address",
+//   margin: getMargin(top: 9),
+//   validator: (value) {
+//     if (value == null || value.trim().isEmpty) {
+//       return "Please enter your email";
+//     }
+//     final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+//     if (!emailRegex.hasMatch(value.trim())) {
+//       return "Enter a valid email";
+//     }
+//     return null;
+//   },
+//   textInputType: TextInputType.emailAddress,
+// ),
+
                       SizedBox(height: 16),
+
+                      // Put this in your state class
+
+TextFormField(
+  controller: passwordController,
+  keyboardType: TextInputType.visiblePassword,
+  textInputAction: TextInputAction.done,
+  obscureText: isPasswordObscure,
+  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return "Please enter a password";
+    }
+    return null;
+  },
+  decoration: InputDecoration(
+    labelText: "Password",
+    hintText: "Enter password",
+    suffixIcon: InkWell(
+      onTap: () {
+        setState(() {
+          isPasswordObscure = !isPasswordObscure;
+        });
+      },
+      child: Icon(
+        isPasswordObscure
+            ? Icons.visibility_off_outlined
+            : Icons.visibility_outlined,
+        size: 26,
+      ),
+    ),
+    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.grey),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.grey.shade400),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.blue, width: 1.5),
+    ),
+    errorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.red),
+    ),
+  ),
+),
+
 
                       /// Password textfield
-                      CustomTextFormField(
-                          controller: passwordController,
-                          hintText: "Enter password",
-                          label: "Password",
-                          margin: getMargin(
-                            top: 9,
-                          ),
-                          textInputAction: TextInputAction.done,
-                          textInputType: TextInputType.visiblePassword,
-                          isObscureText: isPasswordObscure,
-                          suffix: InkWell(
-                            onTap: () {
-                              isPasswordObscure = !isPasswordObscure;
-                              setState(() {});
-                            },
-                            child: Icon(
-                              isPasswordObscure
-                                  ? Icons.visibility_off_outlined
-                                  : Icons.visibility_outlined,
-                              size: 26,
-                            ),
-                          )),
+//                       CustomTextFormField(
+//                           controller: passwordController,
+//                           hintText: "Enter password",
+//                           label: "Password",
+//                           margin: getMargin(
+//                             top: 9,
+//                           ),
+//                           validator: (value) {
+//   if (value == null || value.isEmpty) {
+//     return "Please enter a password";
+//   }
+//   return null;
+// }
+// ,
+//                           textInputAction: TextInputAction.done,
+//                           textInputType: TextInputType.visiblePassword,
+//                           isObscureText: isPasswordObscure,
+//                           suffix: InkWell(
+//                             onTap: () {
+//                               isPasswordObscure = !isPasswordObscure;
+//                               setState(() {});
+//                             },
+//                             child: Icon(
+//                               isPasswordObscure
+//                                   ? Icons.visibility_off_outlined
+//                                   : Icons.visibility_outlined,
+//                               size: 26,
+//                             ),
+//                           )),
                       SizedBox(height: 16),
-
+TextFormField(
+  controller: confirmPasswordController,
+  keyboardType: TextInputType.visiblePassword,
+  textInputAction: TextInputAction.done,
+  obscureText: isConfirmObscure,
+  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return "Please confirm your password";
+    } else if (value != passwordController.text) {
+      return "Passwords do not match";
+    }
+    return null;
+  },
+  decoration: InputDecoration(
+    labelText: "Confirm Password",
+    hintText: "Enter confirm password",
+    suffixIcon: InkWell(
+      onTap: () {
+        setState(() {
+          isConfirmObscure = !isConfirmObscure;
+        });
+      },
+      child: Icon(
+        isConfirmObscure
+            ? Icons.visibility_off_outlined
+            : Icons.visibility_outlined,
+        size: 26,
+      ),
+    ),
+    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.grey),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.grey.shade400),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.blue, width: 1.5),
+    ),
+    errorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.red),
+    ),
+  ),
+),
                       /// Confirm password textfield
-                      CustomTextFormField(
-                          controller: confirmPasswordController,
-                          hintText: "Enter confirm password",
-                          label: "Confirm Password",
-                          margin: getMargin(
-                            top: 9,
-                          ),
-                          textInputAction: TextInputAction.done,
-                          textInputType: TextInputType.visiblePassword,
-                          isObscureText: isConfirmObscure,
-                          suffix: InkWell(
-                            onTap: () {
-                              isConfirmObscure = !isConfirmObscure;
-                              setState(() {});
-                            },
-                            child: Icon(
-                              isConfirmObscure
-                                  ? Icons.visibility_off_outlined
-                                  : Icons.visibility_outlined,
-                              size: 26,
-                            ),
-                          )),
+//                       CustomTextFormField(
+//                           controller: confirmPasswordController,
+//                           hintText: "Enter confirm password",
+//                           label: "Confirm Password",
+//                           margin: getMargin(
+//                             top: 9,
+//                           ),
+//                           validator: (value) {
+//   if (value == null || value.isEmpty) {
+//     return "Please confirm your password";
+//   } else if (value != passwordController.text) {
+//     return "Passwords do not match";
+//   }
+//   return null;
+// }
+// ,
+//                           textInputAction: TextInputAction.done,
+//                           textInputType: TextInputType.visiblePassword,
+//                           isObscureText: isConfirmObscure,
+//                           suffix: InkWell(
+//                             onTap: () {
+//                               isConfirmObscure = !isConfirmObscure;
+//                               setState(() {});
+//                             },
+//                             child: Icon(
+//                               isConfirmObscure
+//                                   ? Icons.visibility_off_outlined
+//                                   : Icons.visibility_outlined,
+//                               size: 26,
+//                             ),
+//                           )),
 
                       /// Terms and Condition
                       Container(
@@ -275,45 +482,104 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen>
                                 ),
                               ),
                             ),
-                            InkWell(
-                              onTap: checkbox
-                                  ? () async {
-                                      FocusScopeNode currentFocus =
-                                          FocusScope.of(context);
+                           InkWell(
+  onTap: checkbox
+      ? () async {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
 
-                                      if (!currentFocus.hasPrimaryFocus) {
-                                        currentFocus.unfocus();
-                                      }
-                                      if (nameController.text.isEmpty) {
-                                        showSnackbar("Please enter a name");
-                                      } else if (passwordController.text !=
-                                          confirmPasswordController.text) {
-                                        showSnackbar(
-                                            "Password and confirm password are not same");
-                                      } else if (emailController.text.isEmpty ||
+          // 🔍 Validations
+          if (nameController.text.isEmpty) {
+            showSnackbar("Please enter a name");
+            return;
+          }
 
-                                          !validateEmail(emailController.text)) {
-                                        showSnackbar(
-                                            "Please enter a valid email");
-                                      } else if (passwordController
-                                          .text.isEmpty) {
-                                        showSnackbar("Please enter a password");
-                                      } else {
-                                        onSave(_formKey, context);
-                                      }
-                                    }
-                                  : () {},
-                              child: Center(
-                                // alignment: Alignment.bottomCenter,
-                                child: Text(
-                                  "Sign Up",
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.left,
-                                  style: AppStyle.txtPoppinsBold15.copyWith(
-                                      fontSize: 16, color: Colors.white),
-                                ),
-                              ),
-                            ),
+          if (emailController.text.isEmpty ||
+              !validateEmail(emailController.text)) {
+            showSnackbar("Please enter a valid email");
+            return;
+          }
+
+          if (passwordController.text.isEmpty) {
+            showSnackbar("Please enter a password");
+            return;
+          }
+
+          if (confirmPasswordController.text.isEmpty) {
+            showSnackbar("Please enter confirm password");
+            return;
+          }
+
+          if (passwordController.text != confirmPasswordController.text) {
+            showSnackbar("Password and confirm password are not same");
+            return;
+          }
+
+          // ✅ All validations passed
+          onSave(_formKey, context);
+        }
+      : () {
+          showSnackbar("Please accept the Terms and Conditions");
+        },
+  child: Container(
+    decoration: BoxDecoration(
+      color: checkbox ? AppCol.primary : Colors.grey,
+      borderRadius: BorderRadius.circular(8),
+    ),
+    padding: EdgeInsets.symmetric(vertical: 16),
+    alignment: Alignment.center,
+    child: Text(
+      "Sign Up",
+      style: AppStyle.txtPoppinsBold15.copyWith(
+        fontSize: 16,
+        color: Colors.white,
+      ),
+    ),
+  ),
+)
+
+
+                            // InkWell(
+                            //   onTap: checkbox
+                            //       ? () async {
+                            //           FocusScopeNode currentFocus =
+                            //               FocusScope.of(context);
+
+                            //           if (!currentFocus.hasPrimaryFocus) {
+                            //             currentFocus.unfocus();
+                            //           }
+                            //           if (nameController.text.isEmpty) {
+                            //             showSnackbar("Please enter a name");
+                            //           } else if (passwordController.text !=
+                            //               confirmPasswordController.text) {
+                            //             showSnackbar(
+                            //                 "Password and confirm password are not same");
+                            //           } else if (emailController.text.isEmpty ||
+
+                            //               !validateEmail(emailController.text)) {
+                            //             showSnackbar(
+                            //                 "Please enter a valid email");
+                            //           } else if (passwordController
+                            //               .text.isEmpty) {
+                            //             showSnackbar("Please enter a password");
+                            //           } else {
+                            //             onSave(_formKey, context);
+                            //           }
+                            //         }
+                            //       : () {},
+                            //   child: Center(
+                            //     // alignment: Alignment.bottomCenter,
+                            //     child: Text(
+                            //       "Sign Up",
+                            //       overflow: TextOverflow.ellipsis,
+                            //       textAlign: TextAlign.left,
+                            //       style: AppStyle.txtPoppinsBold15.copyWith(
+                            //           fontSize: 16, color: Colors.white),
+                            //     ),
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),

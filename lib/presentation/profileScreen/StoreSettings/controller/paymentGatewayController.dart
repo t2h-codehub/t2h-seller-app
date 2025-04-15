@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:taptohello/core/apiFunction.dart';
 import 'package:taptohello/core/constants.dart';
+import 'package:taptohello/data/FeeConfiguration/getLogisticFeeConfigurationApiResModel.dart';
 import 'package:taptohello/data/PaymentGatewayModel/getBillingApiResModel.dart';
 import 'package:taptohello/data/PaymentGatewayModel/insertBillingApiResModel.dart';
 import 'package:taptohello/data/PaymentGatewayModel/merchantPaymentApiResModel.dart';
@@ -157,4 +159,34 @@ class PaymentGatewayController {
     }
     return getBillingApiResModel;
   }
+  
+
+   Future<GetLogisticFeeConfiguration> cashOnDeliveryApi() async {
+   
+   
+    GetLogisticFeeConfiguration getLogisticFeeConfiguration = GetLogisticFeeConfiguration();
+    
+    var headers = {
+  'token': AppConstants.token
+};
+var dio = Dio();
+var response = await dio.request(
+  "${AppConstants.baseUrl}user/toggle-user-COD",
+  // 'https://api.mysocio.shop/user/toggle-user-COD',
+  options: Options(
+    method: 'PATCH',
+    headers: headers,
+  ),
+);
+
+if (response.statusCode == 200) {
+  print(json.encode(response.data));
+  getLogisticFeeConfiguration = GetLogisticFeeConfiguration.fromJson(response.data);
+}
+else {
+  print(response.statusMessage);
+}
+    return getLogisticFeeConfiguration;
+  }
+
 }

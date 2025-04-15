@@ -121,8 +121,10 @@ class ApiFun {
   /// Api get request with params
   static Future<dynamic> apiGetRequestWithParams(String endPoint, Map<String, String> body) async {
     Map<String, String> headerWithParams = {
-      'Accept': 'application/json',
-      "Authorization": 'Bearer ${AppConstants.token}',
+      // 'Accept': 'application/json',
+      // "Authorization": 'Bearer ${AppConstants.token}',
+       "token": AppConstants.token,
+        'Content-Type': 'application/json'
     };
     headerWithParams.addAll(body);
     http.Response response = await http.get(Uri.parse("${AppConstants.baseUrl}$endPoint"), headers: headerWithParams);

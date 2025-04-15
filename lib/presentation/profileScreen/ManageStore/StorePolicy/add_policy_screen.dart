@@ -12,8 +12,10 @@ import 'package:taptohello/presentation/profileScreen/ManageStore/StorePolicy/sh
 
 class AddPolicyScreen extends StatefulWidget {
   final Function(Policies) onAdd;
+  final Policies? policy;
+  final String? policyHeader;
 
-  const AddPolicyScreen({super.key, required this.onAdd});
+  const AddPolicyScreen({super.key, required this.onAdd, this.policyHeader, this.policy});
 
   @override
   State<AddPolicyScreen> createState() => _AddPolicyScreenState();
@@ -22,6 +24,7 @@ class AddPolicyScreen extends StatefulWidget {
 class _AddPolicyScreenState extends State<AddPolicyScreen> {
   final TextEditingController _policyTypeController = TextEditingController();
   final TextEditingController _policyHeaderController = TextEditingController();
+  
   final TextEditingController _policyDescriptionController = TextEditingController();
 
 ShipmentAndDeliveryPolicyController _shipmentAndDeliveryPolicyController = ShipmentAndDeliveryPolicyController();
@@ -74,6 +77,19 @@ addListPolicy() async {
   }
 }
 
+void initState() {
+    super.initState();
+  _policyHeaderController.text = widget.policy?.policyHeader ?? '';
+_policyTypeController.text = widget.policy?.policyType ?? '';
+_policyDescriptionController.text = widget.policy?.policyDescription ?? '';
+
+     
+    
+    // _headerController = TextEditingController(text: widget.policy.policyHeader);
+    // _descriptionController = TextEditingController(text: widget.policy.policyDescription);
+    // _policyTypeController = TextEditingController(text: widget.policy.policyType);
+    // _isPolicyEnabled = widget.policy.status == "active"; // Assuming "active" is the enabled status
+  }
 
 
 

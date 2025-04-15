@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:taptohello/core/api_client.dart';
 import 'package:taptohello/core/constants.dart';
@@ -301,11 +302,17 @@ class AuthRepoImpl implements AuthRepo {
 
   @override
   Future<Either<ApiException, SuccessResponse>> resetPassword(
-      ResetPasswordRequest resetPasswordRequest) async {
+      ResetPasswordRequest resetPasswordRequest,context ) async {
     try {
       final response = await _apiClient.post(
           "${AppConstants.baseUrl}user/reset-password",
           resetPasswordRequestToJson(resetPasswordRequest));
+  //         final message = response.data!['message'] ?? "Password reset successful";
+
+  // // Show success message
+  // ScaffoldMessenger.of(context).showSnackBar(
+  //   SnackBar(content: Text(message)),
+  // );
       return Right(SuccessResponse.fromJson(response.data!));
     } catch (e) {
       return Left(ApiException(e.toString()));
@@ -319,6 +326,8 @@ class AuthRepoImpl implements AuthRepo {
       final response = await _apiClient.post(
           "${AppConstants.baseUrl}user/forgot-password",
           forgetPasswordRequestToJson(forgetPasswordRequest));
+
+          
       return Right(ForgetPasswordResponse.fromJson(response.data!));
     } catch (e) {
       return Left(ApiException(e.toString()));

@@ -133,6 +133,14 @@ class _EditCardScreenState extends ConsumerState<EditProfileScreen>
   //   // hexStringToHexInt(qrColor);
   // }
 
+  bool _isImageFile(String url) {
+  return url.toLowerCase().endsWith('.png') ||
+         url.toLowerCase().endsWith('.jpg') ||
+         url.toLowerCase().endsWith('.jpeg') ||
+         url.toLowerCase().endsWith('.webp');
+}
+
+
   @override
   Widget build(BuildContext context) {
     debugPrint(
@@ -253,244 +261,374 @@ class _EditCardScreenState extends ConsumerState<EditProfileScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                /// Cover Image and Video
-                SizedBox(
-                    height: getVerticalSize(270),
-                    width: double.infinity,
-                    child: Stack(alignment: Alignment.bottomCenter, children: [
-                      (uploadCoverController.text.isNotEmpty ||
-                              uploadCoverController.text != "")
-                          ? Align(
-                              alignment: Alignment.topCenter,
-                              child: InkWell(
-                                  onTap: () {
-                                    openPickImageVideoModalSheet(context)
-                                        .then((value) {
-                                      if (value != null) {
-                                        _viewModel
-                                            .uploadSingleFile(value)
-                                            .then((fileURL) {
-                                          setState(() {
-                                            uploadCoverController.text =
-                                                fileURL ?? "";
-                                            if ((uploadCoverController.text !=
-                                                        "" &&
-                                                    uploadCoverController.text
-                                                        .contains(".png")) ||
-                                                (uploadCoverController.text
-                                                        .contains(".jpg") ||
-                                                    uploadCoverController.text
-                                                        .contains(".jpeg"))) {
-                                              setState(() {
-                                                isImage = true;
-                                              });
-                                            } else {
-                                              _controller =
-                                                  VideoPlayerController.network(
-                                                      uploadCoverController
-                                                          .text);
-                                              _controller.addListener(() {
-                                                setState(() {});
-                                              });
-                                              _controller.setLooping(true);
-                                              _controller
-                                                  .initialize()
-                                                  .then((_) => setState(() {}));
-                                              _controller.play();
-                                            }
-                                          });
-                                        });
-                                      }
-                                    });
-                                  },
-                                  child: isImage == true
-                                      ? Image.network(
-                                          height: 210,
-                                          uploadCoverController.text,
-                                          width: double.infinity,
-                                          fit: BoxFit.cover,
-                                        )
-                                      : _controller.value.isInitialized
-                                          ? Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 20),
-                                              child: SizedBox(
-                                                height: 210,
-                                                width: double.infinity,
-                                                child: AspectRatio(
-                                                    aspectRatio: _controller
-                                                        .value.aspectRatio,
-                                                    child: VideoPlayer(
-                                                        _controller)),
-                                              ),
-                                            )
-                                          : Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            )),
-                            )
-                          : InkWell(
-                              onTap: () {
-                                openPickImageVideoModalSheet(context)
-                                    .then((value) {
-                                  if (value != null) {
-                                    _viewModel
-                                        .uploadSingleFile(value)
-                                        .then((fileURL) {
-                                      setState(() {
-                                        uploadCoverController.text =
-                                            fileURL ?? "";
-                                        _controller =
-                                            VideoPlayerController.network(
-                                                uploadCoverController.text);
-                                      });
-                                      if ((uploadCoverController.text != "" &&
-                                              uploadCoverController.text
-                                                  .contains(".png")) ||
-                                          (uploadCoverController.text
-                                                  .contains(".jpg") ||
-                                              uploadCoverController.text
-                                                  .contains(".jpeg"))) {
-                                        setState(() {
-                                          isImage = true;
-                                        });
-                                      } else {
-                                        _controller.addListener(() {
-                                          setState(() {});
-                                          _controller.setLooping(true);
+                /// Cover Image and Profile Photo Section
+SizedBox(
+  height: getVerticalSize(270),
+  width: double.infinity,
+  child: Stack(
+    alignment: Alignment.bottomCenter,
+    children: [
+      Align(
+        alignment: Alignment.topCenter,
+        child: InkWell(
+          onTap: () {
+            openPickImageVideoModalSheet(context).then((value) {
+              if (value != null) {
+                _viewModel.uploadSingleFile(value).then((fileURL) {
+                  if (fileURL != null) {
+                    setState(() {
+                      uploadCoverController.text = fileURL;
 
-                                          _controller
-                                              .initialize()
-                                              .then((_) => setState(() {}));
-                                          _controller.play();
-                                        });
-                                      }
-                                    });
-                                  }
-                                });
-                              },
-                              child: Align(
-                                  alignment: Alignment.topCenter,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            fit: BoxFit.fitWidth,
-                                            image: AssetImage(
-                                                "assets/images/Cover image HS.png"))),
-                                    height: 210,
-                                    // width:
-                                    //     getHorizontalSize(280),
-                                  )),
-                            ),
-                      InkWell(
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          onTap: () =>
-                              openPickImageModalSheet(context).then((value) {
-                                if (value != null) {
-                                  _viewModel
-                                      .uploadSingleFile(value)
-                                      .then((fileURL) {
-                                    setState(() {
-                                      uploadImageController.text =
-                                          fileURL ?? "";
-                                    });
-                                  });
-                                }
-                              }),
-                          child: (uploadImageController.text.isEmpty ||
-                                  uploadImageController.text == "")
-                              ? Stack(
-                                  alignment: Alignment.bottomRight,
-                                  children: [
-                                    Container(
-                                      margin: EdgeInsets.only(top: 19),
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          shape: BoxShape.circle),
-                                      child: Container(
-                                          padding: getPadding(
-                                              left: 16,
-                                              top: 20,
-                                              right: 16,
-                                              bottom: 22),
-                                          margin: getPadding(
-                                              left: 4,
-                                              top: 4,
-                                              right: 4,
-                                              bottom: 4),
-                                          decoration: AppDecoration
-                                              .outlineBlack9003f12
-                                              .copyWith(shape: BoxShape.circle),
-                                          child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                CustomImageView(
-                                                    svgPath: ImageConstant
-                                                        .imgUserGray700,
-                                                    height: getVerticalSize(52),
-                                                    width:
-                                                        getHorizontalSize(60),
-                                                    margin: getMargin(top: 4)),
-                                                Padding(
-                                                    padding: getPadding(top: 6),
-                                                    child: Text(
-                                                        "Add Profile Photo",
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        textAlign:
-                                                            TextAlign.left,
-                                                        style: AppStyle
-                                                            .txtPoppinsMedium10Gray900))
-                                              ])),
-                                    ),
-                                    Image.asset(
-                                      "assets/newIcons/camera.png",
-                                      height: 37,
-                                    )
-                                  ],
-                                )
-                              : Stack(
-                                  alignment: Alignment.bottomRight,
-                                  children: [
-                                    Container(
-                                      margin: EdgeInsets.only(top: 19),
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          shape: BoxShape.circle),
-                                      child: Container(
-                                        // height: getSize(120),
-                                        // width: getSize(200),
-                                        height: getSize(120),
-                                        width: getSize(134),
-                                        padding: getPadding(
-                                            left: 16,
-                                            top: 20,
-                                            right: 16,
-                                            bottom: 22),
-                                        margin: getPadding(
-                                            left: 4,
-                                            top: 4,
-                                            right: 4,
-                                            bottom: 4),
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                                fit: BoxFit.cover,
-                                                image: NetworkImage(
-                                                    uploadImageController
-                                                        .text))),
-                                      ),
-                                    ),
-                                    Image.asset(
-                                      "assets/newIcons/camera.png",
-                                      height: 37,
-                                    )
-                                  ],
-                                )),
-                    ])),
+                      if (_isImageFile(fileURL)) {
+                        isImage = true;
+                      } else {
+                        isImage = false;
+                        _controller = VideoPlayerController.network(fileURL)
+                          ..addListener(() => setState(() {}))
+                          ..setLooping(true)
+                          ..initialize().then((_) {
+                            setState(() {});
+                            _controller.play();
+                          });
+                      }
+                    });
+                  }
+                });
+              }
+            });
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: uploadCoverController.text.isNotEmpty
+                ? isImage
+                    ? Image.network(
+                        uploadCoverController.text,
+                        height: 210,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      )
+                    : _controller.value.isInitialized
+                        ? AspectRatio(
+                            aspectRatio: _controller.value.aspectRatio,
+                            child: VideoPlayer(_controller),
+                          )
+                        : const Center(child: CircularProgressIndicator())
+                : Image.asset(
+                    "assets/images/Cover image HS.png",
+                    height: 210,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+          ),
+        ),
+      ),
+
+      /// Profile Image Section
+      InkWell(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: () => openPickImageModalSheet(context).then((value) {
+          if (value != null) {
+            _viewModel.uploadSingleFile(value).then((fileURL) {
+              if (fileURL != null) {
+                setState(() {
+                  uploadImageController.text = fileURL;
+                });
+              }
+            });
+          }
+        }),
+        child: Stack(
+          alignment: Alignment.bottomRight,
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 19),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+              child: Container(
+                height: getSize(120),
+                width: getSize(120),
+                margin: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: uploadImageController.text.isNotEmpty
+                      ? DecorationImage(
+                          image: NetworkImage(uploadImageController.text),
+                          fit: BoxFit.cover,
+                        )
+                      : null,
+                ),
+                child: uploadImageController.text.isEmpty
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CustomImageView(
+                            svgPath: ImageConstant.imgUserGray700,
+                            height: getVerticalSize(52),
+                            width: getHorizontalSize(60),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            "Add Profile Photo",
+                            style: AppStyle.txtPoppinsMedium10Gray900,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      )
+                    : null,
+              ),
+            ),
+            Image.asset(
+              "assets/newIcons/camera.png",
+              height: 37,
+            ),
+          ],
+        ),
+      ),
+    ],
+  ),
+),
+
+                /// Cover Image and Video
+                // SizedBox(
+                //     height: getVerticalSize(270),
+                //     width: double.infinity,
+                //     child: Stack(alignment: Alignment.bottomCenter, children: [
+                //       (uploadCoverController.text.isNotEmpty ||
+                //               uploadCoverController.text != "")
+                //           ? Align(
+                //               alignment: Alignment.topCenter,
+                //               child: InkWell(
+                //                   onTap: () {
+                //                     openPickImageVideoModalSheet(context)
+                //                         .then((value) {
+                //                       if (value != null) {
+                //                         _viewModel
+                //                             .uploadSingleFile(value)
+                //                             .then((fileURL) {
+                //                           setState(() {
+                //                             uploadCoverController.text =
+                //                                 fileURL ?? "";
+                //                             if ((uploadCoverController.text !=
+                //                                         "" &&
+                //                                     uploadCoverController.text
+                //                                         .contains(".png")) ||
+                //                                 (uploadCoverController.text
+                //                                         .contains(".jpg") ||
+                //                                     uploadCoverController.text
+                //                                         .contains(".jpeg"))) {
+                //                               setState(() {
+                //                                 isImage = true;
+                //                               });
+                //                             } else {
+                //                               _controller =
+                //                                   VideoPlayerController.network(
+                //                                       uploadCoverController
+                //                                           .text);
+                //                               _controller.addListener(() {
+                //                                 setState(() {});
+                //                               });
+                //                               _controller.setLooping(true);
+                //                               _controller
+                //                                   .initialize()
+                //                                   .then((_) => setState(() {}));
+                //                               _controller.play();
+                //                             }
+                //                           });
+                //                         });
+                //                       }
+                //                     });
+                //                   },
+                //                   child: isImage == true
+                //                       ? Image.network(
+                //                           height: 210,
+                //                           uploadCoverController.text,
+                //                           width: double.infinity,
+                //                           fit: BoxFit.cover,
+                //                         )
+                //                       : _controller.value.isInitialized
+                //                           ? Padding(
+                //                               padding: const EdgeInsets.only(
+                //                                   bottom: 20),
+                //                               child: SizedBox(
+                //                                 height: 210,
+                //                                 width: double.infinity,
+                //                                 child: AspectRatio(
+                //                                     aspectRatio: _controller
+                //                                         .value.aspectRatio,
+                //                                     child: VideoPlayer(
+                //                                         _controller)),
+                //                               ),
+                //                             )
+                //                           : Center(
+                //                               child:
+                //                                   CircularProgressIndicator(),
+                //                             )),
+                //             )
+                //           : InkWell(
+                //               onTap: () {
+                //                 openPickImageVideoModalSheet(context)
+                //                     .then((value) {
+                //                   if (value != null) {
+                //                     _viewModel
+                //                         .uploadSingleFile(value)
+                //                         .then((fileURL) {
+                //                       setState(() {
+                //                         uploadCoverController.text =
+                //                             fileURL ?? "";
+                //                         _controller =
+                //                             VideoPlayerController.network(
+                //                                 uploadCoverController.text);
+                //                       });
+                //                       if ((uploadCoverController.text != "" &&
+                //                               uploadCoverController.text
+                //                                   .contains(".png")) ||
+                //                           (uploadCoverController.text
+                //                                   .contains(".jpg") ||
+                //                               uploadCoverController.text
+                //                                   .contains(".jpeg"))) {
+                //                         setState(() {
+                //                           isImage = true;
+                //                         });
+                //                       } else {
+                //                         _controller.addListener(() {
+                //                           setState(() {});
+                //                           _controller.setLooping(true);
+
+                //                           _controller
+                //                               .initialize()
+                //                               .then((_) => setState(() {}));
+                //                           _controller.play();
+                //                         });
+                //                       }
+                //                     });
+                //                   }
+                //                 });
+                //               },
+                //               child: Align(
+                //                   alignment: Alignment.topCenter,
+                //                   child: Container(
+                //                     decoration: BoxDecoration(
+                //                         image: DecorationImage(
+                //                             fit: BoxFit.fitWidth,
+                //                             image: AssetImage(
+                //                                 "assets/images/Cover image HS.png"))),
+                //                     height: 210,
+                //                     // width:
+                //                     //     getHorizontalSize(280),
+                //                   )),
+                //             ),
+                //       InkWell(
+                //           splashColor: Colors.transparent,
+                //           highlightColor: Colors.transparent,
+                //           onTap: () =>
+                //               openPickImageModalSheet(context).then((value) {
+                //                 if (value != null) {
+                //                   _viewModel
+                //                       .uploadSingleFile(value)
+                //                       .then((fileURL) {
+                //                     setState(() {
+                //                       uploadImageController.text =
+                //                           fileURL ?? "";
+                //                     });
+                //                   });
+                //                 }
+                //               }),
+                //           child: (uploadImageController.text.isEmpty ||
+                //                   uploadImageController.text == "")
+                //               ? Stack(
+                //                   alignment: Alignment.bottomRight,
+                //                   children: [
+                //                     Container(
+                //                       margin: EdgeInsets.only(top: 19),
+                //                       decoration: BoxDecoration(
+                //                           color: Colors.white,
+                //                           shape: BoxShape.circle),
+                //                       child: Container(
+                //                           padding: getPadding(
+                //                               left: 16,
+                //                               top: 20,
+                //                               right: 16,
+                //                               bottom: 22),
+                //                           margin: getPadding(
+                //                               left: 4,
+                //                               top: 4,
+                //                               right: 4,
+                //                               bottom: 4),
+                //                           decoration: AppDecoration
+                //                               .outlineBlack9003f12
+                //                               .copyWith(shape: BoxShape.circle),
+                //                           child: Column(
+                //                               mainAxisSize: MainAxisSize.min,
+                //                               mainAxisAlignment:
+                //                                   MainAxisAlignment.center,
+                //                               children: [
+                //                                 CustomImageView(
+                //                                     svgPath: ImageConstant
+                //                                         .imgUserGray700,
+                //                                     height: getVerticalSize(52),
+                //                                     width:
+                //                                         getHorizontalSize(60),
+                //                                     margin: getMargin(top: 4)),
+                //                                 Padding(
+                //                                     padding: getPadding(top: 6),
+                //                                     child: Text(
+                //                                         "Add Profile Photo",
+                //                                         overflow: TextOverflow
+                //                                             .ellipsis,
+                //                                         textAlign:
+                //                                             TextAlign.left,
+                //                                         style: AppStyle
+                //                                             .txtPoppinsMedium10Gray900))
+                //                               ])),
+                //                     ),
+                //                     Image.asset(
+                //                       "assets/newIcons/camera.png",
+                //                       height: 37,
+                //                     )
+                //                   ],
+                //                 )
+                //               : Stack(
+                //                   alignment: Alignment.bottomRight,
+                //                   children: [
+                //                     Container(
+                //                       margin: EdgeInsets.only(top: 19),
+                //                       decoration: BoxDecoration(
+                //                           color: Colors.white,
+                //                           shape: BoxShape.circle),
+                //                       child: Container(
+                //                         // height: getSize(120),
+                //                         // width: getSize(200),
+                //                         height: getSize(120),
+                //                         width: getSize(134),
+                //                         padding: getPadding(
+                //                             left: 16,
+                //                             top: 20,
+                //                             right: 16,
+                //                             bottom: 22),
+                //                         margin: getPadding(
+                //                             left: 4,
+                //                             top: 4,
+                //                             right: 4,
+                //                             bottom: 4),
+                //                         decoration: BoxDecoration(
+                //                             shape: BoxShape.circle,
+                //                             image: DecorationImage(
+                //                                 fit: BoxFit.cover,
+                //                                 image: NetworkImage(
+                //                                     uploadImageController
+                //                                         .text))),
+                //                       ),
+                //                     ),
+                //                     Image.asset(
+                //                       "assets/newIcons/camera.png",
+                //                       height: 37,
+                //                     )
+                //                   ],
+                //                 )),
+                //     ])),
 
                 /// Textfield
                 Container(
@@ -521,19 +659,65 @@ class _EditCardScreenState extends ConsumerState<EditProfileScreen>
                           ),
                           margin: getMargin(left: 16, top: 15, right: 16),
                           textInputAction: TextInputAction.done),
-                      CustomTextFormField(
-                          controller: companyController,
-                          suffix: Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(16.0, 16, 14, 16),
-                            child: Image.asset("assets/newIcons/company.png"),
-                          ),
+                      // CustomTextFormField(
+                      //     controller: companyController,
+                      //     suffix: Padding(
+                      //       padding:
+                      //           const EdgeInsets.fromLTRB(16.0, 16, 14, 16),
+                      //       child: Image.asset("assets/newIcons/company.png"),
+                      //     ),
 
-                          // controller: designationController,
-                          label: AppConstants.company[index],
-                          hintText: AppConstants.company[index],
-                          margin: getMargin(left: 16, top: 15, right: 16),
-                          textInputAction: TextInputAction.done),
+                      //     // controller: designationController,
+                      //     label: AppConstants.company[index],
+                      //     hintText: AppConstants.company[index],
+                      //     margin: getMargin(left: 16, top: 15, right: 16),
+                      //     textInputAction: TextInputAction.done)
+                      Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+  child: TextFormField(
+    controller: companyController,
+    maxLength: 70,
+    keyboardType: TextInputType.text,
+    textInputAction: TextInputAction.done,
+    scrollPadding: const EdgeInsets.all(20),
+    style: const TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+      color: Colors.black,
+    ),
+    decoration: InputDecoration(
+        
+        
+         label: Text(AppConstants.company[index]),
+hintText: AppConstants.company[index],// Optional hint
+      floatingLabelBehavior: FloatingLabelBehavior.always, // Always show label
+      suffixIcon: Container(
+        margin: const EdgeInsets.only(right: 12),
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(
+          Icons.badge_outlined, // You can use your custom image here
+          size: 20,
+          color: Colors.grey.shade800,
+        ),
+      ),
+      counterText: '',
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: Colors.grey.shade400, width: 1),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: Colors.blue, width: 1.5),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+    ),
+  ),
+)
+,
                       SizedBox(
                         height: 120,
                         child: CustomTextFormField(
@@ -634,208 +818,7 @@ class _EditCardScreenState extends ConsumerState<EditProfileScreen>
                   ),
                 ),
 
-                /// Pick profile theme
-                /*Container(
-                    margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
-                    padding: getPadding(left: 7, top: 8, right: 7, bottom: 8),
-                    decoration: AppDecoration.outlineBlack9003f.copyWith(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Colors.white),
-                    child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                              padding: getPadding(left: 3),
-                              child: Text("Pick Profile Theme",
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.left,
-                                  style: AppStyle.txtPoppinsMedium12
-                                      .copyWith(fontSize: 14))),
-                          Padding(
-                              padding: getPadding(
-                                // left: 11,
-                                top: 16,
-                              ),
-                              child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    ...List.generate(
-                                        10,
-                                        (index) => InkWell(
-                                              onTap: () {
-                                                if (isIconColor == false) {
-                                                  showSnackbar(
-                                                      "Please enable profile color to set your color theme");
-                                                } else {
-                                                  // _viewModel
-                                                  //     .changeTheme(
-                                                  //         index);
-                                                  selectedIndex = index;
-                                                  setState(() {});
-                                                }
-                                              },
-                                              child: Stack(
-                                                alignment: Alignment.center,
-                                                children: [
-                                                  index == 0
-                                                      ? Stack(
-                                                          alignment:
-                                                              Alignment.center,
-                                                          children: [
-                                                            Container(
-                                                              height: 26,
-                                                              width: 26,
-                                                              decoration: BoxDecoration(
-                                                                  shape: BoxShape
-                                                                      .circle,
-                                                                  boxShadow: [
-                                                                    BoxShadow(
-                                                                        spreadRadius:
-                                                                            2,
-                                                                        blurRadius:
-                                                                            2,
-                                                                        color: Colors
-                                                                            .black
-                                                                            .withOpacity(0.2))
-                                                                  ],
-                                                                  color: Colors
-                                                                      .white),
-                                                            ),
-                                                            (selectedIndex == 0)
-                                                                ? Icon(
-                                                                    Icons.check,
-                                                                    size: 13,
-                                                                    color: Colors
-                                                                        .black,
-                                                                  )
-                                                                : SizedBox
-                                                                    .shrink()
-                                                          ],
-                                                        )
-                                                      : Stack(
-                                                          alignment:
-                                                              Alignment.center,
-                                                          children: [
-                                                            Image.asset(
-                                                              "assets/shades/shade_$index.png",
-                                                              height: 26,
-                                                            ),
-                                                            (selectedIndex ==
-                                                                    index)
-                                                                ? Icon(
-                                                                    Icons.check,
-                                                                    size: 13,
-                                                                    color: Colors
-                                                                        .white,
-                                                                  )
-                                                                : SizedBox
-                                                                    .shrink()
-                                                          ],
-                                                        ),
-                                                ],
-                                              ),
-                                            ))
-                                  ])),
-                          Padding(
-                              padding: getPadding(top: 9),
-                              child: Divider(
-                                  height: getVerticalSize(1),
-                                  thickness: getVerticalSize(1),
-                                  color: Color(0xffDBDBDB))),
-                          Align(
-                              alignment: Alignment.center,
-                              child: Padding(
-                                  padding:
-                                      getPadding(left: 6, top: 10, right: 11),
-                                  child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Padding(
-                                            padding: getPadding(top: 1),
-                                            child: Text(
-                                                "Color your profile theme",
-                                                overflow: TextOverflow.ellipsis,
-                                                textAlign: TextAlign.left,
-                                                style: AppStyle
-                                                    .txtPoppinsSemiBold10
-                                                    .copyWith(fontSize: 12))),
-                                        Container(
-                                          height: 24,
-                                          width: 45,
-                                          child:
-                                              AnimatedToggleSwitch<bool>.dual(
-                                            current: isIconColor,
-                                            first: false,
-                                            second: true,
-                                            innerColor: isIconColor
-                                                ? AppCol.primary
-                                                : Color(0xFFD0D5DD),
-                                            dif: 1.0,
-                                            borderColor: Colors.transparent,
-                                            // borderWidth: 2.0,
-                                            // height: 20,
-                                            indicatorSize: Size(17, 18),
-                                            indicatorColor: Colors.white,
-                                            onChanged: (b) {
-                                              setState(() {
-                                                isIconColor = b;
-                                                _viewModel
-                                                    .toggleStatus("theme");
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                      ]))),
-                          SizedBox(
-                            height: 10,
-                          )
-                        ])),*/
-
-                /// Add to link and info to profile
-                /*InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => LinkStoreScreen(),
-                    ));
-                  },
-                  child: Container(
-                      margin: getMargin(left: 16, top: 15, right: 16),
-                      width: double.infinity,
-                      // margin: getMargin(left: 16, top: 15, right: 16),
-                      padding: getPadding(top: 20, bottom: 20),
-                      decoration: AppDecoration.outlineBlack9003f.copyWith(
-                          color: Colors.white,
-                          borderRadius: BorderRadiusStyle.roundedBorder10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(height: 10),
-                          Image.asset("assets/newIcons/add.png", height: 49),
-                          SizedBox(height: 16),
-
-                          Text("Add Link and Info to Profile",
-                              style: TextStyle(
-                                  color: AppCol.gray900,
-                                  fontSize: 18,
-                                  fontFamily: 'Roboto',
-                                  fontWeight: FontWeight.w500)),
-                          SizedBox(height: 6),
-                          Text("Contact info, links and more",
-                              style: TextStyle(
-                                  color: Color(0xFF858585),
-                                  fontSize: 13,
-                                  fontFamily: 'Roboto',
-                                  fontWeight: FontWeight.w400)),
-                          SizedBox(height: 10),
-
-                          // SizedBox(height: 20),
-                        ],
-                      )),
-                ),*/
+              
 
                 /// Hello Direct container
                 Visibility(
@@ -871,9 +854,9 @@ class _EditCardScreenState extends ConsumerState<EditProfileScreen>
                               if (_userDetailService
                                       .userDetailResponse?.user?.isPro ==
                                   true) {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => PremiumView(),
-                                ));
+                                // Navigator.of(context).push(MaterialPageRoute(
+                                //   builder: (context) => PremiumView(),
+                                // ));
                               } else if (_userDetailService
                                       .userDetailResponse?.user?.isProPlus ==
                                   true) {
@@ -898,264 +881,264 @@ class _EditCardScreenState extends ConsumerState<EditProfileScreen>
                                           });
                                 });
                               } else {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => PremiumView(),
-                                ));
+                                // Navigator.of(context).push(MaterialPageRoute(
+                                //   builder: (context) => PremiumView(),
+                                // ));
                               }
                             },
                             child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Container(
-                                      width: getHorizontalSize(250),
-                                      margin: getMargin(top: 4),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text("SocioDirect™️",
-                                                  style: TextStyle(
-                                                      color: AppCol.gray900,
-                                                      fontSize: 16,
-                                                      fontFamily: 'Roboto',
-                                                      fontWeight:
-                                                          FontWeight.w600)),
-                                              SizedBox(width: 5),
-                                            ],
-                                          ),
-                                          SizedBox(height: 9.5),
-                                          Text(
-                                              "Share directly any single link of your choice  instead of sharing whole profile on every Tap.",
-                                              style: TextStyle(
-                                                  color: AppCol.gray900,
-                                                  fontSize: 12,
-                                                  fontFamily: 'Roboto',
-                                                  fontWeight: FontWeight.w400)),
-                                        ],
-                                      )),
-                                  Visibility(
-                                    visible: AppConstants.eligibility == true,
-                                    child: SizedBox(
-                                      height: 24,
-                                      width: 45,
-                                      child: AnimatedToggleSwitch<bool>.dual(
-                                        current: isDirect,
-                                        first: false,
-                                        second: true,
-                                        innerColor: isDirect
-                                            ? AppCol.primary
-                                            : Color(0xFFD0D5DD),
-                                        dif: 1.0,
-                                        borderColor: Colors.transparent,
-                                        // borderWidth: 2.0,
-                                        // height: 20,
-                                        indicatorSize: Size(17, 18),
-                                        indicatorColor: Colors.white,
-                                        onChanged: (b) {
-                                          if (_userDetailService
-                                                  .userDetailResponse
-                                                  ?.user
-                                                  ?.plan
-                                                  ?.planType
-                                                  ?.features ==
-                                              null) {
-                                            Navigator.of(context)
-                                                .push(MaterialPageRoute(
-                                              builder: (context) =>
-                                                  PremiumView(),
-                                            ));
-                                          } else if (_userDetailService
-                                              .userDetailResponse!
-                                              .user!
-                                              .plan!
-                                              .planType!
-                                              .features!
-                                              .contains("Hello Direct")) {
-                                            setState(() {
-                                              isDirect = b;
-                                              _viewModel
-                                                  .toggleStatus("helloDirect")
-                                                  .then((value) => {
-                                                        if (isDirect)
-                                                          {
-                                                            showModalBottomSheet(
-                                                              shape: RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              24)),
-                                                              context: context,
-                                                              builder: (context) =>
-                                                                  HelloDirectBottomSheet(
-                                                                      _viewModel),
-                                                            )
-                                                          }
-                                                      });
-                                            });
-                                          } else {
-                                            Navigator.of(context)
-                                                .push(MaterialPageRoute(
-                                              builder: (context) =>
-                                                  PremiumView(),
-                                            ));
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ),
+                                  // Container(
+                                  //     width: getHorizontalSize(250),
+                                  //     margin: getMargin(top: 4),
+                                  //     child: Column(
+                                  //       crossAxisAlignment:
+                                  //           CrossAxisAlignment.start,
+                                  //       children: [
+                                  //         Row(
+                                  //           children: [
+                                  //             Text("SocioDirect™️",
+                                  //                 style: TextStyle(
+                                  //                     color: AppCol.gray900,
+                                  //                     fontSize: 16,
+                                  //                     fontFamily: 'Roboto',
+                                  //                     fontWeight:
+                                  //                         FontWeight.w600)),
+                                  //             SizedBox(width: 5),
+                                  //           ],
+                                  //         ),
+                                  //         SizedBox(height: 9.5),
+                                  //         Text(
+                                  //             "Share directly any single link of your choice  instead of sharing whole profile on every Tap.",
+                                  //             style: TextStyle(
+                                  //                 color: AppCol.gray900,
+                                  //                 fontSize: 12,
+                                  //                 fontFamily: 'Roboto',
+                                  //                 fontWeight: FontWeight.w400)),
+                                  //       ],
+                                  //     )),
+                                  // Visibility(
+                                  //   visible: AppConstants.eligibility == true,
+                                  //   child: SizedBox(
+                                  //     height: 24,
+                                  //     width: 45,
+                                  //     child: AnimatedToggleSwitch<bool>.dual(
+                                  //       current: isDirect,
+                                  //       first: false,
+                                  //       second: true,
+                                  //       innerColor: isDirect
+                                  //           ? AppCol.primary
+                                  //           : Color(0xFFD0D5DD),
+                                  //       dif: 1.0,
+                                  //       borderColor: Colors.transparent,
+                                  //       // borderWidth: 2.0,
+                                  //       // height: 20,
+                                  //       indicatorSize: Size(17, 18),
+                                  //       indicatorColor: Colors.white,
+                                  //       onChanged: (b) {
+                                  //         if (_userDetailService
+                                  //                 .userDetailResponse
+                                  //                 ?.user
+                                  //                 ?.plan
+                                  //                 ?.planType
+                                  //                 ?.features ==
+                                  //             null) {
+                                  //           Navigator.of(context)
+                                  //               .push(MaterialPageRoute(
+                                  //             builder: (context) =>
+                                  //                 PremiumView(),
+                                  //           ));
+                                  //         } else if (_userDetailService
+                                  //             .userDetailResponse!
+                                  //             .user!
+                                  //             .plan!
+                                  //             .planType!
+                                  //             .features!
+                                  //             .contains("Hello Direct")) {
+                                  //           setState(() {
+                                  //             isDirect = b;
+                                  //             _viewModel
+                                  //                 .toggleStatus("helloDirect")
+                                  //                 .then((value) => {
+                                  //                       if (isDirect)
+                                  //                         {
+                                  //                           showModalBottomSheet(
+                                  //                             shape: RoundedRectangleBorder(
+                                  //                                 borderRadius:
+                                  //                                     BorderRadius
+                                  //                                         .circular(
+                                  //                                             24)),
+                                  //                             context: context,
+                                  //                             builder: (context) =>
+                                  //                                 HelloDirectBottomSheet(
+                                  //                                     _viewModel),
+                                  //                           )
+                                  //                         }
+                                  //                     });
+                                  //           });
+                                  //         } else {
+                                  //           Navigator.of(context)
+                                  //               .push(MaterialPageRoute(
+                                  //             builder: (context) =>
+                                  //                 PremiumView(),
+                                  //           ));
+                                  //         }
+                                  //       },
+                                  //     ),
+                                  //   ),
+                                  // ),
                                 ]),
                           ),
                         ),
 
                         ///
-                        Padding(
-                            padding: getPadding(top: 9),
-                            child: Divider(
-                                height: getVerticalSize(1),
-                                thickness: getVerticalSize(1),
-                                color: Color(0xffDBDBDB))),
+                        // Padding(
+                        //     padding: getPadding(top: 9),
+                        //     child: Divider(
+                        //         height: getVerticalSize(1),
+                        //         thickness: getVerticalSize(1),
+                        //         color: Color(0xffDBDBDB))),
 
-                        /// Hello Lead
-                        Visibility(
-                          visible: AppConstants.eligibility == true,
-                          child: InkWell(
-                            splashColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            onTap: () {
-                              if (_userDetailService
-                                      .userDetailResponse?.user?.isPro ==
-                                  true) {
-                                setState(() {
-                                  isGainLeads = !isGainLeads;
-                                  _viewModel.toggleStatus("gainLeads");
-                                });
-                              } else if (_userDetailService
-                                      .userDetailResponse?.user?.isProPlus ==
-                                  true) {
-                                setState(() {
-                                  isGainLeads = !isGainLeads;
-                                  _viewModel.toggleStatus("gainLeads");
-                                });
-                              } else {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => PremiumView(),
-                                ));
-                              }
-                            },
-                            child: Container(
-                                padding: getPadding(all: 20),
-                                decoration: AppDecoration.outlineBlack9003f
-                                    .copyWith(
-                                        borderRadius:
-                                            BorderRadiusStyle.roundedBorder5),
-                                child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
-                                          width: getHorizontalSize(250),
-                                          margin: getMargin(top: 4),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Text("SocioLead",
-                                                      style: TextStyle(
-                                                          color: AppCol.gray900,
-                                                          fontSize: 16,
-                                                          fontFamily: 'Roboto',
-                                                          fontWeight:
-                                                              FontWeight.w600)),
-                                                  SizedBox(width: 5),
-                                                  Image.asset(
-                                                    "assets/newIcons/premium.png",
-                                                    height: 14,
-                                                  )
-                                                ],
-                                              ),
-                                              SizedBox(height: 9.5),
-                                              RichText(
-                                                  text: TextSpan(children: [
-                                                    TextSpan(
-                                                        text:
-                                                            "Capture the details of another person before they can access your profile.",
-                                                        style: TextStyle(
-                                                            color:
-                                                                AppCol.gray900,
-                                                            fontSize: 12,
-                                                            fontFamily:
-                                                                'Roboto',
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w400))
-                                                  ]),
-                                                  textAlign: TextAlign.left),
-                                            ],
-                                          )),
-                                      Visibility(
-                                        visible:
-                                            AppConstants.eligibility == true,
-                                        child: SizedBox(
-                                          height: 24,
-                                          width: 45,
-                                          child:
-                                              AnimatedToggleSwitch<bool>.dual(
-                                            current: isGainLeads,
-                                            first: false,
-                                            second: true,
-                                            innerColor: isGainLeads
-                                                ? AppCol.primary
-                                                : Color(0xFFD0D5DD),
-                                            dif: 1.0,
-                                            borderColor: Colors.transparent,
-                                            // borderWidth: 2.0,
-                                            // height: 20,
-                                            indicatorSize: Size(17, 18),
-                                            indicatorColor: Colors.white,
-                                            onChanged: (b) {
-                                              if (_userDetailService
-                                                      .userDetailResponse
-                                                      ?.user
-                                                      ?.plan
-                                                      ?.planType
-                                                      ?.features ==
-                                                  null) {
-                                                Navigator.of(context)
-                                                    .push(MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      PremiumView(),
-                                                ));
-                                              } else if (_userDetailService
-                                                  .userDetailResponse!
-                                                  .user!
-                                                  .plan!
-                                                  .planType!
-                                                  .features!
-                                                  .contains("Gain Leads")) {
-                                                setState(() {
-                                                  isGainLeads = b;
-                                                  _viewModel.toggleStatus(
-                                                      "gainLeads");
-                                                });
-                                              } else {
-                                                Navigator.of(context)
-                                                    .push(MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      PremiumView(),
-                                                ));
-                                              }
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    ])),
-                          ),
-                        ),
+                        // /// Hello Lead
+                        // Visibility(
+                        //   visible: AppConstants.eligibility == true,
+                        //   child: InkWell(
+                        //     splashColor: Colors.transparent,
+                        //     highlightColor: Colors.transparent,
+                        //     onTap: () {
+                        //       if (_userDetailService
+                        //               .userDetailResponse?.user?.isPro ==
+                        //           true) {
+                        //         setState(() {
+                        //           isGainLeads = !isGainLeads;
+                        //           _viewModel.toggleStatus("gainLeads");
+                        //         });
+                        //       } else if (_userDetailService
+                        //               .userDetailResponse?.user?.isProPlus ==
+                        //           true) {
+                        //         setState(() {
+                        //           isGainLeads = !isGainLeads;
+                        //           _viewModel.toggleStatus("gainLeads");
+                        //         });
+                        //       } else {
+                        //         Navigator.of(context).push(MaterialPageRoute(
+                        //           builder: (context) => PremiumView(),
+                        //         ));
+                        //       }
+                        //     },
+                        //     child: Container(
+                        //         padding: getPadding(all: 20),
+                        //         decoration: AppDecoration.outlineBlack9003f
+                        //             .copyWith(
+                        //                 borderRadius:
+                        //                     BorderRadiusStyle.roundedBorder5),
+                        //         child: Row(
+                        //             mainAxisAlignment:
+                        //                 MainAxisAlignment.spaceBetween,
+                        //             children: [
+                        //               Container(
+                        //                   width: getHorizontalSize(250),
+                        //                   margin: getMargin(top: 4),
+                        //                   child: Column(
+                        //                     crossAxisAlignment:
+                        //                         CrossAxisAlignment.start,
+                        //                     children: [
+                        //                       Row(
+                        //                         children: [
+                        //                           Text("SocioLead",
+                        //                               style: TextStyle(
+                        //                                   color: AppCol.gray900,
+                        //                                   fontSize: 16,
+                        //                                   fontFamily: 'Roboto',
+                        //                                   fontWeight:
+                        //                                       FontWeight.w600)),
+                        //                           SizedBox(width: 5),
+                        //                           Image.asset(
+                        //                             "assets/newIcons/premium.png",
+                        //                             height: 14,
+                        //                           )
+                        //                         ],
+                        //                       ),
+                        //                       SizedBox(height: 9.5),
+                        //                       RichText(
+                        //                           text: TextSpan(children: [
+                        //                             TextSpan(
+                        //                                 text:
+                        //                                     "Capture the details of another person before they can access your profile.",
+                        //                                 style: TextStyle(
+                        //                                     color:
+                        //                                         AppCol.gray900,
+                        //                                     fontSize: 12,
+                        //                                     fontFamily:
+                        //                                         'Roboto',
+                        //                                     fontWeight:
+                        //                                         FontWeight
+                        //                                             .w400))
+                        //                           ]),
+                        //                           textAlign: TextAlign.left),
+                        //                     ],
+                        //                   )),
+                        //               Visibility(
+                        //                 visible:
+                        //                     AppConstants.eligibility == true,
+                        //                 child: SizedBox(
+                        //                   height: 24,
+                        //                   width: 45,
+                        //                   child:
+                        //                       AnimatedToggleSwitch<bool>.dual(
+                        //                     current: isGainLeads,
+                        //                     first: false,
+                        //                     second: true,
+                        //                     innerColor: isGainLeads
+                        //                         ? AppCol.primary
+                        //                         : Color(0xFFD0D5DD),
+                        //                     dif: 1.0,
+                        //                     borderColor: Colors.transparent,
+                        //                     // borderWidth: 2.0,
+                        //                     // height: 20,
+                        //                     indicatorSize: Size(17, 18),
+                        //                     indicatorColor: Colors.white,
+                        //                     onChanged: (b) {
+                        //                       if (_userDetailService
+                        //                               .userDetailResponse
+                        //                               ?.user
+                        //                               ?.plan
+                        //                               ?.planType
+                        //                               ?.features ==
+                        //                           null) {
+                        //                         Navigator.of(context)
+                        //                             .push(MaterialPageRoute(
+                        //                           builder: (context) =>
+                        //                               PremiumView(),
+                        //                         ));
+                        //                       } else if (_userDetailService
+                        //                           .userDetailResponse!
+                        //                           .user!
+                        //                           .plan!
+                        //                           .planType!
+                        //                           .features!
+                        //                           .contains("Gain Leads")) {
+                        //                         setState(() {
+                        //                           isGainLeads = b;
+                        //                           _viewModel.toggleStatus(
+                        //                               "gainLeads");
+                        //                         });
+                        //                       } else {
+                        //                         Navigator.of(context)
+                        //                             .push(MaterialPageRoute(
+                        //                           builder: (context) =>
+                        //                               PremiumView(),
+                        //                         ));
+                        //                       }
+                        //                     },
+                        //                   ),
+                        //                 ),
+                        //               ),
+                        //             ])),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),

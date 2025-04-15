@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:taptohello/core/constants.dart';
@@ -182,36 +184,46 @@ class _HomeViewState extends State<HomeView> {
                                   index == 3 ? AppCol.primary : AppCol.gray700))
                     ]),
                   ),
-                  InkWell(
-                    onTap: () {
-                      setState(() {
-                       // index = 4;
-                      });
-                    },
-                    child: Column(children: [
-                      Image.asset(
-                        "assets/images/analyticsIcons.png",
-                        height: 22,
-                        color: index == 4 ? AppCol.primary : null,
-                      ),
-                      SizedBox(height: 7),
-                      Text("Analytics",
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.left,
-                          style: AppStyle.txtPoppinsRegular10Gray700.copyWith(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                              color:
-                                  index == 4 ? AppCol.primary : AppCol.gray700)),
-                                  Text("(Coming Soon)",
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.left,
-                          style: AppStyle.txtPoppinsRegular10Gray700.copyWith(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                              color: AppCol.red400)),
-                    ]),
-                  ),
+                 if (Platform.isAndroid)
+  InkWell(
+    onTap: () {
+      setState(() {
+        // index = 4;
+      });
+    },
+    child: Column(
+      children: [
+        Image.asset(
+          "assets/images/analyticsIcons.png",
+          height: 22,
+          color: index == 4 ? AppCol.primary : null,
+        ),
+        SizedBox(height: 7),
+        Text(
+          "Analytics",
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.left,
+          style: AppStyle.txtPoppinsRegular10Gray700.copyWith(
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+            color: index == 4 ? AppCol.primary : AppCol.gray700,
+          ),
+        ),
+        Text(
+          "(Coming Soon)",
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.left,
+          style: AppStyle.txtPoppinsRegular10Gray700.copyWith(
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+            color: AppCol.red400,
+          ),
+        ),
+      ],
+    ),
+  )
+else
+  SizedBox.shrink(),
                 ]),
           )),
           backgroundColor: Colors.white,

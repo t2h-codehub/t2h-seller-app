@@ -18,7 +18,7 @@ if (keystorePropertiesFile.exists()) {
 // def appName = project.hasProperty('APP_NAME') ? project.APP_NAME : "TaptoHello"
 
 android {
-    namespace = "com.tapto.hello"
+    namespace = "com.socio.shop"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -33,7 +33,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.tapto.hello"
+        applicationId = "com.socio.shop"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         // minSdk = flutter.minSdkVersion

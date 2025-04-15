@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:taptohello/core/custom_loader.dart';
 import 'package:taptohello/core/utils/color_constant.dart';
@@ -30,11 +31,22 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
   ShipmentAndDeliveryPolicyController _shipmentAndDeliveryPolicyController = ShipmentAndDeliveryPolicyController();
   GetAllActivePoliciesResponceModel getAllActivePoliciesResponceModel = GetAllActivePoliciesResponceModel();
 
-   List storePolicyFeatures = [
-    'Shipping Policy',
-    'Return/Replacement Policy',
-    'Cancellation Policy'
-  ];
+  //  List storePolicyFeatures = [
+  //   'Shipping Policy',
+  //   'Return & Exchange Policy',
+  //   'Cancellation Policy'
+  // ];
+
+ List<String> storePolicyFeatures = [
+  'Shipping Policy',
+  'Return & Replacement Policy',
+  'Cancellation Policy',
+];
+
+
+List<Policies> apiPolicies = [];
+List<Policies> staticPolicies = [];
+
 
  Future<void> deletePlolicy(id) async {
      DialogBuilder(context).showLoadingIndicator("Uploading...");
@@ -84,9 +96,174 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
 //   }
 // }
 
+// Future<void> getAddPolicy() async {
+//   DialogBuilder(context).showLoadingIndicator("Loading...");
+  
+//   try {
+//     final UserDetailService _userDetailService = getIt<UserDetailService>();
+//     final userId = _userDetailService.userDetailResponse?.user?.id;
+
+//     if (userId == null) {
+//       print("Error: User ID is null");
+//       return;
+//     }
+
+//     final response = await _shipmentAndDeliveryPolicyController.getListPolicy(userId);
+//     DialogBuilder(context).hideOpenDialog();
+
+//     setState(() {
+//       // Ensure static policies always stay at the top
+//       List<Policies> staticPolicies = storePolicyFeatures.map((feature) {
+//         return Policies(
+//           sId: feature.replaceAll(' ', '_'), // Unique ID for static policies
+//           policyHeader: feature, 
+//           policyDescription: "$feature details will be added here...",
+//           policyType: "Default",
+//         );
+//       }).toList();
+
+//       // Assign the fetched policies below static policies
+//       policies = [...staticPolicies, if (response.policies != null) ...response.policies!];
+//     });
+//   } catch (e) {
+//     print("Error fetching policies: $e");
+//   }
+// }
+
+// Future<void> getAddPolicy() async {
+//   DialogBuilder(context).showLoadingIndicator("Loading...");
+
+//   try {
+//     final UserDetailService _userDetailService = getIt<UserDetailService>();
+//     final userId = _userDetailService.userDetailResponse?.user?.id;
+
+//     if (userId == null) {
+//       print("Error: User ID is null");
+//       return;
+//     }
+
+//     final response = await _shipmentAndDeliveryPolicyController.getListPolicy(userId);
+//     DialogBuilder(context).hideOpenDialog();
+
+//     setState(() {
+//       final apiPolicies = response.policies ?? [];
+
+//       // Get headers of API policies
+//       final apiPolicyHeaders = apiPolicies.map((p) => p.policyHeader).toSet();
+
+//       // Only add static policies if they are not present in API policies
+//       List<Policies> staticPolicies = storePolicyFeatures
+//           .where((feature) => !apiPolicyHeaders.contains(feature))
+//           .map((feature) => Policies(
+//                 sId: feature.replaceAll(' ', '_'),
+//                 policyHeader: feature,
+//                 policyDescription: "$feature details will be added here...",
+//                 policyType: "Default",
+//               ))
+//           .toList();
+
+//       // Combine static + api policies (no duplicates)
+//       policies = [...staticPolicies, ...apiPolicies];
+//     });
+//   } catch (e) {
+//     print("Error fetching policies: $e");
+//     DialogBuilder(context).hideOpenDialog();
+//   }
+// }
+
+// Future<void> getAddPolicy() async {
+//   DialogBuilder(context).showLoadingIndicator("Loading...");
+
+//   try {
+//     final UserDetailService _userDetailService = getIt<UserDetailService>();
+//     final userId = _userDetailService.userDetailResponse?.user?.id;
+
+//     if (userId == null) {
+//       print("Error: User ID is null");
+//       return;
+//     }
+
+//     final response = await _shipmentAndDeliveryPolicyController.getListPolicy(userId);
+//     DialogBuilder(context).hideOpenDialog();
+
+//     setState(() {
+//       final apiPolicies = response.policies ?? [];
+
+//       // Normalize static headers for comparison
+//       final lowerCaseStaticHeaders = storePolicyFeatures.map((e) => e.toLowerCase()).toSet();
+
+//       // Separate static and non-static policies from API
+//       List<Policies> apiStaticPolicies = apiPolicies.where((p) =>
+//         lowerCaseStaticHeaders.contains(p.policyHeader?.toLowerCase() ?? '')).toList();
+
+//       List<Policies> apiCustomPolicies = apiPolicies.where((p) =>
+//         !lowerCaseStaticHeaders.contains(p.policyHeader?.toLowerCase() ?? '')).toList();
+
+//       // Filter static policies to add only if not in API
+//       List<Policies> missingStaticPolicies = storePolicyFeatures
+//           .where((feature) =>
+//             !apiStaticPolicies.any((p) => p.policyHeader?.toLowerCase() == feature.toLowerCase()))
+//           .map((feature) => Policies(
+//                 sId: feature.replaceAll(' ', '_'),
+//                 policyHeader: feature,
+//                 policyDescription: "$feature details will be added here...",
+//                 policyType: "Default",
+//               ))
+//           .toList();
+
+//       // Final ordered list: API static policies first, then missing static ones, then API custom
+//       policies = [...apiStaticPolicies, ...missingStaticPolicies, ...apiCustomPolicies];
+//     });
+//   } catch (e) {
+//     print("Error fetching policies: $e");
+//     DialogBuilder(context).hideOpenDialog();
+//   }
+// }
+
+// Future<void> getAddPolicy() async {
+//   DialogBuilder(context).showLoadingIndicator("Loading...");
+
+//   try {
+//     final UserDetailService _userDetailService = getIt<UserDetailService>();
+//     final userId = _userDetailService.userDetailResponse?.user?.id;
+
+//     if (userId == null) {
+//       print("Error: User ID is null");
+//       return;
+//     }
+
+//     final response = await _shipmentAndDeliveryPolicyController.getListPolicy(userId);
+//     DialogBuilder(context).hideOpenDialog();
+
+//     setState(() {
+//       final apiPolicies = response.policies ?? [];
+
+//       final apiHeadersLower = apiPolicies
+//           .map((e) => e.policyHeader?.toLowerCase())
+//           .whereType<String>()
+//           .toSet();
+
+//       final List<Policies> staticPolicies = storePolicyFeatures
+//           .where((staticHeader) => !apiHeadersLower.contains(staticHeader.toLowerCase()))
+//           .map((header) => Policies(
+//                 sId: header.replaceAll(' ', '_'),
+//                 policyHeader: header,
+//                 policyDescription: "$header details will be added here...",
+//                 policyType: "Default",
+//               ))
+//           .toList();
+
+//       policies = [...apiPolicies, ...staticPolicies];
+//     });
+//   } catch (e) {
+//     print("Error fetching policies: $e");
+//     DialogBuilder(context).hideOpenDialog();
+//   }
+// }
+
 Future<void> getAddPolicy() async {
   DialogBuilder(context).showLoadingIndicator("Loading...");
-  
+
   try {
     final UserDetailService _userDetailService = getIt<UserDetailService>();
     final userId = _userDetailService.userDetailResponse?.user?.id;
@@ -99,24 +276,121 @@ Future<void> getAddPolicy() async {
     final response = await _shipmentAndDeliveryPolicyController.getListPolicy(userId);
     DialogBuilder(context).hideOpenDialog();
 
-    setState(() {
-      // Ensure static policies always stay at the top
-      List<Policies> staticPolicies = storePolicyFeatures.map((feature) {
-        return Policies(
-          sId: feature.replaceAll(' ', '_'), // Unique ID for static policies
-          policyHeader: feature, 
-          policyDescription: "$feature details will be added here...",
-          policyType: "Default",
-        );
-      }).toList();
+  setState(() {
+  apiPolicies = response.policies ?? [];
 
-      // Assign the fetched policies below static policies
-      policies = [...staticPolicies, if (response.policies != null) ...response.policies!];
-    });
+  // Map API headers to lowercase for easy matching
+  final Map<String, Policies> apiHeaderMap = {
+    for (var policy in apiPolicies)
+      policy.policyHeader?.toLowerCase() ?? '': policy,
+  };
+
+  // Build the list prioritizing storePolicyFeatures order
+  List<Policies> prioritizedPolicies = storePolicyFeatures.map((header) {
+    final key = header.toLowerCase();
+    if (apiHeaderMap.containsKey(key)) {
+      return apiHeaderMap[key]!;
+    } else {
+      return Policies(
+        sId: header.replaceAll(' ', '_'),
+        policyHeader: header,
+        policyDescription: "$header details will be added here...",
+        policyType: header,
+      );
+    }
+  }).toList();
+
+  // Add the remaining API policies that are NOT in storePolicyFeatures
+  final additionalApiPolicies = apiPolicies.where((p) =>
+      !storePolicyFeatures.map((e) => e.toLowerCase()).contains(p.policyHeader?.toLowerCase()));
+
+  // Final list
+  policies = [...prioritizedPolicies, ...additionalApiPolicies];
+});
+
+
   } catch (e) {
     print("Error fetching policies: $e");
+    DialogBuilder(context).hideOpenDialog();
   }
 }
+
+
+
+// Future<void> getAddPolicy() async {
+//   DialogBuilder(context).showLoadingIndicator("Loading...");
+
+//   try {
+//     final UserDetailService _userDetailService = getIt<UserDetailService>();
+//     final userId = _userDetailService.userDetailResponse?.user?.id;
+
+//     if (userId == null) {
+//       print("Error: User ID is null");
+//       return;
+//     }
+
+//     final response = await _shipmentAndDeliveryPolicyController.getListPolicy(userId);
+//     DialogBuilder(context).hideOpenDialog();
+
+//     setState(() {
+//       final apiPolicies = response.policies ?? [];
+
+//       // Normalize API policy headers to lowercase for easy comparison
+//       final apiPolicyHeadersLower = apiPolicies
+//           .map((p) => p.policyHeader?.toLowerCase() ?? '')
+//           .toSet();
+
+//       // Filter out static policies that already exist in API response
+//       final staticPolicies = storePolicyFeatures
+//           .where((feature) => !apiPolicyHeadersLower.contains(feature.toLowerCase()))
+//           .map((feature) => Policies(
+//                 sId: feature.replaceAll(' ', '_'),
+//                 policyHeader: feature,
+//                 policyDescription: "$feature details will be added here...",
+//                 policyType: "Default",
+//               ))
+//           .toList();
+
+//       // Put API versions of static policies first, in desired order
+//       // final prioritizedApiPolicies = storePolicyFeatures
+//       //     .map((feature) => apiPolicies.firstWhere(
+//       //         (p) => p.policyHeader?.toLowerCase() == feature.toLowerCase(),
+//       //         orElse: () => null))
+//       //     .whereType<Policies>()
+//       //     .toList();
+//       final prioritizedApiPolicies = <Policies>[];
+
+// for (final feature in storePolicyFeatures) {
+//   final matchingPolicy = apiPolicies.where((p) =>
+//     p.policyHeader?.toLowerCase() == feature.toLowerCase()).toList();
+
+//   if (matchingPolicy.isNotEmpty) {
+//     prioritizedApiPolicies.add(matchingPolicy.first);
+//   }
+// }
+
+
+//       // Add remaining API policies that aren't part of static
+//       final remainingApiPolicies = apiPolicies.where((p) =>
+//           !storePolicyFeatures
+//               .map((f) => f.toLowerCase())
+//               .contains(p.policyHeader?.toLowerCase())).toList();
+
+//       // Final policy list
+//       policies = [
+//         ...prioritizedApiPolicies,
+//         ...remainingApiPolicies,
+//         ...staticPolicies,
+//       ];
+//     });
+//   } catch (e) {
+//     print("Error fetching policies: $e");
+//     DialogBuilder(context).hideOpenDialog();
+//   }
+// }
+
+
+
 
 
 
@@ -175,6 +449,7 @@ Future<void> getAddPolicy() async {
   }
 
   void navigateToAnotherScreen() async {
+    
   // Push another screen and wait for result after returning
   await Navigator.push(
     context,
@@ -226,26 +501,203 @@ Future<void> getAddPolicy() async {
 
   bool isStaticPolicy = storePolicyFeatures.contains(policy.policyHeader);
 
-  void navigateToPolicyScreen(String policyName) {
-    if (policyName == 'Return/Replacement Policy') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ReturnReplacementPolicyScreen()),
-      );
-    } else if (policyName == 'Shipping Policy') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ShipmentAndDeliveryPolicyScreen()),
-      );
-    } else if (policyName == 'Cancellation Policy') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => CancellationPolicyScreen()),
-      );
-    } else {
-      navigateToAnotherScreenEdit(policy); // Default to edit screen
-    }
+  // Ensure this is imported
+
+
+
+void navigateToPolicyScreen(String policyName) {
+  final policyNameLower = policyName.toLowerCase();
+
+  Policies? apiPolicy;
+
+  try {
+    apiPolicy = apiPolicies.firstWhere(
+      (p) => p.policyHeader?.toLowerCase() == policyNameLower,
+    );
+  } catch (e) {
+    apiPolicy = null;
   }
+
+  if (apiPolicy != null) {
+    print('✅ Opening edit screen for: ${apiPolicy.policyHeader}');
+    navigateToAnotherScreenEdit(apiPolicy);
+  } else {
+    print('➕ Not found in API, opening AddPolicyScreen for: $policyName');
+    final newPolicy = Policies(
+      sId: policyName.replaceAll(' ', '_'),
+      policyHeader: policyName,
+      policyDescription: "$policyName details will be added here...",
+      policyType: policyName,
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddPolicyScreen(
+          onAdd: _addPolicy,
+          policyHeader: policyName,
+          policy: newPolicy,
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+//   void navigateToPolicyScreen(String policyName) {
+//   final policyNameLower = policyName.toLowerCase();
+
+//   Policies? apiPolicy;
+//   try {
+//     apiPolicy = policies.firstWhere(
+//       (p) => (p.policyHeader?.toLowerCase() == policyNameLower),
+//     );
+//   } catch (e) {
+//     apiPolicy = null;
+//   }
+
+//   if (apiPolicy != null) {
+//     // ✅ Found in API — open Edit screen
+//     navigateToAnotherScreenEdit(apiPolicy);
+//   } else {
+//     // ➕ Not found in API — open Add screen
+//     Navigator.push(
+//       context,
+//       MaterialPageRoute(
+//         builder: (context) => AddPolicyScreen(
+//           onAdd: _addPolicy,
+//           policyHeader: policyName,
+//           policy: Policies(
+//             sId: policyName.replaceAll(' ', '_'),
+//             policyHeader: policyName,
+//             policyDescription: "$policyName details will be added here...",
+//             policyType: "Default",
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
+//   void navigateToPolicyScreen(String policyName, Policies policy) {
+//   final policyNameLower = policyName.toLowerCase();
+
+//   bool isFromApi = policies.any((p) =>
+//       p.policyHeader?.toLowerCase() == policyNameLower &&
+//       (p.policyType?.toLowerCase() ?? '') != 'default');
+
+//   if (policyNameLower == 'return & exchange policy') {
+//     if (isFromApi) {
+//       navigateToAnotherScreenEdit(policy);
+//     } else {
+//       Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//           builder: (context) => AddPolicyScreen(
+//             onAdd: _addPolicy,
+//             policyHeader: "Return & Exchange Policy",
+//             policy: policy,
+//           ),
+//         ),
+//       );
+//     }
+//   } 
+//   else if (policyNameLower == 'shipping policy') {
+//     if (isFromApi) {
+//       navigateToAnotherScreenEdit(policy);
+//     } else {
+//       Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//           builder: (context) => AddPolicyScreen(
+//             onAdd: _addPolicy,
+//             policyHeader: "Shipping Policy",
+//             policy: policy,
+//           ),
+//         ),
+//       );
+//     }
+//   } else if (policyNameLower == 'cancellation policy') {
+//     if (isFromApi) {
+//       navigateToAnotherScreenEdit(policy);
+//     } else {
+//       Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//           builder: (context) => AddPolicyScreen(
+//             onAdd: _addPolicy,
+//             policyHeader: "Cancellation Policy",
+//             policy: policy,
+//           ),
+//         ),
+//       );
+//     }
+//   } else {
+//     navigateToAnotherScreenEdit(policy); // For custom policies
+//   }
+// }
+
+
+//   void navigateToPolicyScreen(String policyName) {
+//     if (policyName == 'Return & Exchange Policy') {
+    
+//      if (policy.policyHeader?.toLowerCase() == 'return & exchange policy'.toLowerCase()) {
+//        navigateToAnotherScreenEdit(policy);
+  
+// }
+//      else{
+//     Navigator.push(
+//     context,
+//     MaterialPageRoute(
+//     builder: (context) => AddPolicyScreen(onAdd: _addPolicy,policyHeader: "Return & Exchange Policy",policy: policy ),
+//   ),
+//   );
+//      }
+
+  
+  
+//     } 
+//     else if (policyName == 'Shipping Policy') {
+//         if (policy.policyHeader?.toLowerCase() == 'Shipping Policy'.toLowerCase()) {
+//        navigateToAnotherScreenEdit(policy);
+  
+// }
+//      else{
+//     Navigator.push(
+//     context,
+//     MaterialPageRoute(
+//     builder: (context) => AddPolicyScreen(onAdd: _addPolicy,policyHeader: "Shipping Policy",policy: policy ),
+//   ),
+//   );
+//      }
+
+  
+     
+//     } 
+//     else if (policyName == 'Cancellation Policy') {    
+//        if (policy.policyHeader?.toLowerCase() == 'Cancellation Policy'.toLowerCase()) {
+//        navigateToAnotherScreenEdit(policy);
+  
+// }
+//      else{
+//     Navigator.push(
+//     context,
+//     MaterialPageRoute(
+//     builder: (context) => AddPolicyScreen(onAdd: _addPolicy,policyHeader: "Cancellation Policy",policy: policy ),
+//   ),
+//   );
+//      }
+
+  
+//     } else {
+//       navigateToAnotherScreenEdit(policy); // Default to edit screen
+//     }   
+//   }
 
   return Container(
     padding: const EdgeInsets.all(16),
@@ -276,7 +728,9 @@ Future<void> getAddPolicy() async {
         IconButton(
           icon: Icon(Icons.edit, color: AppCol.primary),
           onPressed: () {
-            navigateToPolicyScreen(policy.policyHeader!);
+          //  navigateToPolicyScreen(policy.policyHeader!);
+          navigateToPolicyScreen(policy.policyHeader ?? '');
+            
           },
         ),
         if (!isStaticPolicy) // Remove delete button for static policies
@@ -288,112 +742,6 @@ Future<void> getAddPolicy() async {
     ),
   );
 },
-
-//                    itemBuilder: (context, index) {
-//   final policy = policies[index];
-
-//   bool isStaticPolicy = storePolicyFeatures.contains(policy.policyHeader);
-
-//   return Container(
-//     padding: const EdgeInsets.all(16),
-//     margin: const EdgeInsets.only(bottom: 12),
-//     decoration: BoxDecoration(
-//       color: Colors.white,
-//       borderRadius: BorderRadius.circular(12),
-//       boxShadow: [
-//         BoxShadow(
-//           color: Colors.black.withOpacity(0.1),
-//           blurRadius: 4,
-//           spreadRadius: 1,
-//         ),
-//       ],
-//     ),
-//     child: Row(
-//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//       children: [
-//         Expanded(
-//           child: Text(
-//             policy.policyHeader!,
-//             style: const TextStyle(
-//               fontSize: 16,
-//               fontWeight: FontWeight.w500,
-//             ),
-//           ),
-//         ),
-//         IconButton(
-//           icon: Icon(Icons.edit, color: AppCol.primary),
-//           onPressed: () {
-//             navigateToAnotherScreenEdit(policy);
-//           },
-//         ),
-//         if (!isStaticPolicy) // ❌ Remove delete button for static policies
-//           IconButton(
-//             icon: const Icon(Icons.delete, color: Colors.red),
-//             onPressed: () => _deletePolicy(policy.sId!),
-//           ),
-//       ],
-//     ),
-//   );
-// },
-
-
-//                   itemBuilder: (context, index) {
-//   final policy = policies[index];
-//   return Dismissible(
-//     key: Key(policy.sId!), // Use policy.sId
-//     direction: DismissDirection.endToStart,
-//     background: Container(
-//       padding: const EdgeInsets.symmetric(horizontal: 20),
-//       alignment: Alignment.centerRight,
-//       color: Colors.red,
-//       child: const Icon(Icons.delete, color: Colors.white),
-//     ),
-//     onDismissed: (direction) {
-//       _deletePolicy(policy.sId!); // Use policy.sId
-//     },
-//     child: Container(
-//       padding: const EdgeInsets.all(16),
-//       margin: const EdgeInsets.only(bottom: 12),
-//       decoration: BoxDecoration(
-//         color: Colors.white,
-//         borderRadius: BorderRadius.circular(12),
-//         boxShadow: [
-//           BoxShadow(
-//             color: Colors.black.withOpacity(0.1),
-//             blurRadius: 4,
-//             spreadRadius: 1,
-//           ),
-//         ],
-//       ),
-//       child: Row(
-//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//         children: [
-//           Expanded(
-//             child: Text(
-//               policy.policyHeader!, // Use policy.policyType
-//               style: const TextStyle(
-//                 fontSize: 16,
-//                 fontWeight: FontWeight.w500,
-//               ),
-//             ),
-//           ),
-//           IconButton(
-//             icon: Icon(Icons.edit, color: AppCol.primary),
-            
-//             onPressed:() {
-//               navigateToAnotherScreenEdit(policy);
-//             },
-
-//           ),
-//           IconButton(
-//             icon: const Icon(Icons.delete, color: Colors.red),
-//             onPressed: () => _deletePolicy(policy.sId!), // Use policy.sId
-//           ),
-//         ],
-//       ),
-//     ),
-//   );
-// }
 
                   ),
           ),
