@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/core/utils/color_constant.dart';
 
 class ImageViewer extends StatefulWidget {
@@ -35,6 +37,19 @@ class _ImageViewerState extends State<ImageViewer> {
           ),
           centerTitle: true,
         ),
-        body: Image.network(widget.imageUrl));
+        body: CachedNetworkImage(
+  imageUrl: (widget.imageUrl != null && widget.imageUrl.isNotEmpty)
+      ? (widget.imageUrl.contains(AppConstants.imageBaseUrl)
+          ? widget.imageUrl
+          : AppConstants.imageBaseUrl + widget.imageUrl)
+      : "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659651_640.png", // fallback
+  fit: BoxFit.cover,
+  placeholder: (context, url) =>
+      const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+  errorWidget: (context, url, error) => const Icon(Icons.error),
+)
+
+        //Image.network(widget.imageUrl)
+        );
   }
 }

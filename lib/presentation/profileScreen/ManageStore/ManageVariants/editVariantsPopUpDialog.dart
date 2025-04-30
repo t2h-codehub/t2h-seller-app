@@ -65,7 +65,7 @@ class _EditVariantsPopDialogState extends State<EditVariantsPopDialog> {
     debugPrint('My list is: ${widget.selectedVariantValue}');
     for (var element in widget.selectedVariantValue) {
       debugPrint('My list is: ${element.title}');
-      selectedValue.add(element.title);
+      selectedValue.add(element.title.toString().split(' || ')?.first.trim() ?? '');
     }
   }
 
@@ -282,24 +282,66 @@ class _EditVariantsPopDialogState extends State<EditVariantsPopDialog> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
-                      variantValueIds.clear();
-                      manageVariantsApiResModel.variants?.forEach((element) {
-                        if (element.title == variantTypeController.text) {
-                          variantTypeId = element.sId!;
-                        }
-                      });
+                    // onPressed: () {
+                    //   variantValueIds.clear();
+                    //   manageVariantsApiResModel.variants?.forEach((element) {
+                    //     if (element.title == variantTypeController.text) {
+                    //       variantTypeId = element.sId!;
+                    //     }
+                    //   });
 
-                      for (var element in selectedValue) {
-                        for (var subElement in adminVariantValue) {
-                          if (subElement['valueTitle'] == element) {
-                            variantValueIds.add(subElement['valueId']);
-                          }
-                          setState(() {});
-                        }
-                      }
-                      addVariantValue();
-                    },
+                    //   for (var element in selectedValue) {
+                    //     for (var subElement in adminVariantValue) {
+                    //       if (subElement['valueTitle'] == element) {
+                    //         variantValueIds.add(subElement['valueId']);
+                    //       }
+                    //       setState(() {});
+                    //     }
+                    //   }
+                    //   addVariantValue();
+                    // },
+                       onPressed: () {
+  variantValueIds.clear();
+
+  // Get variant type ID from selected variant title
+  final selectedType = variantTypeController.text;
+  Variants? matchedVariant;
+
+  try {
+    matchedVariant = manageVariantsApiResModel.variants!
+        .firstWhere((variant) => variant.title == selectedType);
+  } catch (e) {
+    matchedVariant = null;
+  }
+
+  if (matchedVariant != null) {
+    variantTypeId = matchedVariant.sId!;
+  }
+
+  // Match selected values with valueIds
+  for (var selected in selectedValue) {
+  Map<String, dynamic>? matchedValue;
+
+  try {
+    matchedValue = adminVariantValue.firstWhere(
+      (variant) =>
+          (variant['valueTitle']?.toString().split(' || ')?.first.trim() ?? '') ==
+          selected,
+    );
+  } catch (e) {
+    matchedValue = null;
+  }
+
+  if (matchedValue != null) {
+    variantValueIds.add(matchedValue['valueId']);
+  }
+}
+
+
+  setState(() {}); // Only once after processing
+
+  addVariantValue();
+},
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 15),
@@ -561,21 +603,53 @@ Future<String> showAddedVariantValueModalSheet(
                               itemBuilder: (context, index) {
                                 return Column(
                                   children: [
+                                    // InkWell(
+                                    //   onTap: () {
+                                    //      selectedString.complete(values[index]);
+                                    //     // selectedString.complete(values[index].split(' || ').first.trim());
+                                    //     // values[index].split(' || ').first.trim(), 
+                                    //     Navigator.pop(context);
+                                    //   },
+                                    //   child: Container(
+                                    //     margin: EdgeInsets.symmetric(vertical: 10),
+                                    //     child: Center(
+                                    //       child: Text(
+                                    //       //  values[index],
+                                    //         values[index].split(' || ').first.trim(), 
+                                    //         style: TextStyle(fontSize: 16),
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // ),
                                     InkWell(
-                                      onTap: () {
-                                        selectedString.complete(values[index]);
-                                        Navigator.pop(context);
-                                      },
-                                      child: Container(
-                                        margin: EdgeInsets.symmetric(vertical: 10),
-                                        child: Center(
-                                          child: Text(
-                                            values[index],
-                                            style: TextStyle(fontSize: 16),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+  onTap: () {
+    //  //selectedString.complete(values[index]);
+    //  selectedString.complete(values[index].split(' || ').first.trim());
+    //  print(selectedString);
+    selectedString.complete(values[index].split(' || ').first.trim());
+    Navigator.pop(context);
+  },
+//   onTap: () {
+//   final selected = values[index].split(' || ').first.trim();
+//   print('User tapped on: $selected');
+
+//   if (!selectedString.isCompleted) {
+//     selectedString.complete(selected);
+//     Navigator.pop(context);
+//   }
+// }
+
+  child: Container(
+    margin: EdgeInsets.symmetric(vertical: 10),
+    child: Center(
+      child: Text(
+        values[index].split(' || ').first.trim(),
+        style: TextStyle(fontSize: 16),
+      ),
+    ),
+  ),
+),
+
                                     Divider(color: Colors.grey),
                                   ],
                                 );

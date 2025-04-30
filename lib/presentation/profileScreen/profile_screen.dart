@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
@@ -178,24 +179,50 @@ class _EditProfileScreenState extends ConsumerState<ProfileScreen>
                                           _userDetailService.userDetailResponse
                                                       ?.user?.profileImg !=
                                                   ""
-                                              ? Container(
-                                                  height: getSize(95),
-                                                  width: getSize(95),
-                                                  margin: getMargin(
-                                                      top: 16,
-                                                      bottom: 23,
-                                                      left: 16),
-                                                  decoration: BoxDecoration(
-                                                      color: AppCol.gray700,
-                                                      image: DecorationImage(
-                                                          fit: BoxFit.cover,
-                                                          image: NetworkImage(
-                                                              _userDetailService
-                                                                      .userDetailResponse
-                                                                      ?.user
-                                                                      ?.profileImg ??
-                                                                  "")),
-                                                      shape: BoxShape.circle))
+                                              ? 
+                                              Container(
+  height: getSize(95),
+  width: getSize(95),
+  margin: getMargin(
+    top: 16,
+    bottom: 23,
+    left: 16,
+  ),
+  decoration: BoxDecoration(
+    color: AppCol.gray700,
+    image: DecorationImage(
+      fit: BoxFit.cover,
+      image: CachedNetworkImageProvider(
+        (_userDetailService.userDetailResponse?.user?.profileImg != null &&
+                _userDetailService.userDetailResponse!.user!.profileImg!.isNotEmpty)
+            ? (_userDetailService.userDetailResponse!.user!.profileImg!.contains(AppConstants.imageBaseUrl)
+                ? _userDetailService.userDetailResponse!.user!.profileImg!
+                : AppConstants.imageBaseUrl + _userDetailService.userDetailResponse!.user!.profileImg!)
+            : "",  // Default value if the URL is null or empty
+      ),
+    ),
+    shape: BoxShape.circle,
+  ),
+)
+
+                                              // Container(
+                                              //     height: getSize(95),
+                                              //     width: getSize(95),
+                                              //     margin: getMargin(
+                                              //         top: 16,
+                                              //         bottom: 23,
+                                              //         left: 16),
+                                              //     decoration: BoxDecoration(
+                                              //         color: AppCol.gray700,
+                                              //         image: DecorationImage(
+                                              //             fit: BoxFit.cover,
+                                              //             image: NetworkImage(
+                                              //                 _userDetailService
+                                              //                         .userDetailResponse
+                                              //                         ?.user
+                                              //                         ?.profileImg ??
+                                              //                     "")),
+                                              //         shape: BoxShape.circle))
                                               : Container(
                                                   height: getSize(95),
                                                   width: getSize(95),

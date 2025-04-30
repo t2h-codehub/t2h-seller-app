@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:taptohello/core/app_export.dart';
+import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/core/utils/commonFun.dart';
 import 'package:taptohello/data/productCategoryModel/addProductApiResModel.dart';
 import 'package:taptohello/data/productCategoryModel/awsPhotoUploadApiResModel.dart';
@@ -114,7 +116,27 @@ class _InstagramAddProductScreenState extends State<InstagramAddProductScreen> {
     debugPrint('My instagram image url is: ${widget.isVideo}');
     selectedImages.add(widget.imageMedia);
     if (widget.isVideo) {
-      videoControllers.add(VideoPlayerController.networkUrl(Uri.parse(widget.imageMedia)));
+     // videoControllers.add(VideoPlayerController.networkUrl(Uri.parse(widget.imageMedia)));
+     // Check if the widget.imageMedia contains AppConstants.imageBaseUrl
+if (widget.imageMedia.contains(AppConstants.imageBaseUrl)) {
+  // Add the video controller for the valid media URL
+  videoControllers.add(
+    VideoPlayerController.network(widget.imageMedia)
+      ..initialize().then((_) {
+        if (mounted) {
+          setState(() {});
+        }
+      }).catchError((error) {
+        // Handle any error if the media fails to load
+        print("Failed to load video: $error");
+      }),
+  );
+} else {
+  // Handle the case when the URL doesn't match the base URL
+  print("Invalid video URL: ${widget.imageMedia}");
+  // Optionally, you can load a fallback or show an error here
+}
+
       videoControllers.last.initialize().then((_) {
 
       });
@@ -443,13 +465,34 @@ class _InstagramAddProductScreenState extends State<InstagramAddProductScreen> {
                             itemBuilder: (context, index) {
                               debugPrint('My images list ifdgdfgdfhfds: $selectedImages');
                               if (index < selectedImages.length) {
-                                int videoIndex = index - selectedImageVideos.length;
-                                return widget.isVideo ? Center(
-                                    child: AspectRatio(
-                                      aspectRatio: videoControllers[videoIndex].value.aspectRatio,
-                                      child: VideoPlayer(videoControllers[videoIndex]),
-                                    )) : Image.network(selectedImages[index]);
-                              } else {
+  int videoIndex = index - selectedImageVideos.length;
+  return widget.isVideo
+      ? Center(
+          child: AspectRatio(
+            aspectRatio: videoControllers[videoIndex].value.aspectRatio,
+            child: VideoPlayer(videoControllers[videoIndex]),
+          ),
+        )
+      : CachedNetworkImage(
+          imageUrl: selectedImages[index].contains(AppConstants.imageBaseUrl)
+              ? selectedImages[index]
+              : AppConstants.imageBaseUrl + selectedImages[index],
+          fit: BoxFit.cover,
+          placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
+        );
+}
+
+                              // if (index < selectedImages.length) {
+                              //   int videoIndex = index - selectedImageVideos.length;
+                              //   return widget.isVideo ? Center(
+                              //       child: AspectRatio(
+                              //         aspectRatio: videoControllers[videoIndex].value.aspectRatio,
+                              //         child: VideoPlayer(videoControllers[videoIndex]),
+                              //       )) :
+                              //        Image.network(selectedImages[index]);
+                              // } 
+                              else {
                                 int videoIndex = index - selectedImageVideos.length;
                                 return Stack(
                                   children: [

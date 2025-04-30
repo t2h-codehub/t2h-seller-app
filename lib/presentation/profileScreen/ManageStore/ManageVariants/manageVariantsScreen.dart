@@ -343,7 +343,7 @@ class _ManageVariantsScreenState extends State<ManageVariantsScreen> {
               builder: (BuildContext context) {
                 return EditVariantsPopDialog(
                   productID: widget.productId,
-                  selectedVariantType: "${variant.variantType?.title}",
+                  selectedVariantType: "${variant.variantType?.title.toString().split(' || ')?.first.trim() ?? ''}",
                   selectedVariantValue: variant.values!,
                   objectId: "${variant.id}",
                 );
@@ -510,19 +510,19 @@ class _ManageVariantsScreenState extends State<ManageVariantsScreen> {
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(color: Colors.grey, strokeAlign: 0.8),
                 ),
-                child: Text('${variant.variantType?.title}'),
+                child: Text('${variant.variantType?.title.toString().split(' || ')?.first.trim() ?? ''}'),
               ),
               Wrap(
                 spacing: 10,
                 children: variant.values!.map((value) {
                   return Chip(
-                    label: Text(value.title.toString()),
+                    label: Text(value.title.toString().toString().split(' || ')?.first.trim() ?? ''),
                   );
                 }).toList(),
               ),
               // Show variant buttons for the next variant if needed
               if (index == 0 && _categories.length == 1)
-                variantButtons(variantType: 2, vaariantType: "${variant.variantType?.title}"),
+                variantButtons(variantType: 2, vaariantType: "${variant.variantType?.title.toString().split(' || ')?.first.trim() ?? ''}"),
               if (index < _categories.length - 1) Divider(color: Colors.grey),
             ],
           );

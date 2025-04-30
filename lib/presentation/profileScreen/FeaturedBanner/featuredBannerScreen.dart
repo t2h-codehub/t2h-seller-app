@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:reorderable_grid/reorderable_grid.dart';
+import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/core/custom_loader.dart';
 import 'package:taptohello/core/utils/color_constant.dart';
 import 'package:taptohello/data/productCategoryModel/addBannerApiResModel.dart';
@@ -479,16 +480,36 @@ void _confirmDeleteBanner(int index, {bool isNewUpload = false, String? bannerId
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: CachedNetworkImage(
-                        imageUrl: banner.bannerImage ?? '',
-                        width: double.infinity,
+                      child: 
+                      // CachedNetworkImage(
+                      //   imageUrl: banner.bannerImage ?? '',
+                      //   width: double.infinity,
+                      //   height: 140,
+                      //   fit: BoxFit.cover,
+                      //   placeholder: (context, url) =>
+                      //       const Center(child: CircularProgressIndicator()),
+                      //   errorWidget: (context, url, error) =>
+                      //       const Icon(Icons.image_not_supported, size: 100, color: Colors.grey),
+                      // ),
+                       CachedNetworkImage(
+  imageUrl: banner.bannerImage != null &&
+          banner.bannerImage
+              .contains(AppConstants.imageBaseUrl)
+      ? banner.bannerImage
+      :  AppConstants.imageBaseUrl   +
+          (banner.bannerImage ?? ''),
+    width: double.infinity,
                         height: 140,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) =>
-                            const Center(child: CircularProgressIndicator()),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.image_not_supported, size: 100, color: Colors.grey),
-                      ),
+  fit: BoxFit.cover,
+  placeholder: (context, url) => const Center(
+    child: CircularProgressIndicator(),
+  ),
+  errorWidget: (context, url, error) => const Icon(
+    Icons.image_not_supported,
+    size: 100,
+    color: Colors.grey,
+  ),
+),
                     ),
                     Positioned(
                       top: 6,

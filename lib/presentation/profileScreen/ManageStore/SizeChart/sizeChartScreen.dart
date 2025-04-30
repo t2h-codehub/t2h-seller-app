@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/core/utils/color_constant.dart';
 import 'package:taptohello/data/productCategoryModel/awsPhotoUploadApiResModel.dart';
 import 'package:taptohello/data/productCategoryModel/sizeChartApiResModel.dart';
@@ -32,6 +34,10 @@ class _SizeChartScreenState extends State<SizeChartScreen>
   final AddProductController _addProductController = AddProductController();
 
   SizeChartFirstTimeData sizeChartFirstTimeData = SizeChartFirstTimeData();
+
+//  final sharedPrefKey = 'mySizeChartImageIsByProductId/${widget.productId}';
+// final sharedPrefImage = SharedPreferenceService.getString(sharedPrefKey) ?? '';
+late String sharedPrefImage;
 
   String? _selectedGender;
   String? _selectedCategory;
@@ -88,6 +94,8 @@ class _SizeChartScreenState extends State<SizeChartScreen>
   @override
   void initState() {
     super.initState();
+    final sharedPrefKey = 'mySizeChartImageIsByProductId/${widget.productId}';
+    sharedPrefImage = SharedPreferenceService.getString(sharedPrefKey) ?? '';
     _tabController = TabController(length: 2, vsync: this);
     getDataFromLocal();
     getSizeChart();
@@ -341,19 +349,46 @@ class _SizeChartScreenState extends State<SizeChartScreen>
                           : SizedBox(),
                       SizedBox(height: 16),
 
-                      if (sizeChartApiResModel.data != null && sizeChartApiResModel.success == true) ...[
-                        Image.network(
-                          '${sizeChartApiResModel.data?[0].images?[selectedInchOrCM].url}',
-                          fit: BoxFit.fill,
-                        )
-                      ],
+                      // if (sizeChartApiResModel.data != null && sizeChartApiResModel.success == true) ...[
+                      //   Image.network(
+                      //     '${sizeChartApiResModel.data?[0].images?[selectedInchOrCM].url}',
+                      //     fit: BoxFit.fill,
+                      //   )
+                      // ],
 
-                      if(sizeChartApiResModel.data == null && SharedPreferenceService.getString('mySizeChartImageIsByProductId/${widget.productId}') != '') ...[
-                        Image.network(
-                          '${SharedPreferenceService.getString('mySizeChartImageIsByProductId/${widget.productId}')}',
-                          fit: BoxFit.fill,
-                        )
-                      ],
+                      // if(sizeChartApiResModel.data == null && SharedPreferenceService.getString('mySizeChartImageIsByProductId/${widget.productId}') != '') ...[
+                      //   Image.network(
+                      //     '${SharedPreferenceService.getString('mySizeChartImageIsByProductId/${widget.productId}')}',
+                      //     fit: BoxFit.fill,
+                      //   )
+                      // ],
+
+                   
+
+if (sizeChartApiResModel.data != null && sizeChartApiResModel.success == true) ...[
+  CachedNetworkImage(
+    imageUrl: (() {
+      final url = sizeChartApiResModel.data?[0].images?[selectedInchOrCM].url ?? '';
+      return url.contains(AppConstants.imageBaseUrl)
+          ? url
+          : AppConstants.imageBaseUrl + url;
+    })(),
+    fit: BoxFit.fill,
+    placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+    errorWidget: (context, url, error) => const Icon(Icons.error),
+  )
+] else if (sizeChartApiResModel.data == null && sharedPrefImage.isNotEmpty) ...[
+  CachedNetworkImage(
+    imageUrl: sharedPrefImage.contains(AppConstants.imageBaseUrl)
+        ? sharedPrefImage
+        : AppConstants.imageBaseUrl + sharedPrefImage,
+    fit: BoxFit.fill,
+    placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+    errorWidget: (context, url, error) => const Icon(Icons.error),
+  )
+],
+
+
 
                       if (sizeChartApiResModel.success == false) ...[
                         Center(

@@ -161,19 +161,39 @@ class _ManageCollectionScreenState extends State<ManageCollectionScreen> {
                             trailing: Wrap(
   spacing: 12,
   children: [
+    // InkWell(
+    //   onTap: () {
+    //     Clipboard.setData(ClipboardData(
+    //       text: "${AppConstants.storeUrl}${_userDetailService.userDetailResponse?.user?.username}/collectiondetails/${manageCollectionApiResModel.collections![index].title?.trim().replaceAll(RegExp(r'\s+'), "")}",
+    //     ));
+    //   },
+    //   child: Image.asset(
+    //     'assets/newIcons/pro_link.png',
+    //     height: 20,
+    //     width: 20,
+    //     color: Colors.black,
+    //   ),
+    // ),
     InkWell(
-      onTap: () {
-        Clipboard.setData(ClipboardData(
-          text: "${AppConstants.storeUrl}${_userDetailService.userDetailResponse?.user?.username}/collection/${manageCollectionApiResModel.collections![index].title?.trim().replaceAll(RegExp(r'\s+'), "-").toLowerCase()}",
-        ));
-      },
-      child: Image.asset(
-        'assets/newIcons/pro_link.png',
-        height: 20,
-        width: 20,
-        color: Colors.black,
+  onTap: () {
+    Clipboard.setData(ClipboardData(
+      text: "${AppConstants.storeUrl}${_userDetailService.userDetailResponse?.user?.username}/collectiondetails/${manageCollectionApiResModel.collections![index].title?.trim().replaceAll(RegExp(r'\s+'), "")}",
+    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Link copied to clipboard!'),
+        duration: Duration(seconds: 2),
       ),
-    ),
+    );
+  },
+  child: Image.asset(
+    'assets/newIcons/pro_link.png',
+    height: 20,
+    width: 20,
+    color: Colors.black,
+  ),
+),
+
     SizedBox(width: 10), // Instead of Spacer()
     InkWell(
       onTap: () async {

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -114,7 +115,7 @@ class _ContactListViewState extends ConsumerState<ContactListView>
             InkWell(
               onTap: () {
                 Share.share(
-                    'Get your FREE HelloCode and Digital Business card NOW, upgrade to Phygital Networking revolution. Click ${AppConstants.websiteUrl}profile/${_userDetailService.userDetailResponse?.user?.id}');
+                    'Get your FREE SocioCode™ and Digital Business card NOW, upgrade to Phygital Networking revolution. Click ${AppConstants.websiteUrl}profile/${_userDetailService.userDetailResponse?.user?.id}');
               },
               child: Card(
                 margin: EdgeInsets.zero,
@@ -224,16 +225,37 @@ class _ContactListViewState extends ConsumerState<ContactListView>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                            height: 95,
-                            width: 95,
-                            margin: getMargin(top: 16, left: 16),
-                            decoration: BoxDecoration(
-                                color: AppCol.gray700,
-                                image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: NetworkImage(contacts.profileImg ??
-                                        "https://www.google.com/url?sa=i&url=https%3A%2F%2Fpixabay.com%2Fvectors%2Favatar-icon-placeholder-facebook-1577909%2F&psig=AOvVaw1PUZsmBlZm8UuYk7zHgq6H&ust=1692977019433000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCMje2IDN9YADFQAAAAAdAAAAABAE")),
-                                shape: BoxShape.circle)),
+  height: 95,
+  width: 95,
+  margin: getMargin(top: 16, left: 16),
+  decoration: BoxDecoration(
+    color: AppCol.gray700,
+    image: DecorationImage(
+      fit: BoxFit.cover,
+      image: CachedNetworkImageProvider(
+        // Check if profileImg exists and is not empty
+        contacts.profileImg != null && contacts.profileImg!.isNotEmpty
+            ? (contacts.profileImg!.contains(AppConstants.imageBaseUrl)
+                ? contacts.profileImg!
+                : AppConstants.imageBaseUrl + contacts.profileImg!)
+            : "https://www.google.com/url?sa=i&url=https%3A%2F%2Fpixabay.com%2Fvectors%2Favatar-icon-placeholder-facebook-1577909%2F&psig=AOvVaw1PUZsmBlZm8UuYk7zHgq6H&ust=1692977019433000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCMje2IDN9YADFQAAAAAdAAAAABAE", // Fallback image URL
+      ),
+    ),
+    shape: BoxShape.circle,
+  ),
+),
+
+                        // Container(
+                        //     height: 95,
+                        //     width: 95,
+                        //     margin: getMargin(top: 16, left: 16),
+                        //     decoration: BoxDecoration(
+                        //         color: AppCol.gray700,
+                        //         image: DecorationImage(
+                        //             fit: BoxFit.cover,
+                        //             image: NetworkImage(contacts.profileImg ??
+                        //                 "https://www.google.com/url?sa=i&url=https%3A%2F%2Fpixabay.com%2Fvectors%2Favatar-icon-placeholder-facebook-1577909%2F&psig=AOvVaw1PUZsmBlZm8UuYk7zHgq6H&ust=1692977019433000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCMje2IDN9YADFQAAAAAdAAAAABAE")),
+                        //         shape: BoxShape.circle)),
                         Padding(
                             padding: getPadding(left: 20, top: 20, bottom: 16),
                             child: Column(

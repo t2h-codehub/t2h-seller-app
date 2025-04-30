@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:screenshot/screenshot.dart';
 import 'package:taptohello/core/app_export.dart';
+import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/helper/locator.dart';
 import 'package:taptohello/helper/user_detail_service.dart';
 
@@ -86,11 +87,19 @@ class _EmailSignatureViewState extends State<EmailSignatureView> {
                                   alignment: Alignment.center,
                                   children: [
                                     CachedNetworkImage(
-                                      imageUrl: _userDetailService
-                                              .userDetailResponse
-                                              ?.user
-                                              ?.qrCode ??
-                                          "",
+                                      // imageUrl: _userDetailService
+                                      //         .userDetailResponse
+                                      //         ?.user
+                                      //         ?.qrCode ??
+                                      //     "",
+                                      imageUrl: (_userDetailService.userDetailResponse?.user?.qrCode != null &&
+          _userDetailService.userDetailResponse!.user!.qrCode!.isNotEmpty)
+      ? (_userDetailService.userDetailResponse!.user!.qrCode!
+              .contains(AppConstants.imageBaseUrl)
+          ? _userDetailService.userDetailResponse!.user!.qrCode!
+          : AppConstants.imageBaseUrl +
+              _userDetailService.userDetailResponse!.user!.qrCode!)
+      : '',
                                       // svgPath: ImageConstant
                                       //     .imgGroup1000001797BlueGray90001,
                                       height: 100,

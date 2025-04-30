@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/core/utils/color_constant.dart';
 import 'package:taptohello/data/upload/models/add_theme_model.dart';
 import 'package:taptohello/helper/base_screen_view.dart';
@@ -293,7 +295,7 @@ class _CustomBrandingViewState extends ConsumerState<EditThemeView>
                 ),
                 SizedBox(height: 16),
                 Text(
-                  'Please select a darker or solid colour for HelloCode\ncreation purpose.',
+                  'Please select a darker or solid colour for SocioCode™\ncreation purpose.',
                   style: TextStyle(
                     color: Color(0xFF858585),
                     fontSize: 11,
@@ -385,11 +387,26 @@ class _CustomBrandingViewState extends ConsumerState<EditThemeView>
                           : Container(
                               height: 101,
                               width: 101,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image:
-                                          NetworkImage(_imageController.text)),
-                                  borderRadius: BorderRadius.circular(5)),
+                              decoration: 
+                              BoxDecoration(
+  image: DecorationImage(
+    image: CachedNetworkImageProvider(
+      (_imageController.text != null && _imageController.text.isNotEmpty)
+          ? (_imageController.text.contains(AppConstants.imageBaseUrl)
+              ? _imageController.text
+              : AppConstants.imageBaseUrl + _imageController.text)
+          : "https://www.qwikcilver.com/wp-content/uploads/2019/01/dummy-post-square-1-thegem-blog-masonry.jpg", // Fallback image URL
+    ),
+    fit: BoxFit.cover,
+  ),
+  borderRadius: BorderRadius.circular(5),
+)
+,
+                              // BoxDecoration(
+                              //     image: DecorationImage(
+                              //         image:
+                              //             NetworkImage(_imageController.text)),
+                              //     borderRadius: BorderRadius.circular(5)),
                             ),
                     )
                   ],

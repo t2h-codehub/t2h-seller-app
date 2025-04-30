@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pro_image_editor/pro_image_editor.dart';
 import 'package:taptohello/core/app_export.dart';
+import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/data/productCategoryModel/awsPhotoUploadApiResModel.dart';
 import 'package:taptohello/data/productCategoryModel/deleteProductApiResModel.dart';
 import 'package:taptohello/data/productCategoryModel/editProductApiResModel.dart';
@@ -307,7 +309,9 @@ String? findIdByTitle(String title) {
         TextButton(
           onPressed:() {
             Navigator.of(context).pop(true);
-            Navigator.of(context).pop(true);
+            openScreenWithoutBack(context, HomeView(indexfromPrevious: 1,));
+            // Navigator.of(context).pop(true);
+            // Navigator.of(context).pop(true);
           }, // Return `true` if the user confirms.
           child: Text('Yes'),
         ),
@@ -337,124 +341,126 @@ String? findIdByTitle(String title) {
             ),
           ),
           leading: InkWell(
-            onTap: widget.isFromCatalogue
-                ? _onBackPressed
-                : () => showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16)),
-                          title: Text(
-                            'Do you want to delete this product? All your product details will be lost if you delete it.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Color(0xFF666666),
-                              fontSize: 15,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.w400,
-                              height: 1.47,
-                            ),
-                          ),
-                          actions: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                /// No Button
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 48, vertical: 10),
-                                    decoration: ShapeDecoration(
-                                      color: Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                        side: BorderSide(
-                                            width: 0.50,
-                                            color: AppCol.primary),
-                                        borderRadius: BorderRadius.circular(23),
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          'No',
-                                          style: TextStyle(
-                                            color: AppCol.primary,
-                                            fontSize: 16,
-                                            fontFamily: 'Roboto',
-                                            fontWeight: FontWeight.w500,
-                                            letterSpacing: 0.16,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 24),
-                                InkWell(
-                                    onTap: () async {
-                                      deleteProductApiResModel =
-                                          await _addProductController
-                                              .deleteProduct(widget.productId);
-                                      if (deleteProductApiResModel.success ==
-                                          true) {
-                                        openScreenWithoutBack(
-                                            context,
-                                            HomeView(
-                                              indexfromPrevious: 1,
-                                            ));
-                                      } else {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                                content: Text(
-                                                    'Something went wrong')));
-                                      }
-                                    },
-                                    child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 48, vertical: 10),
-                                        decoration: ShapeDecoration(
-                                          color: AppCol.primary,
-                                          shape: RoundedRectangleBorder(
-                                            side: BorderSide(
-                                                width: 0.50,
-                                                color: AppCol.primary),
-                                            borderRadius:
-                                                BorderRadius.circular(23),
-                                          ),
-                                        ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              'Yes',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16,
-                                                fontFamily: 'Roboto',
-                                                fontWeight: FontWeight.w500,
-                                                letterSpacing: 0.16,
-                                              ),
-                                            ),
-                                          ],
-                                        )))
-                              ],
-                            ),
-                            SizedBox(height: 10),
-                          ]);
-                    }),
+            onTap: _onBackPressed
+            // widget.isFromCatalogue
+            //     ? _onBackPressed
+            //     : () => showDialog(
+            //         context: context,
+            //         builder: (context) {
+            //           return AlertDialog(
+            //               shape: RoundedRectangleBorder(
+            //                   borderRadius: BorderRadius.circular(16)),
+            //               title: Text(
+            //                 'Do you want to delete this product? All your product details will be lost if you delete it.',
+            //                 textAlign: TextAlign.center,
+            //                 style: TextStyle(
+            //                   color: Color(0xFF666666),
+            //                   fontSize: 15,
+            //                   fontFamily: 'Roboto',
+            //                   fontWeight: FontWeight.w400,
+            //                   height: 1.47,
+            //                 ),
+            //               ),
+            //               actions: <Widget>[
+            //                 Row(
+            //                   mainAxisAlignment: MainAxisAlignment.center,
+            //                   crossAxisAlignment: CrossAxisAlignment.start,
+            //                   children: [
+            //                     /// No Button
+            //                     InkWell(
+            //                       onTap: () {
+            //                         Navigator.of(context).pop();
+            //                       },
+            //                       child: Container(
+            //                         padding: const EdgeInsets.symmetric(
+            //                             horizontal: 48, vertical: 10),
+            //                         decoration: ShapeDecoration(
+            //                           color: Colors.white,
+            //                           shape: RoundedRectangleBorder(
+            //                             side: BorderSide(
+            //                                 width: 0.50,
+            //                                 color: AppCol.primary),
+            //                             borderRadius: BorderRadius.circular(23),
+            //                           ),
+            //                         ),
+            //                         child: Row(
+            //                           mainAxisSize: MainAxisSize.min,
+            //                           mainAxisAlignment: MainAxisAlignment.center,
+            //                           crossAxisAlignment:
+            //                               CrossAxisAlignment.center,
+            //                           children: [
+            //                             Text(
+            //                               'No',
+            //                               style: TextStyle(
+            //                                 color: AppCol.primary,
+            //                                 fontSize: 16,
+            //                                 fontFamily: 'Roboto',
+            //                                 fontWeight: FontWeight.w500,
+            //                                 letterSpacing: 0.16,
+            //                               ),
+            //                             ),
+            //                           ],
+            //                         ),
+            //                       ),
+            //                     ),
+            //                     const SizedBox(width: 24),
+            //                     InkWell(
+            //                         onTap: () async {
+            //                           deleteProductApiResModel =
+            //                               await _addProductController
+            //                                   .deleteProduct(widget.productId);
+            //                           if (deleteProductApiResModel.success ==
+            //                               true) {
+            //                             openScreenWithoutBack(
+            //                                 context,
+            //                                 HomeView(
+            //                                   indexfromPrevious: 1,
+            //                                 ));
+            //                           } else {
+            //                             ScaffoldMessenger.of(context)
+            //                                 .showSnackBar(SnackBar(
+            //                                     content: Text(
+            //                                         'Something went wrong')));
+            //                           }
+            //                         },
+            //                         child: Container(
+            //                             padding: const EdgeInsets.symmetric(
+            //                                 horizontal: 48, vertical: 10),
+            //                             decoration: ShapeDecoration(
+            //                               color: AppCol.primary,
+            //                               shape: RoundedRectangleBorder(
+            //                                 side: BorderSide(
+            //                                     width: 0.50,
+            //                                     color: AppCol.primary),
+            //                                 borderRadius:
+            //                                     BorderRadius.circular(23),
+            //                               ),
+            //                             ),
+            //                             child: Row(
+            //                               mainAxisSize: MainAxisSize.min,
+            //                               mainAxisAlignment:
+            //                                   MainAxisAlignment.center,
+            //                               crossAxisAlignment:
+            //                                   CrossAxisAlignment.center,
+            //                               children: [
+            //                                 Text(
+            //                                   'Yes',
+            //                                   style: TextStyle(
+            //                                     color: Colors.white,
+            //                                     fontSize: 16,
+            //                                     fontFamily: 'Roboto',
+            //                                     fontWeight: FontWeight.w500,
+            //                                     letterSpacing: 0.16,
+            //                                   ),
+            //                                 ),
+            //                               ],
+            //                             )))
+            //                   ],
+            //                 ),
+            //                 SizedBox(height: 10),
+            //               ]);
+            //         })
+                    ,
             child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
                 child: Image.asset(
@@ -648,146 +654,271 @@ String? findIdByTitle(String title) {
                                           children: [
                                             Expanded(
                                               child: PageView.builder(
-                                                itemCount: selectedVideos.isNotEmpty ? selectedImages.length +
-                                                    selectedVideos.length : selectedImages.length,
-                                                scrollDirection: Axis.horizontal,
-                                                controller: _pageController,
-                                                itemBuilder: (context, index) {
-                                                  if (index <
-                                                      selectedImages.length) {
-                                                    return Stack(
-                                                      alignment: Alignment.center,
-                                                      children: [
-                                                        Image.network(
-                                                          selectedImages[index],
-                                                        ),
-                                                        Positioned(
-                                                          top: 0,
-                                                          right: 0,
-                                                          child: Container(
-                                                            padding:
-                                                            const EdgeInsets
-                                                                .all(2),
-                                                            decoration:
-                                                            BoxDecoration(
-                                                              color: Colors.grey
-                                                                  .withOpacity(
-                                                                  .4),
-                                                              shape:
-                                                              BoxShape.circle,
-                                                            ),
-                                                            child: InkWell(
-                                                              onTap: () {
-                                                                selectedImages.removeAt(index);
-                                                                setState(() {});
-                                                              },
-                                                              child: Center(
-                                                                child: Icon(
-                                                                  Icons
-                                                                      .close_rounded,
-                                                                  color:
-                                                                  Colors.black,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    );
-                                                  } else {
-                                                    int videoIndex = index -
-                                                        selectedImages.length;
-                                                    return Stack(
-                                                      alignment: Alignment.center,
-                                                      children: [
-                                                        videoControllers[
-                                                                    videoIndex]
-                                                                .value
-                                                                .isInitialized
-                                                            ? Center(
-                                                                child:
-                                                                    AspectRatio(
-                                                                  aspectRatio:
-                                                                      videoControllers[
-                                                                              videoIndex]
-                                                                          .value
-                                                                          .aspectRatio,
-                                                                  child: VideoPlayer(
-                                                                      videoControllers[
-                                                                          videoIndex]),
-                                                                ),
-                                                              )
-                                                            : const Center(
-                                                                child:
-                                                                    CircularProgressIndicator()),
-                                                        Center(
-                                                          child: IconButton(
-                                                            icon: const Icon(
-                                                                Icons.play_arrow,
-                                                                color:
-                                                                    Colors.white),
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                videoControllers[
-                                                                            videoIndex]
-                                                                        .value
-                                                                        .isPlaying
-                                                                    ? videoControllers[
-                                                                            videoIndex]
-                                                                        .pause()
-                                                                    : videoControllers[
-                                                                            videoIndex]
-                                                                        .play();
-                                                              });
-                                                            },
-                                                          ),
-                                                        ),
-                                                        Positioned(
-                                                          top: 0,
-                                                          right: 0,
-                                                          child: Container(
-                                                            padding:
-                                                            const EdgeInsets
-                                                                .all(2),
-                                                            decoration:
-                                                            BoxDecoration(
-                                                              color: Colors.grey
-                                                                  .withOpacity(
-                                                                  .4),
-                                                              shape:
-                                                              BoxShape.circle,
-                                                            ),
-                                                            child: InkWell(
-                                                              onTap: () {
-                                                                if (index < selectedImages.length) {
-                                                                  selectedImages.removeAt(index);
-                                                                } else {
-                                                                  int videoIndex = index - selectedImages.length;
-                                                                  selectedVideos.removeAt(videoIndex);
-                                                                  videoControllers.removeAt(videoIndex);
-                                                                }
-                                                                setState(() {
-                                                                  if (_currentIndex >= selectedImages.length + selectedVideos.length) {
-                                                                    _currentIndex = selectedImages.length + selectedVideos.length - 1;
-                                                                  }
-                                                                });
-                                                              },
-                                                              child: Center(
-                                                                child: Icon(
-                                                                  Icons
-                                                                      .close_rounded,
-                                                                  color:
-                                                                  Colors.black,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    );
-                                                  }
-                                                },
-                                              ),
+  itemCount: selectedVideos.isNotEmpty
+      ? selectedImages.length + selectedVideos.length
+      : selectedImages.length,
+  scrollDirection: Axis.horizontal,
+  controller: _pageController,
+  itemBuilder: (context, index) {
+    if (index < selectedImages.length) {
+      final imageUrl = selectedImages[index].contains(AppConstants.imageBaseUrl)
+          ? selectedImages[index]
+          : AppConstants.imageBaseUrl + selectedImages[index];
+
+      return Stack(
+        alignment: Alignment.center,
+        children: [
+          CachedNetworkImage(
+  imageUrl: (imageUrl != null && imageUrl.isNotEmpty)
+      ? (imageUrl.contains(AppConstants.imageBaseUrl)
+          ? imageUrl
+          : AppConstants.imageBaseUrl + imageUrl)
+      : '',
+  placeholder: (context, url) => const CircularProgressIndicator(),
+  errorWidget: (context, url, error) => const Icon(Icons.error),
+  fit: BoxFit.cover,
+),
+
+          // CachedNetworkImage(
+          //   imageUrl: imageUrl,
+          //   placeholder: (context, url) => const CircularProgressIndicator(),
+          //   errorWidget: (context, url, error) => const Icon(Icons.error),
+          //   fit: BoxFit.cover,
+          // ),
+          Positioned(
+            top: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(.4),
+                shape: BoxShape.circle,
+              ),
+              child: InkWell(
+                onTap: () {
+                  selectedImages.removeAt(index);
+                  setState(() {});
+                },
+                child: const Center(
+                  child: Icon(
+                    Icons.close_rounded,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    } else {
+      int videoIndex = index - selectedImages.length;
+      return Stack(
+        alignment: Alignment.center,
+        children: [
+          videoControllers[videoIndex].value.isInitialized
+              ? Center(
+                  child: AspectRatio(
+                    aspectRatio: videoControllers[videoIndex].value.aspectRatio,
+                    child: VideoPlayer(videoControllers[videoIndex]),
+                  ),
+                )
+              : const Center(child: CircularProgressIndicator()),
+          Center(
+            child: IconButton(
+              icon: const Icon(Icons.play_arrow, color: Colors.white),
+              onPressed: () {
+                setState(() {
+                  videoControllers[videoIndex].value.isPlaying
+                      ? videoControllers[videoIndex].pause()
+                      : videoControllers[videoIndex].play();
+                });
+              },
+            ),
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(.4),
+                shape: BoxShape.circle,
+              ),
+              child: InkWell(
+                onTap: () {
+                  selectedVideos.removeAt(videoIndex);
+                  videoControllers.removeAt(videoIndex);
+                  setState(() {
+                    if (_currentIndex >=
+                        selectedImages.length + selectedVideos.length) {
+                      _currentIndex =
+                          selectedImages.length + selectedVideos.length - 1;
+                    }
+                  });
+                },
+                child: const Center(
+                  child: Icon(Icons.close_rounded, color: Colors.black),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+  },
+)
+,
+                                              // child: PageView.builder(
+                                              //   itemCount: selectedVideos.isNotEmpty ? selectedImages.length +
+                                              //       selectedVideos.length : selectedImages.length,
+                                              //   scrollDirection: Axis.horizontal,
+                                              //   controller: _pageController,
+                                              //   itemBuilder: (context, index) {
+                                              //     if (index <
+                                              //         selectedImages.length) {
+                                              //       return Stack(
+                                              //         alignment: Alignment.center,
+                                              //         children: [
+//                                                         CachedNetworkImage(
+//   imageUrl: selectedImages != null &&
+//             selectedImages.contains(AppConstants.imageBaseUrl)
+//       ? selectedImages
+//       : AppConstants.imageBaseUrl + (selectedImages ?? ''),
+//   placeholder: (context, url) => const CircularProgressIndicator(),
+//   errorWidget: (context, url, error) => const Icon(Icons.error),
+//   fit: BoxFit.cover, // or BoxFit.contain as needed
+// )
+                                              //           Image.network(
+                                              //            AppConstants.imageBaseUrl + selectedImages[index],
+                                                          
+                                              //           ),
+                                              //           Positioned(
+                                              //             top: 0,
+                                              //             right: 0,
+                                              //             child: Container(
+                                              //               padding:
+                                              //               const EdgeInsets
+                                              //                   .all(2),
+                                              //               decoration:
+                                              //               BoxDecoration(
+                                              //                 color: Colors.grey
+                                              //                     .withOpacity(
+                                              //                     .4),
+                                              //                 shape:
+                                              //                 BoxShape.circle,
+                                              //               ),
+                                              //               child: InkWell(
+                                              //                 onTap: () {
+                                              //                   selectedImages.removeAt(index);
+                                              //                   setState(() {});
+                                              //                 },
+                                              //                 child: Center(
+                                              //                   child: Icon(
+                                              //                     Icons
+                                              //                         .close_rounded,
+                                              //                     color:
+                                              //                     Colors.black,
+                                              //                   ),
+                                              //                 ),
+                                              //               ),
+                                              //             ),
+                                              //           ),
+                                              //         ],
+                                              //       );
+                                              //     } else {
+                                              //       int videoIndex = index -
+                                              //           selectedImages.length;
+                                              //       return Stack(
+                                              //         alignment: Alignment.center,
+                                              //         children: [
+                                              //           videoControllers[
+                                              //                       videoIndex]
+                                              //                   .value
+                                              //                   .isInitialized
+                                              //               ? Center(
+                                              //                   child:
+                                              //                       AspectRatio(
+                                              //                     aspectRatio:
+                                              //                         videoControllers[
+                                              //                                 videoIndex]
+                                              //                             .value
+                                              //                             .aspectRatio,
+                                              //                     child: VideoPlayer(
+                                              //                         videoControllers[
+                                              //                             videoIndex]),
+                                              //                   ),
+                                              //                 )
+                                              //               : const Center(
+                                              //                   child:
+                                              //                       CircularProgressIndicator()),
+                                              //           Center(
+                                              //             child: IconButton(
+                                              //               icon: const Icon(
+                                              //                   Icons.play_arrow,
+                                              //                   color:
+                                              //                       Colors.white),
+                                              //               onPressed: () {
+                                              //                 setState(() {
+                                              //                   videoControllers[
+                                              //                               videoIndex]
+                                              //                           .value
+                                              //                           .isPlaying
+                                              //                       ? videoControllers[
+                                              //                               videoIndex]
+                                              //                           .pause()
+                                              //                       : videoControllers[
+                                              //                               videoIndex]
+                                              //                           .play();
+                                              //                 });
+                                              //               },
+                                              //             ),
+                                              //           ),
+                                              //           Positioned(
+                                              //             top: 0,
+                                              //             right: 0,
+                                              //             child: Container(
+                                              //               padding:
+                                              //               const EdgeInsets
+                                              //                   .all(2),
+                                              //               decoration:
+                                              //               BoxDecoration(
+                                              //                 color: Colors.grey
+                                              //                     .withOpacity(
+                                              //                     .4),
+                                              //                 shape:
+                                              //                 BoxShape.circle,
+                                              //               ),
+                                              //               child: InkWell(
+                                              //                 onTap: () {
+                                              //                   if (index < selectedImages.length) {
+                                              //                     selectedImages.removeAt(index);
+                                              //                   } else {
+                                              //                     int videoIndex = index - selectedImages.length;
+                                              //                     selectedVideos.removeAt(videoIndex);
+                                              //                     videoControllers.removeAt(videoIndex);
+                                              //                   }
+                                              //                   setState(() {
+                                              //                     if (_currentIndex >= selectedImages.length + selectedVideos.length) {
+                                              //                       _currentIndex = selectedImages.length + selectedVideos.length - 1;
+                                              //                     }
+                                              //                   });
+                                              //                 },
+                                              //                 child: Center(
+                                              //                   child: Icon(
+                                              //                     Icons
+                                              //                         .close_rounded,
+                                              //                     color:
+                                              //                     Colors.black,
+                                              //                   ),
+                                              //                 ),
+                                              //               ),
+                                              //             ),
+                                              //           ),
+                                              //         ],
+                                              //       );
+                                              //     }
+                                              //   },
+                                              // ),
                                             ),
                                             selectedVideos.isNotEmpty ? DotsIndicator(
                                               dotsCount: selectedImages.length +
@@ -1089,15 +1220,24 @@ String? findIdByTitle(String title) {
                                                 
                                             decoration: InputDecoration(
                                               labelText: 'Discounted Price',
-                                              errorText: _discountPriceController
-                                                          .text.isNotEmpty &&
-                                                      double.parse(
-                                                              _discountPriceController
-                                                                  .text) >
-                                                          double.parse(
-                                                              _mrpController.text)
-                                                  ? 'Discount price cannot be greater than MRP price'
-                                                  : null,
+                                              // errorText: _discountPriceController
+                                              //             .text.isNotEmpty &&
+                                              //         double.parse(
+                                              //                 _discountPriceController
+                                              //                     .text) >
+                                              //             double.parse(
+                                              //                 _mrpController.text)
+                                              //     ? 'Discount price cannot be greater than MRP price'
+                                              //     : null,
+                                              errorText: _discountPriceController.text.isNotEmpty &&
+           _mrpController.text.isNotEmpty &&
+           double.tryParse(_discountPriceController.text) != null &&
+           double.tryParse(_mrpController.text) != null &&
+           double.parse(_discountPriceController.text) >
+           double.parse(_mrpController.text)
+    ? 'Discount price cannot be greater than MRP price'
+    : null,
+
 
                                                   
                                               floatingLabelBehavior:
@@ -1107,16 +1247,28 @@ String? findIdByTitle(String title) {
                                                     BorderRadius.circular(10),
                                               ),
                                             ),
+                                            // validator: (value) {
+                                            //   if (value!.isEmpty) {
+                                            //     return 'Discount price is required';
+                                            //   } else if (double.parse(value) >
+                                            //       double.parse(
+                                            //           _mrpController.text)) {
+                                            //     return 'Discount price cannot be greater than MRP price';
+                                            //   }
+                                            //   return null;
+                                            // },
                                             validator: (value) {
-                                              if (value!.isEmpty) {
-                                                return 'Discount price is required';
-                                              } else if (double.parse(value) >
-                                                  double.parse(
-                                                      _mrpController.text)) {
-                                                return 'Discount price cannot be greater than MRP price';
-                                              }
-                                              return null;
-                                            },
+  final discount = double.tryParse(value ?? '');
+  final mrp = double.tryParse(_mrpController.text);
+
+  if ((value ?? '').isEmpty) {
+    return 'Discount price is required';
+  } else if (discount != null && mrp != null && discount > mrp) {
+    return 'Discount price cannot be greater than MRP price';
+  }
+  return null;
+},
+
                                             onChanged: (value) {
                                               _discountPriceController.text = value;
                                             },
@@ -2240,14 +2392,37 @@ String? findIdByTitle(String title) {
         if(element != "") {
           if(element.contains('.jpg')) {
             selectedImages.add(element);
-          } else {
-            selectedVideos.add(element);
-            videoControllers.add(VideoPlayerController.networkUrl(Uri.parse(element))..initialize().then((value) {
-              setState(() {
+          } 
+          else {
+  // Check if the element (video URL) contains the image base URL
+  String videoUrl = element;
 
-              });
-            }));
-          }
+  if (!videoUrl.contains(AppConstants.imageBaseUrl)) {
+    // If the URL doesn't contain the base URL, add AppConstants.imageBaseUrl to it
+    videoUrl = AppConstants.imageBaseUrl + videoUrl;
+  }
+
+  // Now add the video with the correct (or modified) URL
+  selectedVideos.add(videoUrl);
+  videoControllers.add(
+    VideoPlayerController.networkUrl(Uri.parse(videoUrl))
+      ..initialize().then((value) {
+        setState(() {});
+      }).catchError((error) {
+        // Handle error if the video fails to load
+        print("Failed to load video: $error");
+      }),
+  );
+}
+
+          // else {
+          //   selectedVideos.add(element);
+          //   videoControllers.add(VideoPlayerController.networkUrl(Uri.parse(element))..initialize().then((value) {
+          //     setState(() {
+
+          //     });
+          //   }));
+          // }
         }
       });
       _productTitleController.text =
@@ -2260,8 +2435,11 @@ String? findIdByTitle(String title) {
 });
     
     });
-      _mrpController.text = "${editProductApiResModel.product?.mrp}";
-      _discountPriceController.text = "${editProductApiResModel.product?.price}";
+      // _mrpController.text = "${editProductApiResModel.product?.mrp}";
+      // _discountPriceController.text = "${editProductApiResModel.product?.price}";
+      _mrpController.text = editProductApiResModel.product?.mrp?.toString() ?? '';
+_discountPriceController.text = editProductApiResModel.product?.price?.toString() ?? '';
+
       _inventoryController.text = "${editProductApiResModel.product?.stock}";
       isUnlimitedStock = editProductApiResModel.product?.unlimitedStock ?? false;
       _productCategoryController.text = editProductApiResModel.product?.category?.title ?? '';

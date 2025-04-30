@@ -4,6 +4,7 @@ import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/core/utils/color_constant.dart';
 import 'package:taptohello/data/productCategoryModel/addSellerCategoriesApiResModel.dart';
 import 'package:taptohello/data/productCategoryModel/getProductCategoryResponceModel.dart';
@@ -401,22 +402,41 @@ if (_selectedImage != null || (widget.category?.categoryImage?.isNotEmpty ?? fal
           height: 180,
           fit: BoxFit.cover,
         )
-      : CachedNetworkImage(
-          imageUrl: widget.category?.categoryImage?.isNotEmpty == true
-              ? widget.category!.categoryImage!
-              : 'https://via.placeholder.com/200', // Fallback URL
-          width: double.infinity,
-          height: 180,
-          fit: BoxFit.cover,
-          placeholder: (context, url) => const Center(
-            child: CircularProgressIndicator(),
-          ),
-          errorWidget: (context, url, error) => const Icon(
-            Icons.image_not_supported,
-            size: 100,
-            color: Colors.grey,
-          ),
-        ),
+      : 
+      CachedNetworkImage(
+  imageUrl: widget.category?.categoryImage != null &&
+          widget.category!.categoryImage!.contains(AppConstants.imageBaseUrl)
+      ? widget.category!.categoryImage! // If the URL contains base URL
+      : AppConstants.imageBaseUrl + (widget.category?.categoryImage ?? ''), // If not, add base URL
+  width: double.infinity,
+  height: 180,
+  fit: BoxFit.cover,
+  placeholder: (context, url) => const Center(
+    child: CircularProgressIndicator(),
+  ),
+  errorWidget: (context, url, error) => const Icon(
+    Icons.image_not_supported,
+    size: 100,
+    color: Colors.grey,
+  ),
+),
+
+      // CachedNetworkImage(
+      //     imageUrl: widget.category?.categoryImage?.isNotEmpty == true
+      //         ? widget.category!.categoryImage!
+      //         : 'https://via.placeholder.com/200', // Fallback URL
+      //     width: double.infinity,
+      //     height: 180,
+      //     fit: BoxFit.cover,
+      //     placeholder: (context, url) => const Center(
+      //       child: CircularProgressIndicator(),
+      //     ),
+      //     errorWidget: (context, url, error) => const Icon(
+      //       Icons.image_not_supported,
+      //       size: 100,
+      //       color: Colors.grey,
+      //     ),
+      //   ),
 ),
        
        

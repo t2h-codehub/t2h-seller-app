@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:taptohello/core/constants.dart';
 
 class CustomImageView extends StatelessWidget {
   ///[url] is required parameter for fetching network image
@@ -120,11 +121,17 @@ class CustomImageView extends StatelessWidget {
         color: color,
       );
     } else if (url != null && url!.isNotEmpty) {
+      
       return CachedNetworkImage(
         height: height,
         width: width,
         fit: fit,
-        imageUrl: url!,
+        // imageUrl: url!,
+       imageUrl: (url != null && url!.contains(AppConstants.imageBaseUrl))
+    ? url!
+    : AppConstants.imageBaseUrl + (url ?? ''),
+
+
         color: color,
         placeholder: (context, url) => SizedBox(
           height: 30,

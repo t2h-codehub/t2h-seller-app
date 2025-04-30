@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/core/custom_loader.dart';
 import 'package:taptohello/core/utils/color_constant.dart';
 import 'package:taptohello/data/Orders/newOrderDetailsApiResModel.dart';
@@ -49,11 +50,11 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     debugPrint('OrderDetailsScreen: ${widget.orderDetails?.address?.city}');
     // cancelOrder();
     
-    if ((widget.orderDetails?.awbCode?.isEmpty ?? true)) {
-    fetchPickupLocation();
+  //   if ((widget.orderDetails?.awbCode?.isEmpty ?? true)) {
+  //   fetchPickupLocation();
    
     
-  }
+  // }
     
   }
 
@@ -91,7 +92,7 @@ Future<void> trackOrder() async {
   DialogBuilder(context).showLoadingIndicator("Loading...");
 
   final Map<String, dynamic> requestData = {
-    "awb_code": widget.orderDetails?.awbCode,
+   // "awb_code": widget.orderDetails?.awbCode,
   };
 
   if (widget.orderDetails?.shipmentId == 1) {
@@ -393,7 +394,7 @@ void _showTrackingPopup(BuildContext context) {
                
               // _buildOrderStatusButtons(),
                if (
-                widget.orderDetails?.orderStatus == "SUCCESS") ...[
+                widget.orderDetails?.orderStatus == "NEW") ...[
               SizedBox(height: 20),
               _buildOrderStatusButtons(),
             ],
@@ -440,7 +441,7 @@ void _showTrackingPopup(BuildContext context) {
       SizedBox(height: 20),
       // Manual Shipment Button
       Visibility(
-         visible: (widget.orderDetails?.awbCode?.isEmpty ?? true) && (widget.orderDetails?.orderStatus == "SUCCESS"),
+         visible: (widget.orderDetails?.awbCode?.isEmpty ?? true) && (widget.orderDetails?.orderStatus == "NEW"),
              
         child: 
         SizedBox(
@@ -480,7 +481,7 @@ void _showTrackingPopup(BuildContext context) {
           style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold)),
       actions: [
         Visibility(
-           visible: (widget.orderDetails?.awbCode?.isEmpty ?? true) && (widget.orderDetails?.orderStatus == "SUCCESS"),
+           visible: (widget.orderDetails?.awbCode?.isEmpty ?? true) && (widget.orderDetails?.orderStatus == "NEW"),
          // visible: widget.orderDetails?.awbCode?.isNotEmpty ?? false,
 
          //  visible: widget.orderDetails!.awbCode!.isNotEmpty,
@@ -810,7 +811,13 @@ Future<void> showCancelOrderDialog(BuildContext context) async {
         _buildDetailRow('Order Status:', widget.orderDetails?.orderStatus, isBold: true, color: Colors.green),
         _buildDetailRow('Order Date:', widget.orderDetails?.orderDate),
         _buildDetailRow('Customer Name:', widget.orderDetails?.address?.name),
-        _buildDetailRow('Customer Address:', widget.orderDetails?.address?.address, maxLines: 4),
+        // _buildDetailRow('Customer Address:', widget.orderDetails?.address?.addressLine1 + widget.orderDetails?.address?.addressLine2, maxLines: 4),
+        _buildDetailRow(
+  'Customer Address:',
+  (widget.orderDetails?.address?.addressLine1 ?? '') + '' + (widget.orderDetails?.address?.addressLine2 ?? '') + ',' + (widget.orderDetails?.address?.city ?? '') + ',' + (widget.orderDetails?.address?.state ?? '') + ',' + (widget.orderDetails?.address?.zip ?? ''),
+  maxLines: 4,
+),
+
         _buildDetailRow('Customer Email:', widget.orderDetails?.address?.email),
         _buildDetailRow('Customer Mobile:', widget.orderDetails?.address?.mobile),
         
@@ -861,7 +868,27 @@ Future<void> showCancelOrderDialog(BuildContext context) async {
           return ListTile(
             title: Text(product?.productName ?? '-'),
             subtitle: Text('Qty: ${product?.quantity ?? '-'} | Price: Rs. ${product?.mrp ?? '-'}'),
-            leading: Image.network(product?.productImage?.first ?? '', width: 50, height: 50, fit: BoxFit.cover),
+            // leading: Image.network(product?.productImage.first ?? '', width: 50, height: 50, fit: BoxFit.cover),
+//             leading: Image.network(
+//   (product?.productImage != null && product!.productImage!.isNotEmpty)
+//       ? product.productImage!.first
+//       : 'https://via.placeholder.com/50', // fallback placeholder image
+//   width: 50,
+//   height: 50,
+//   fit: BoxFit.cover,
+// ),
+leading: Image.network(
+  (product?.productImage != null && product!.productImage!.isNotEmpty)
+      ? (product.productImage!.first.contains(AppConstants.imageBaseUrl)
+          ? product.productImage!.first
+          : AppConstants.imageBaseUrl + product.productImage!.first)
+      : 'https://via.placeholder.com/50', // fallback placeholder image
+  width: 50,
+  height: 50,
+  fit: BoxFit.cover,
+),
+
+
           );
         },
       ),

@@ -236,11 +236,9 @@ class OrderControllers with ChangeNotifier{
 
 
 
-
 Future<OrderDetailsReviewModelAndStatusCode> getOrderDetails(Map<String, String> body) async {
   NewOrderDetailsApiResModel newOrderDetailsApiResModel = NewOrderDetailsApiResModel();
   ErrorOrderDetailsApiResModel errorOrderDetailsApiResModel = ErrorOrderDetailsApiResModel();
-  Order? order;
   int statusCode = 0;
 
   try {
@@ -265,25 +263,18 @@ Future<OrderDetailsReviewModelAndStatusCode> getOrderDetails(Map<String, String>
     if (responseBody.isNotEmpty) {
       var jsonData = jsonDecode(responseBody);
 
-      
-      
-
       if ((statusCode == 201 || statusCode == 200) && jsonData['order'] != null) {
-  try {
-    printLongJson(jsonData);
-    order = Order.fromJson(jsonData['order']);
-     
-      // Attempt to parse Order
-    debugPrint('Order fetched successfully.');
-    
-   
-    newOrderDetailsApiResModel.order = order;
-    newOrderDetailsApiResModel.message = jsonData['message'] ?? 'Success';
-  } catch (e) {
-    debugPrint('Error parsing Order JSON: $e');
-  }
-}
+        try {
+          printLongJson(jsonData);
 
+          /// 🛠 Main fix
+          newOrderDetailsApiResModel = NewOrderDetailsApiResModel.fromJson(jsonData);
+
+          debugPrint('Order fetched successfully.');
+        } catch (e) {
+          debugPrint('Error parsing Order JSON: $e');
+        }
+      }
     } else {
       debugPrint('Empty response from server.');
     }
@@ -297,6 +288,73 @@ Future<OrderDetailsReviewModelAndStatusCode> getOrderDetails(Map<String, String>
     statusCode: statusCode,
   );
 }
+
+//     newOrderDetailsApiResModel: newOrderDetailsApiResModel.order,
+//     errorOrderDetailsApiResModel: errorOrderDetailsApiResModel,
+//     statusCode: statusCode,
+
+
+
+// Future<OrderDetailsReviewModelAndStatusCode> getOrderDetails(Map<String, String> body) async {
+//   NewOrderDetailsApiResModel newOrderDetailsApiResModel = NewOrderDetailsApiResModel();
+//   ErrorOrderDetailsApiResModel errorOrderDetailsApiResModel = ErrorOrderDetailsApiResModel();
+//   Order? order;
+//   int statusCode = 0;
+
+//   try {
+//     debugPrint('Request Body: $body');
+//     debugPrint('Token: ${AppConstants.token}');
+
+//     var response = await http.post(
+//       Uri.parse('${AppConstants.baseUrl}customer/ordersSellerDetails'),
+//       headers: {
+//         'token': AppConstants.token,
+//         'Content-Type': 'application/x-www-form-urlencoded',
+//       },
+//       body: body,
+//     );
+
+//     statusCode = response.statusCode;
+//     String responseBody = response.body;
+
+//     debugPrint('Response Code: $statusCode');
+//     debugPrint('Response Body: $responseBody');
+
+//     if (responseBody.isNotEmpty) {
+//       var jsonData = jsonDecode(responseBody);
+
+      
+      
+
+//       if ((statusCode == 201 || statusCode == 200) && jsonData['order'] != null) {
+//   try {
+//     printLongJson(jsonData);
+//     order = Order.fromJson(jsonData['order']);
+     
+//       // Attempt to parse Order
+//     debugPrint('Order fetched successfully.');
+    
+   
+//     newOrderDetailsApiResModel.order = order;
+//     newOrderDetailsApiResModel.message = jsonData['message'] ?? 'Success';
+//   } catch (e) {
+//     debugPrint('Error parsing Order JSON: $e');
+//   }
+// }
+
+//     } else {
+//       debugPrint('Empty response from server.');
+//     }
+//   } catch (e) {
+//     debugPrint('API Call Error: $e');
+//   }
+
+//   return OrderDetailsReviewModelAndStatusCode(
+//     newOrderDetailsApiResModel: newOrderDetailsApiResModel.order,
+//     errorOrderDetailsApiResModel: errorOrderDetailsApiResModel,
+//     statusCode: statusCode,
+//   );
+// }
 
 
 

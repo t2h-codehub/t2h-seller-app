@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/core/utils/color_constant.dart';
 import 'package:taptohello/helper/base_screen_view.dart';
 import 'package:taptohello/helper/file_picker.dart';
@@ -76,7 +78,7 @@ class _CustomBrandingViewState extends ConsumerState<CustomBrandingView>
               )),
         ),
         title: Text(
-          "Edit HelloCode™",
+          "Edit SocioCode™",
           style: TextStyle(color: Colors.black, fontSize: 17),
         ),
         centerTitle: true,
@@ -100,7 +102,7 @@ class _CustomBrandingViewState extends ConsumerState<CustomBrandingView>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'HelloCode™ Colour',
+                          'SocioCode™ Colour',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 20,
@@ -112,7 +114,7 @@ class _CustomBrandingViewState extends ConsumerState<CustomBrandingView>
                         SizedBox(
                           width: 210,
                           child: Text(
-                            'Please pick or write the color code and submit it for customizing the HelloCode™ pattern color.',
+                            'Please pick or write the color code and submit it for customizing the SocioCode™ pattern color.',
                             style: TextStyle(
                               color: Color(0xFF333333),
                               fontSize: 13,
@@ -201,7 +203,7 @@ class _CustomBrandingViewState extends ConsumerState<CustomBrandingView>
                 ),
                 SizedBox(height: 16),
                 Text(
-                  'Please select a darker or solid colour for HelloCode\ncreation purpose.',
+                  'Please select a darker or solid colour for SocioCode™\ncreation purpose.',
                   style: TextStyle(
                     color: Color(0xFF858585),
                     fontSize: 11,
@@ -229,7 +231,7 @@ class _CustomBrandingViewState extends ConsumerState<CustomBrandingView>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'HelloCode™ Logo',
+                          'SocioCode™ Logo',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 20,
@@ -241,7 +243,7 @@ class _CustomBrandingViewState extends ConsumerState<CustomBrandingView>
                         SizedBox(
                           width: 210,
                           child: Text(
-                            'Upload the custom logo or image for your HelloCode™ here and then submit it.',
+                            'Upload the custom logo or image for your SocioCode™ here and then submit it.',
                             style: TextStyle(
                               color: Color(0xFF333333),
                               fontSize: 13,
@@ -291,15 +293,35 @@ class _CustomBrandingViewState extends ConsumerState<CustomBrandingView>
                                           "assets/newIcons/placeholderImage.png")),
                                   borderRadius: BorderRadius.circular(5)),
                             )
-                          : Container(
-                              height: 101,
-                              width: 101,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image:
-                                          NetworkImage(_imageController.text)),
-                                  borderRadius: BorderRadius.circular(5)),
-                            ),
+                          : 
+                          Container(
+  height: 101,
+  width: 101,
+  decoration: BoxDecoration(
+    image: DecorationImage(
+      image: CachedNetworkImageProvider(
+        (_imageController.text != null && _imageController.text.isNotEmpty)
+            ? (_imageController.text.contains(AppConstants.imageBaseUrl)
+                ? _imageController.text
+                : AppConstants.imageBaseUrl + _imageController.text)
+            : "", // Empty string will be handled by CachedNetworkImage with placeholder
+      ),
+      fit: BoxFit.cover,
+    ),
+    borderRadius: BorderRadius.circular(5),
+  ),
+)
+
+                          // Container(
+                          //     height: 101,
+                          //     width: 101,
+                          //     decoration:
+                          //      BoxDecoration(
+                          //         image: DecorationImage(
+                          //             image:
+                          //                 NetworkImage(_imageController.text)),
+                          //         borderRadius: BorderRadius.circular(5)),
+                          //   ),
                     )
                   ],
                 ),

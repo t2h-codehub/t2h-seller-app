@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/data/productCategoryModel/instagramOAuthApiResModel.dart';
 import 'package:taptohello/presentation/profileScreen/ManageStore/InstagramAuth/instagramAddProductScreen.dart';
 import 'package:taptohello/core/utils/color_constant.dart';
@@ -87,17 +89,35 @@ class _InstagramAuthWebViewPageState extends State<InstagramAuthWebViewPage> {
                 /// Catalogue Image
                if(widget.instagramAuthResModel['data'][index]['thumbnail_url'] == null ) SizedBox(
                   width: double.infinity,
-                  child: Image.network(
-                    '${widget.instagramAuthResModel['data'][index]['media_url']}',
-                    errorBuilder: (context, error, stackTrace) {
-                      return Center(
-                          child: Image.asset(
-                            'assets/newIcons/home_head.png',
-                            fit: BoxFit.fill,
-                          ));
-                    },
-                    fit: BoxFit.fill,
-                  ),
+                  child: 
+                  CachedNetworkImage(
+  imageUrl: (widget.instagramAuthResModel['data'][index]['media_url'] != null &&
+          widget.instagramAuthResModel['data'][index]['media_url'].isNotEmpty)
+      ? (widget.instagramAuthResModel['data'][index]['media_url'].contains(AppConstants.imageBaseUrl)
+          ? widget.instagramAuthResModel['data'][index]['media_url']
+          : AppConstants.imageBaseUrl + widget.instagramAuthResModel['data'][index]['media_url'])
+      : '',  // Empty string if media_url is null or empty
+  fit: BoxFit.fill,
+  placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+  errorWidget: (context, url, error) => Center(
+    child: Image.asset(
+      'assets/newIcons/home_head.png',
+      fit: BoxFit.fill,
+    ),
+  ),
+),
+
+                  // Image.network(
+                  //   '${widget.instagramAuthResModel['data'][index]['media_url']}',
+                  //   errorBuilder: (context, error, stackTrace) {
+                  //     return Center(
+                  //         child: Image.asset(
+                  //           'assets/newIcons/home_head.png',
+                  //           fit: BoxFit.fill,
+                  //         ));
+                  //   },
+                  //   fit: BoxFit.fill,
+                  // ),
                 ),
 
                 if(widget.instagramAuthResModel['data'][index]['thumbnail_url'] != null ) VideoPlayer(

@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:taptohello/core/app_export.dart';
+import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/data/productCategoryModel/deleteProductApiResModel.dart';
 import 'package:taptohello/data/productCategoryModel/filterCatalogueApiResModel.dart' as getFilterCatalogueApiResModel;
 import 'package:taptohello/data/productCategoryModel/getProductListApiResModel.dart';
@@ -108,39 +110,85 @@ class _FilterCatalogueScreenState extends State<FilterCatalogueScreen> {
                     'My catalogue screen image is: ${widget.products[index].images} ');
                 bool isMp4 = widget.products[index].images?[0].contains('.mp4') ?? false;
                 if (isMp4) {
+
                   if (!_videoControllers.containsKey(index)) {
-                    _videoControllers[index] = VideoPlayerController.networkUrl(Uri.parse('${widget.products[index].images?[0]}'));
-                    _videoControllers[index]!.initialize().then((_) {
-                      setState(() {
-                        _isVideoControllerInitialized[index] = true;
-                        _videoControllers[index]!.pause();
-                      });
-                    });
-                  }
+  // Check if the video URL contains AppConstants.imageBaseUrl
+  String videoUrl = widget.products[index].images?[0] ?? '';
+  if (!videoUrl.contains(AppConstants.imageBaseUrl)) {
+    videoUrl = AppConstants.imageBaseUrl + videoUrl;
+  }
+
+  _videoControllers[index] = VideoPlayerController.networkUrl(Uri.parse(videoUrl));
+  _videoControllers[index]!.initialize().then((_) {
+    setState(() {
+      _isVideoControllerInitialized[index] = true;
+      _videoControllers[index]!.pause();
+    });
+  });
+}
+
+                  // if (!_videoControllers.containsKey(index)) {
+                  //   _videoControllers[index] = VideoPlayerController.networkUrl(Uri.parse('${widget.products[index].images?[0]}'));
+                  //   _videoControllers[index]!.initialize().then((_) {
+                  //     setState(() {
+                  //       _isVideoControllerInitialized[index] = true;
+                  //       _videoControllers[index]!.pause();
+                  //     });
+                  //   });
+                  // }
                 }
                 return Container(
                   child: Stack(
                     children: [
                       /// Catalogue Image
                       SizedBox(
-                        width: double.infinity,
-                        child: (widget.products[index]
-                            .images ??
-                            [])
-                            .isNotEmpty
-                            ? isMp4 ? _videoControllers[index] != null && (_isVideoControllerInitialized[index] ?? false)
-                            ? AspectRatio(
-                          aspectRatio: _videoControllers[index]!.value.aspectRatio,
-                          child: VideoPlayer(_videoControllers[index]!),
-                        )
-                            : Center(child: CircularProgressIndicator()): Image.network(
-                          '${widget.products[index].images?[0]}',
-                          fit: BoxFit.contain,
-                        )
-                            : Center(
-                            child: Image.asset(
-                                'assets/newIcons/home_head.png')),
-                      ),
+  width: double.infinity,
+  child: (widget.products[index].images ?? []).isNotEmpty
+      ? isMp4
+          ? _videoControllers[index] != null && (_isVideoControllerInitialized[index] ?? false)
+              ? AspectRatio(
+                  aspectRatio: _videoControllers[index]!.value.aspectRatio,
+                  child: VideoPlayer(_videoControllers[index]!),
+                )
+              : Center(child: CircularProgressIndicator())
+          : CachedNetworkImage(
+              imageUrl: widget.products[index].images?[0] != null &&
+                      widget.products[index].images![0]!
+                          .contains(AppConstants.imageBaseUrl)
+                  ? widget.products[index].images![0]!
+                  : AppConstants.imageBaseUrl +
+                      (widget.products[index].images?[0] ?? ''),
+              fit: BoxFit.contain,
+              placeholder: (context, url) => const Center(
+                child: CircularProgressIndicator(),
+              ),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+            )
+      : Center(
+          child: Image.asset('assets/newIcons/home_head.png'),
+        ),
+),
+
+                      // SizedBox(
+                      //   width: double.infinity,
+                      //   child: (widget.products[index]
+                      //       .images ??
+                      //       [])
+                      //       .isNotEmpty
+                      //       ? isMp4 ? _videoControllers[index] != null && (_isVideoControllerInitialized[index] ?? false)
+                      //       ? AspectRatio(
+                      //     aspectRatio: _videoControllers[index]!.value.aspectRatio,
+                      //     child: VideoPlayer(_videoControllers[index]!),
+                      //   )
+                      //       : Center(child: CircularProgressIndicator()): 
+                      //       Image.network(
+                      //     '${widget.products[index].images?[0]}',
+                      //     fit: BoxFit.contain,
+                      //   )
+                      //       : Center(
+                      //       child: Image.asset(
+                      //           'assets/newIcons/home_head.png')),
+                      // ),
 
                       /// Bottom Section
                       Align(

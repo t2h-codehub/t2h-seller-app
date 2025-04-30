@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:taptohello/core/core.dart';
@@ -125,25 +126,66 @@ class _ActivateDeviceScreenState extends ConsumerState<ChooseProfileView>
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Container(
-                                      width: 64,
-                                      height: 64,
-                                      decoration: ShapeDecoration(
-                                        image: DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image: NetworkImage(_viewModel
-                                                        .getMultipleAccountsResponse
-                                                        ?.accounts?[index]
-                                                        .profileImg ==
-                                                    ""
-                                                ? "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659651_640.png"
-                                                : _viewModel
-                                                        .getMultipleAccountsResponse
-                                                        ?.accounts?[index]
-                                                        .profileImg ??
-                                                    "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659651_640.png")),
-                                        shape: OvalBorder(),
-                                      ),
-                                    ),
+  width: 64,
+  height: 64,
+  decoration: ShapeDecoration(
+    image: DecorationImage(
+      fit: BoxFit.cover,
+      image: CachedNetworkImageProvider(
+        (_viewModel.getMultipleAccountsResponse != null &&
+                _viewModel.getMultipleAccountsResponse!.accounts != null &&
+                _viewModel.getMultipleAccountsResponse!.accounts!.isNotEmpty &&
+                _viewModel.getMultipleAccountsResponse!.accounts![index].profileImg != null &&
+                _viewModel.getMultipleAccountsResponse!.accounts![index].profileImg!.isNotEmpty)
+            ? (_viewModel.getMultipleAccountsResponse!.accounts![index].profileImg!.contains(AppConstants.imageBaseUrl)
+                ? _viewModel.getMultipleAccountsResponse!.accounts![index].profileImg!
+                : AppConstants.imageBaseUrl + _viewModel.getMultipleAccountsResponse!.accounts![index].profileImg!)
+            : "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659651_640.png",
+      ),
+    ),
+    shape: OvalBorder(),
+  ),
+),
+
+//                                     Container(
+//   width: 64,
+//   height: 64,
+//   decoration: ShapeDecoration(
+//     image: DecorationImage(
+//       fit: BoxFit.cover,
+//       image: CachedNetworkImageProvider(
+//         (_viewModel.getMultipleAccountsResponse?.accounts?[index].profileImg != null &&
+//                 _viewModel.getMultipleAccountsResponse?.accounts?[index].profileImg!.isNotEmpty)
+//             ? (_viewModel.getMultipleAccountsResponse?.accounts?[index].profileImg!.contains(AppConstants.imageBaseUrl)
+//                 ? _viewModel.getMultipleAccountsResponse?.accounts?[index].profileImg!
+//                 : AppConstants.imageBaseUrl + _viewModel.getMultipleAccountsResponse?.accounts?[index].profileImg!)
+//             : "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659651_640.png",
+//       ),
+//     ),
+//     shape: OvalBorder(),
+//   ),
+// )
+
+                                    // Container(
+                                    //   width: 64,
+                                    //   height: 64,
+                                    //   decoration: ShapeDecoration(
+                                    //     image: DecorationImage(
+                                    //         fit: BoxFit.cover,
+                                    //         image: NetworkImage(_viewModel
+                                    //                     .getMultipleAccountsResponse
+                                    //                     ?.accounts?[index]
+                                    //                     .profileImg ==
+                                    //                 ""
+                                    //             ? "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659651_640.png"
+                                    //             : _viewModel
+                                    //                     .getMultipleAccountsResponse
+                                    //                     ?.accounts?[index]
+                                    //                     .profileImg ??
+                                    //                 "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659651_640.png")),
+                                    //     shape: OvalBorder(),
+                                    //   ),
+                                    // ),
                                     const SizedBox(width: 14),
                                     Expanded(
                                       child: Container(

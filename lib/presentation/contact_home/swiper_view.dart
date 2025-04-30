@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -36,6 +37,38 @@ class _SwiperViewState extends State<SwiperView> {
     ownid = _userDetailService.userDetailResponse?.user?.id ?? "";
     setState(() {});
   }
+
+  String _getLogoUrl(int index, int index4) {
+  final logo = widget.contacts?[index].customServices != null &&
+          widget.contacts![index].customServices!.length > index4
+      ? widget.contacts![index].customServices![index4].logo
+      : null;
+
+  if (logo == null || logo.isEmpty) {
+    return "https://via.placeholder.com/150";
+  }
+
+  return logo.contains(AppConstants.imageBaseUrl)
+      ? logo
+      : AppConstants.imageBaseUrl + logo;
+}
+
+String _getServiceLogoUrl(int index, int index3) {
+  final logo = widget.contacts?[index].services != null &&
+          widget.contacts![index].services!.length > index3
+      ? widget.contacts![index].services![index3].logo
+      : null;
+
+  if (logo == null || logo.isEmpty) {
+    return "https://via.placeholder.com/100";
+  }
+
+  return logo.contains(AppConstants.imageBaseUrl)
+      ? logo
+      : AppConstants.imageBaseUrl + logo;
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -130,14 +163,28 @@ class _SwiperViewState extends State<SwiperView> {
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(16),
                             topRight: Radius.circular(16)),
-                        image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: Image.network(
-                              widget.contacts?[index].profileImg == ""
-                                  ? "https://www.qwikcilver.com/wp-content/uploads/2019/01/dummy-post-square-1-thegem-blog-masonry.jpg"
-                                  : widget.contacts?[index].profileImg ??
-                                      "https://www.qwikcilver.com/wp-content/uploads/2019/01/dummy-post-square-1-thegem-blog-masonry.jpg",
-                            ).image)),
+                        image: 
+                        DecorationImage(
+  fit: BoxFit.cover,
+  image: CachedNetworkImageProvider(
+    (widget.contacts?[index].profileImg != null &&
+            widget.contacts![index].profileImg!.isNotEmpty)
+        ? (widget.contacts![index].profileImg!.contains(AppConstants.imageBaseUrl)
+            ? widget.contacts![index].profileImg!
+            : AppConstants.imageBaseUrl + widget.contacts![index].profileImg!)
+        : "https://www.qwikcilver.com/wp-content/uploads/2019/01/dummy-post-square-1-thegem-blog-masonry.jpg", // Fallback image URL
+  ),
+)
+
+                        // DecorationImage(
+                        //     fit: BoxFit.cover,
+                        //     image: Image.network(
+                        //       widget.contacts?[index].profileImg == ""
+                        //           ? "https://www.qwikcilver.com/wp-content/uploads/2019/01/dummy-post-square-1-thegem-blog-masonry.jpg"
+                        //           : widget.contacts?[index].profileImg ??
+                        //               "https://www.qwikcilver.com/wp-content/uploads/2019/01/dummy-post-square-1-thegem-blog-masonry.jpg",
+                        //     ).image)
+                            ),
                     height: MediaQuery.of(context).size.height / 2.1,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -233,13 +280,22 @@ class _SwiperViewState extends State<SwiperView> {
                                         child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(8),
-                                          child: Image.network(
-                                            widget.contacts?[index]
-                                                    .services?[index3].logo ??
-                                                "",
-                                            // color: AppCol.primary,
-                                            height: 32,
-                                          ),
+                                          child: 
+                                          CachedNetworkImage(
+  imageUrl: _getServiceLogoUrl(index, index3),
+  height: 32,
+  fit: BoxFit.contain,
+  placeholder: (context, url) => const CircularProgressIndicator(strokeWidth: 2),
+  errorWidget: (context, url, error) => const Icon(Icons.error, size: 24),
+),
+
+                                          // Image.network(
+                                          //   widget.contacts?[index]
+                                          //           .services?[index3].logo ??
+                                          //       "",
+                                          //   // color: AppCol.primary,
+                                          //   height: 32,
+                                          // ),
                                           // Image.network(
                                           //   "https://cdn.pixabay.com/photo/2021/08/16/08/55/facebook-6549798_1280.jpg",
                                           // ),
@@ -279,13 +335,23 @@ class _SwiperViewState extends State<SwiperView> {
                                               .customServices?[index4].logo ==
                                           "")
                                   ? Container()
-                                  : Image.network(
-                                      widget.contacts?[index]
-                                              .customServices?[index4].logo ??
-                                          "",
-                                      height: 44,
-                                      width: 43,
-                                    ),
+                                  : 
+                                  CachedNetworkImage(
+  imageUrl: _getLogoUrl(index, index4),
+  height: 44,
+  width: 43,
+  fit: BoxFit.cover,
+  placeholder: (context, url) => const CircularProgressIndicator(),
+  errorWidget: (context, url, error) => const Icon(Icons.error),
+),
+
+                                  // Image.network(
+                                  //     widget.contacts?[index]
+                                  //             .customServices?[index4].logo ??
+                                  //         "",
+                                  //     height: 44,
+                                  //     width: 43,
+                                  //   ),
                               Text(
                                   widget.contacts?[index].customServices?[index4]
                                           .title ??

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -42,6 +43,19 @@ class _ContactHomeViewState extends ConsumerState<ContactHomeView>
       });
     });
   }
+
+  String _getProfileImage(int index) {
+  final profileImg = _viewModel.connectedUserResponse?.contacts?[index].profileImg;
+
+  if (profileImg == null || profileImg.isEmpty) {
+    return "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659651_640.png";
+  }
+
+  return profileImg.contains(AppConstants.imageBaseUrl)
+      ? profileImg
+      : AppConstants.imageBaseUrl + profileImg;
+}
+
 
   getUserParentToken() {
     token = SharedPreferenceService.getString('parentIdToken') ?? '';
@@ -236,19 +250,34 @@ class _ContactHomeViewState extends ConsumerState<ContactHomeView>
                                   child: Container(
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(4),
-                                        image: DecorationImage(
-                                            fit: BoxFit.fitHeight,
-                                            image: NetworkImage(_viewModel
-                                                        .connectedUserResponse
-                                                        ?.contacts?[index]
-                                                        .profileImg ==
-                                                    ""
-                                                ? "https://www.qwikcilver.com/wp-content/uploads/2019/01/dummy-post-square-1-thegem-blog-masonry.jpg"
-                                                : _viewModel
-                                                        .connectedUserResponse
-                                                        ?.contacts?[index]
-                                                        .profileImg ??
-                                                    "https://www.qwikcilver.com/wp-content/uploads/2019/01/dummy-post-square-1-thegem-blog-masonry.jpg"))),
+                                        image:
+                                        DecorationImage(
+  fit: BoxFit.fitHeight,
+  image: CachedNetworkImageProvider(
+    (_viewModel.connectedUserResponse?.contacts?[index].profileImg != null &&
+            _viewModel.connectedUserResponse!.contacts![index].profileImg!.isNotEmpty)
+        ? (_viewModel.connectedUserResponse!.contacts![index].profileImg!.contains(AppConstants.imageBaseUrl)
+            ? _viewModel.connectedUserResponse!.contacts![index].profileImg!
+            : AppConstants.imageBaseUrl + _viewModel.connectedUserResponse!.contacts![index].profileImg!)
+        : "https://www.qwikcilver.com/wp-content/uploads/2019/01/dummy-post-square-1-thegem-blog-masonry.jpg", // Fallback image URL
+  ),
+)
+
+                                        //  DecorationImage(
+                                        //     fit: BoxFit.fitHeight,
+                                        //     image: NetworkImage(_viewModel
+                                        //                 .connectedUserResponse
+                                        //                 ?.contacts?[index]
+                                        //                 .profileImg ==
+                                        //             ""
+                                        //         ? "https://www.qwikcilver.com/wp-content/uploads/2019/01/dummy-post-square-1-thegem-blog-masonry.jpg"
+                                        //         : _viewModel
+                                        //                 .connectedUserResponse
+                                        //                 ?.contacts?[index]
+                                        //                 .profileImg ??
+                                        //             "https://www.qwikcilver.com/wp-content/uploads/2019/01/dummy-post-square-1-thegem-blog-masonry.jpg")
+                                        //             )
+                                                    ),
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Column(
@@ -394,24 +423,38 @@ class _ContactHomeViewState extends ConsumerState<ContactHomeView>
                                             ));
                                       },
                                       child: Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(4),
-                                            image: DecorationImage(
-                                                fit: BoxFit.fitHeight,
-                                                image: NetworkImage(_viewModel
-                                                            .connectedUserResponse
-                                                            ?.contacts?[
-                                                                index - 1]
-                                                            .profileImg ==
-                                                        ""
-                                                    ? "https://www.qwikcilver.com/wp-content/uploads/2019/01/dummy-post-square-1-thegem-blog-masonry.jpg"
-                                                    : _viewModel
-                                                            .connectedUserResponse
-                                                            ?.contacts?[
-                                                                index - 1]
-                                                            .profileImg ??
-                                                        "https://www.qwikcilver.com/wp-content/uploads/2019/01/dummy-post-square-1-thegem-blog-masonry.jpg"))),
+                                        decoration: 
+                                        BoxDecoration(
+  borderRadius: BorderRadius.circular(4),
+  image: DecorationImage(
+    fit: BoxFit.fitHeight,
+    image: CachedNetworkImageProvider(
+      _getProfileImage(index - 1),
+    ),
+  ),
+),
+
+                                        // BoxDecoration(
+                                        //     borderRadius:
+                                        //         BorderRadius.circular(4),
+                                        //     image:
+                                        //      DecorationImage(
+                                        //         fit: BoxFit.fitHeight,
+                                        //         image: NetworkImage(_viewModel
+                                        //                     .connectedUserResponse
+                                        //                     ?.contacts?[
+                                        //                         index - 1]
+                                        //                     .profileImg ==
+                                        //                 ""
+                                        //             ? "https://www.qwikcilver.com/wp-content/uploads/2019/01/dummy-post-square-1-thegem-blog-masonry.jpg"
+                                        //             : _viewModel
+                                        //                     .connectedUserResponse
+                                        //                     ?.contacts?[
+                                        //                         index - 1]
+                                        //                     .profileImg ??
+                                        //                 "https://www.qwikcilver.com/wp-content/uploads/2019/01/dummy-post-square-1-thegem-blog-masonry.jpg")
+                                        //                 )
+                                        //                 ),
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: Column(

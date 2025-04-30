@@ -179,7 +179,7 @@ Widget _buildTextRow(String label, String value, {Color? color}) {
 
 Color getStatusColor(String status) {
   switch (status) {
-    case "SUCCESS":
+    case "NEW":
       return Colors.green; // Success color
     case "SHIPPED":
       return Colors.blueAccent; // Shipped color
@@ -202,7 +202,7 @@ Color getStatusColor(String status) {
 
 IconData getStatusIcon(String status) {
   switch (status) {
-    case "SUCCESS":
+    case "NEW":
       return Icons.check_circle; // Success icon
     case "SHIPPED":
       return Icons.local_shipping; // Shipped icon
@@ -232,7 +232,7 @@ IconData getStatusIcon(String status) {
 String mapFeatureToStatus(String? feature) {
   switch (feature) {
     case "New Orders":
-      return "SUCCESS";
+      return "NEW";
     case "Shipped Orders":
       return "SHIPPED";
     case "Delivered Orders":

@@ -11,6 +11,8 @@ import 'package:taptohello/data/productCategoryModel/editProductApiResModel.dart
 import 'package:taptohello/data/productCategoryModel/editProductListApiResModel.dart';
 import 'package:taptohello/data/productCategoryModel/getProductListApiResModel.dart';
 import 'package:http/http.dart' as http;
+import 'package:taptohello/helper/locator.dart';
+import 'package:taptohello/helper/user_detail_service.dart';
 import 'package:taptohello/presentation/profileScreen/ManageStore/InstagramAuth/instagram_callback_response_model.dart';
 
 class AddProductController{
@@ -47,25 +49,51 @@ class AddProductController{
   }
 
   /// AWS Photo upload
+  // Future<AWSFileUploadApiResModel> getDocumentUpload(body) async {
+  //   AWSFileUploadApiResModel awsFileUploadApiResModel = AWSFileUploadApiResModel();
+  //   debugPrint('My body is: $body');
+  //   try {
+  //     var request = http.MultipartRequest('POST', Uri.parse('${AppConstants.baseUrl}upload'));
+  //     request.files.add(await http.MultipartFile.fromPath('file', '$body'));
+  //     http.StreamedResponse response = await request.send();
+  //     // debugPrint('My sghdvfsdfhsdbf  is: ${response.}');
+  //     if (response.statusCode == 200) {
+  //       String responseBody = await response.stream.bytesToString();
+  //       var jsonResponse = jsonDecode(responseBody);
+  //       // debugPrint('My sghdvfsdfhsdbf  is: ${jsonResponse}');
+  //       awsFileUploadApiResModel = AWSFileUploadApiResModel.fromJson(jsonResponse);
+  //     }
+  //   } catch (e) {
+  //     debugPrint('AWS Photo Upload Api Error: $e');
+  //   }
+  //   return awsFileUploadApiResModel;
+  // }
+
   Future<AWSFileUploadApiResModel> getDocumentUpload(body) async {
-    AWSFileUploadApiResModel awsFileUploadApiResModel = AWSFileUploadApiResModel();
-    debugPrint('My body is: $body');
-    try {
-      var request = http.MultipartRequest('POST', Uri.parse('${AppConstants.baseUrl}upload'));
-      request.files.add(await http.MultipartFile.fromPath('file', '$body'));
-      http.StreamedResponse response = await request.send();
-      // debugPrint('My sghdvfsdfhsdbf  is: ${response.}');
-      if (response.statusCode == 200) {
-        String responseBody = await response.stream.bytesToString();
-        var jsonResponse = jsonDecode(responseBody);
-        // debugPrint('My sghdvfsdfhsdbf  is: ${jsonResponse}');
-        awsFileUploadApiResModel = AWSFileUploadApiResModel.fromJson(jsonResponse);
-      }
-    } catch (e) {
-      debugPrint('AWS Photo Upload Api Error: $e');
+  AWSFileUploadApiResModel awsFileUploadApiResModel = AWSFileUploadApiResModel();
+   final UserDetailService _userDetailService = getIt<UserDetailService>();
+  debugPrint('My body is: $body');
+  
+  Dio dio = Dio();
+  try {
+    FormData formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile('$body'),
+    });
+
+    Response response = await dio.post(
+      '${AppConstants.baseUrl}upload/${_userDetailService.userDetailResponse?.user?.username}',
+      data: formData,
+    );
+
+    if (response.statusCode == 200) {
+      var jsonResponse = response.data;
+      awsFileUploadApiResModel = AWSFileUploadApiResModel.fromJson(jsonResponse);
     }
-    return awsFileUploadApiResModel;
+  } catch (e) {
+    debugPrint('AWS Photo Upload Api Error: $e');
   }
+  return awsFileUploadApiResModel;
+}
 
   // Get Product details
   Future<EditProductApiResModel> getProductDetails(userId, productId) async {

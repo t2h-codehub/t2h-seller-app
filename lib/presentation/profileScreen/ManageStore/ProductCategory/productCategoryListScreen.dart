@@ -2,6 +2,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:taptohello/core/app_export.dart';
+import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/core/custom_loader.dart';
 import 'package:taptohello/data/productCategoryModel/getProductCategoryResponceModel.dart';
 import 'package:taptohello/helper/locator.dart';
@@ -225,19 +226,40 @@ void _showDeleteConfirmationDialog(BuildContext context, String? categoryId) {
                           borderRadius: BorderRadius.circular(12),
                           child: AspectRatio(
                             aspectRatio: 16 / 9, 
-                            child: CachedNetworkImage(
-                              imageUrl: getProductCategoryResponceModel.categories![index].categoryImage?.toString() ?? '',
-                              width: double.infinity,
-                              fit: BoxFit.cover, 
-                              placeholder: (context, url) => const Center(
-                                child: CircularProgressIndicator(), 
-                              ),
-                              errorWidget: (context, url, error) => const Icon(
-                                Icons.image_not_supported,
-                                size: 100,
-                                color: Colors.grey,
-                              ),
-                            ),
+                            child:
+                            CachedNetworkImage(
+  imageUrl: getProductCategoryResponceModel.categories![index].categoryImage != null &&
+          getProductCategoryResponceModel.categories![index].categoryImage!
+              .contains(AppConstants.imageBaseUrl)
+      ? getProductCategoryResponceModel.categories![index].categoryImage!
+      :  AppConstants.imageBaseUrl   +
+          (getProductCategoryResponceModel.categories![index].categoryImage ?? ''),
+  width: double.infinity,
+  fit: BoxFit.cover,
+  placeholder: (context, url) => const Center(
+    child: CircularProgressIndicator(),
+  ),
+  errorWidget: (context, url, error) => const Icon(
+    Icons.image_not_supported,
+    size: 100,
+    color: Colors.grey,
+  ),
+),
+
+
+                            // CachedNetworkImage(
+                            //   imageUrl: getProductCategoryResponceModel.categories![index].categoryImage?.toString() ?? '',
+                            //   width: double.infinity,
+                            //   fit: BoxFit.cover, 
+                            //   placeholder: (context, url) => const Center(
+                            //     child: CircularProgressIndicator(), 
+                            //   ),
+                            //   errorWidget: (context, url, error) => const Icon(
+                            //     Icons.image_not_supported,
+                            //     size: 100,
+                            //     color: Colors.grey,
+                            //   ),
+                            // ),
                           ),
                         ),
                         Container(

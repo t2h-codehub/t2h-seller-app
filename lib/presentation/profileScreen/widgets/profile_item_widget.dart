@@ -1,7 +1,9 @@
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:taptohello/core/app_export.dart';
+import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/helper/base_screen_view.dart';
 import 'package:taptohello/presentation/sign_in_screen/auth_view_model.dart';
 
@@ -67,14 +69,35 @@ class _EditProfileItemWidgetState extends ConsumerState<ProfileItemWidget>
                     ),
                   )
                 : SizedBox.shrink(),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(5),
-              child: Image.network(
-                widget.image,
-                height: 33,
-                width: 33,
-              ),
-            ),
+                ClipRRect(
+  borderRadius: BorderRadius.circular(5),
+  child: CachedNetworkImage(
+    imageUrl: (widget.image != null && widget.image.isNotEmpty)
+        ? (widget.image.contains(AppConstants.imageBaseUrl)
+            ? widget.image
+            : AppConstants.imageBaseUrl + widget.image)
+        : '',
+    height: 33,
+    width: 33,
+    fit: BoxFit.cover,
+    placeholder: (context, url) =>
+        const SizedBox(
+          height: 33,
+          width: 33,
+          child: Center(child: CircularProgressIndicator(strokeWidth: 2))),
+    errorWidget: (context, url, error) =>
+        const Icon(Icons.error, size: 20),
+  ),
+),
+
+            // ClipRRect(
+            //   borderRadius: BorderRadius.circular(5),
+            //   child: Image.network(
+            //     widget.image,
+            //     height: 33,
+            //     width: 33,
+            //   ),
+            // ),
             Padding(
               padding: getPadding(
                 left: 24,

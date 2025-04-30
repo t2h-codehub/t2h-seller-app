@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:taptohello/core/app_export.dart';
@@ -397,18 +398,32 @@ class _PremiumViewState extends ConsumerState<PremiumView>
                                                                           .image ==
                                                                       ""
                                                                   ? Container()
-                                                                  : Image
-                                                                      .network(
-                                                                      _viewModel
-                                                                              .getPlanResponse
-                                                                              ?.plans?[index]
-                                                                              .shortBenefits?[index2]
-                                                                              .image ??
-                                                                          "",
-                                                                      width: 22,
-                                                                      height:
-                                                                          22,
-                                                                    ),
+                                                                  : 
+                                                                  CachedNetworkImage(
+  imageUrl: (_viewModel.getPlanResponse?.plans?[index].shortBenefits?[index2].image != null &&
+              _viewModel.getPlanResponse!.plans![index].shortBenefits![index2].image!.isNotEmpty)
+      ? (_viewModel.getPlanResponse!.plans![index].shortBenefits![index2].image!.contains(AppConstants.imageBaseUrl)
+          ? _viewModel.getPlanResponse!.plans![index].shortBenefits![index2].image!
+          : AppConstants.imageBaseUrl + _viewModel.getPlanResponse!.plans![index].shortBenefits![index2].image!)
+      : "",  // Default value if image URL is null or empty
+  width: 22,
+  height: 22,
+  placeholder: (context, url) => const CircularProgressIndicator(),
+  errorWidget: (context, url, error) => const Icon(Icons.error),
+),
+
+                                                                  // Image
+                                                                  //     .network(
+                                                                  //     _viewModel
+                                                                  //             .getPlanResponse
+                                                                  //             ?.plans?[index]
+                                                                  //             .shortBenefits?[index2]
+                                                                  //             .image ??
+                                                                  //         "",
+                                                                  //     width: 22,
+                                                                  //     height:
+                                                                  //         22,
+                                                                  //   ),
                                                               const SizedBox(
                                                                   width: 12),
                                                               Text(

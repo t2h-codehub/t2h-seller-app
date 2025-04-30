@@ -1,8 +1,10 @@
 // ignore_for_file: duplicate_ignore
 
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/data/auth/model/add_contact_card.dart';
 import 'package:taptohello/data/auth/model/add_service.dart';
 import 'package:taptohello/data/auth/model/search_services.dart';
@@ -577,15 +579,32 @@ class _Listtype1ItemWidgetState extends ConsumerState<Listtype1ItemWidget>
                   borderRadius: BorderRadius.circular(16)),
               leading: SizedBox(
                 width: 40,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                    widget.value.logo ?? "",
-                    height: 40,
-                    width: 40,
-                    fit: BoxFit.fill,
-                  ),
-                ),
+                child: 
+                ClipRRect(
+  borderRadius: BorderRadius.circular(10),
+  child: CachedNetworkImage(
+    imageUrl: (widget.value.logo != null && widget.value.logo!.isNotEmpty)
+        ? (widget.value.logo!.contains(AppConstants.imageBaseUrl)
+            ? widget.value.logo!
+            : AppConstants.imageBaseUrl + widget.value.logo!)
+        : '', // You can replace this with a placeholder image URL if needed
+    height: 40,
+    width: 40,
+    fit: BoxFit.fill,
+    placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+    errorWidget: (context, url, error) => const Icon(Icons.error),
+  ),
+),
+
+                // ClipRRect(
+                //   borderRadius: BorderRadius.circular(10),
+                //   child: Image.network(
+                //     widget.value.logo ?? "",
+                //     height: 40,
+                //     width: 40,
+                //     fit: BoxFit.fill,
+                //   ),
+                // ),
               ),
               // trailing: !isExpanded
               //     ? (_viewModel.userServicesResponse!.services!.any(

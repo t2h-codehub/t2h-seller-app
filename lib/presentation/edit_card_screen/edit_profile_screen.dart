@@ -2,6 +2,7 @@
 
 
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:taptohello/core/app_export.dart';
@@ -301,12 +302,26 @@ SizedBox(
             borderRadius: BorderRadius.circular(12),
             child: uploadCoverController.text.isNotEmpty
                 ? isImage
-                    ? Image.network(
-                        uploadCoverController.text,
-                        height: 210,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      )
+                    ? 
+                    CachedNetworkImage(
+  imageUrl: (uploadCoverController.text != null && uploadCoverController.text.isNotEmpty)
+      ? (uploadCoverController.text.contains(AppConstants.imageBaseUrl)
+          ? uploadCoverController.text
+          : AppConstants.imageBaseUrl + uploadCoverController.text)
+      : '',
+  height: 210,
+  width: double.infinity,
+  fit: BoxFit.cover,
+  placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+  errorWidget: (context, url, error) => const Icon(Icons.error),
+)
+
+                    // Image.network(
+                    //     uploadCoverController.text,
+                    //     height: 210,
+                    //     width: double.infinity,
+                    //     fit: BoxFit.cover,
+                    //   )
                     : _controller.value.isInitialized
                         ? AspectRatio(
                             aspectRatio: _controller.value.aspectRatio,
@@ -354,10 +369,22 @@ SizedBox(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: uploadImageController.text.isNotEmpty
-                      ? DecorationImage(
-                          image: NetworkImage(uploadImageController.text),
-                          fit: BoxFit.cover,
-                        )
+                      ? 
+                      DecorationImage(
+  image: CachedNetworkImageProvider(
+    (uploadImageController.text != null && uploadImageController.text.isNotEmpty)
+        ? (uploadImageController.text.contains(AppConstants.imageBaseUrl)
+            ? uploadImageController.text
+            : AppConstants.imageBaseUrl + uploadImageController.text)
+        : '',
+  ),
+  fit: BoxFit.cover,
+)
+
+                      // DecorationImage(
+                      //     image: NetworkImage(uploadImageController.text),
+                      //     fit: BoxFit.cover,
+                      //   )
                       : null,
                 ),
                 child: uploadImageController.text.isEmpty

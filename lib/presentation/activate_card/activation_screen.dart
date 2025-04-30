@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:taptohello/core/app_export.dart';
+import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/data/card/models/activate_card_model.dart';
 import 'package:taptohello/helper/base_screen_view.dart';
 import 'package:taptohello/helper/locator.dart';
@@ -105,19 +107,39 @@ class _ActivationScreenState extends ConsumerState<ActivationScreen>
                                         color: AppCol.primary,
                                       ),
                                       shape: BoxShape.circle),
-                                  child: Container(
-                                    height: 40,
-                                    width: 40,
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image: NetworkImage(_userDetailService
-                                                    .userDetailResponse
-                                                    ?.user
-                                                    ?.profileImg ??
-                                                "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659651_640.png"))),
-                                  ),
+                                  child: 
+                                  Container(
+  height: 40,
+  width: 40,
+  decoration: BoxDecoration(
+    shape: BoxShape.circle,
+    image: DecorationImage(
+      fit: BoxFit.cover,
+      image: CachedNetworkImageProvider(
+        (_userDetailService.userDetailResponse?.user?.profileImg != null &&
+                _userDetailService.userDetailResponse!.user!.profileImg!.isNotEmpty)
+            ? (_userDetailService.userDetailResponse!.user!.profileImg!.contains(AppConstants.imageBaseUrl)
+                ? _userDetailService.userDetailResponse!.user!.profileImg!
+                : AppConstants.imageBaseUrl + _userDetailService.userDetailResponse!.user!.profileImg!)
+            : "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659651_640.png",
+      ),
+    ),
+  ),
+)
+
+                                  // Container(
+                                  //   height: 40,
+                                  //   width: 40,
+                                  //   decoration: BoxDecoration(
+                                  //       shape: BoxShape.circle,
+                                  //       image: DecorationImage(
+                                  //           fit: BoxFit.cover,
+                                  //           image: NetworkImage(_userDetailService
+                                  //                   .userDetailResponse
+                                  //                   ?.user
+                                  //                   ?.profileImg ??
+                                  //               "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659651_640.png"))),
+                                  // ),
                                 ),
                                 Padding(
                                     padding:

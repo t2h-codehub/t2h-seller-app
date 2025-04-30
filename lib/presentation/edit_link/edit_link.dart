@@ -45,7 +45,7 @@ void initState() {
   linkController = TextEditingController(text: initialUsername);
 
   linkController.addListener(() {
-    String text = linkController.text.toLowerCase();
+    String text = linkController.text;
     
     if (linkController.text != text) {
       linkController.value = TextEditingValue(
@@ -228,7 +228,8 @@ void initState() {
                                 //   style: TextStyle(color: Color(0xFF666666), fontSize: 16, fontWeight: FontWeight.w500, letterSpacing: 0.16),
                                 // ),
                                 TextSpan(
-                                  text: linkController.text.toLowerCase(),
+                                  // text: linkController.text.toLowerCase(),
+                                  text: linkController.text,
                                   style: TextStyle(color: Color(0xFF1E1E1E), fontSize: 16, fontWeight: FontWeight.w500, letterSpacing: 0.16),
                                 ),
                               ],
@@ -242,7 +243,7 @@ void initState() {
                         highlightColor: Colors.transparent,
                         onTap: () {
                           if (linkController.text.isNotEmpty) {
-                            model.editProfileLinkRequest = EditProfileLinkRequest(username: linkController.text.toLowerCase());
+                            model.editProfileLinkRequest = EditProfileLinkRequest(username: linkController.text);
                             model.editProfileLink(model.editProfileLinkRequest, context);
                           }
                         },
@@ -305,11 +306,11 @@ class LowerCaseTextFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     // Only modify text if needed (to prevent unnecessary updates)
-    if (newValue.text == oldValue.text.toLowerCase()) {
+    if (newValue.text == oldValue.text) {
       return newValue;
     }
     return TextEditingValue(
-      text: newValue.text.toLowerCase(), // Convert input to lowercase
+      text: newValue.text, // Convert input to lowercase
       selection: TextSelection.collapsed(offset: newValue.text.length), // Keep cursor at correct position
     );
   }

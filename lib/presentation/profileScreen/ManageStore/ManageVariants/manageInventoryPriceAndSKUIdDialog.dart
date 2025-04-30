@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:taptohello/core/app_export.dart';
+import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/presentation/profileScreen/ManageStore/AddProduct/editProductListScreen/editProductListScreen.dart';
 
 
@@ -90,202 +92,401 @@ class _ManageInventoryPriceAndSKUIdDialogState
     final selectedImagesDynamic = ref.watch(manageVariantProvider);
 final List<String> selectedImagesAsString = List<String>.from(selectedImagesDynamic ?? []);
 
+bool validateInputs() {
+  final stockText = stockController.text.trim();
+  final skuIdText = skuIdController.text.trim();
+  final priceText = priceController.text.trim();
+  final discountText = discountController.text.trim();
 
-    return AlertDialog(
-      title: Text('Manage Inventory', style: TextStyle(fontSize: 18)),
-      content: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-            
-            
-              if (widget.firstVariantName.isNotEmpty == true)
-  Text(
-    '${widget.firstVariantName}: ${widget.size ?? ""}',
-    style: TextStyle(fontSize: 16),
-  ),
-SizedBox(height: 8),
-if (widget.secondVariantName.isNotEmpty == true)
-  Text(
-    '${widget.secondVariantName}: ${widget.color ?? ""}',
-    style: TextStyle(fontSize: 16),
-  ),
-SizedBox(height: 8),
+  if (skuIdText.isEmpty) return false;
 
-              TextField(
-                controller: stockController,
-                decoration: InputDecoration(
-                  labelText: 'Stock',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.number,
-              ),
-              SizedBox(height: 8),
-              // TextField(
-              //   controller: priceController,
-              //   decoration: InputDecoration(
-              //     labelText: 'Price',
-              //     border: OutlineInputBorder(),
-              //   ),
-              //   keyboardType: TextInputType.numberWithOptions(decimal: true),
-              // ),
-              TextField(
-  controller: priceController,
-  decoration: InputDecoration(
-    labelText: 'Price',
-    border: OutlineInputBorder(),
-  ),
-  keyboardType: TextInputType.numberWithOptions(decimal: true),
-  onChanged: (_) => setState(() {}), // 👈 triggers live validation on price change
-),
+  if (stockText.isEmpty || int.tryParse(stockText) == null || int.parse(stockText) < 0) {
+    return false;
+  }
 
-              SizedBox(height: 8),
-              // TextField(
-              //   controller: discountController,
-              //   decoration: InputDecoration(
-              //     labelText: 'Discount Price',
-              //     border: OutlineInputBorder(),
-              //     errorText: discountController
-              //                             .text.isNotEmpty &&
-              //                         double.parse(
-              //                                 discountController.text) >
-              //                             double.parse(priceController.text)
-              //                     ? 'Discount price cannot be greater than MRP price'
-              //                     : null,
-              //   ),
-                
-              //   keyboardType: TextInputType.numberWithOptions(decimal: true),
-              // ),
-              TextField(
-  controller: discountController,
-  decoration: InputDecoration(
-    labelText: 'Discount Price',
-    border: OutlineInputBorder(),
-    errorText: () {
-      final discountText = discountController.text;
-      final priceText = priceController.text;
-
-      if (discountText.isEmpty || priceText.isEmpty) return null;
-
-      try {
-        final discount = double.parse(discountText);
-        final price = double.parse(priceText);
-        if (discount > price) {
-          return 'Discount price cannot be greater than MRP price';
-        }
-      } catch (e) {
-        return null;
+  if (discountText.isNotEmpty && priceText.isNotEmpty) {
+    try {
+      final discount = double.parse(discountText);
+      final price = double.parse(priceText);
+      if (discount > price) {
+        return false;
       }
-
-      return null;
-    }(),
-  ),
-  keyboardType: TextInputType.numberWithOptions(decimal: true),
-  onChanged: (_) => setState(() {}), // 👈 live validation
-),
-
-              SizedBox(height: 8),
-              TextField(
-                controller: skuIdController,
-                decoration: InputDecoration(
-                  labelText: 'SKU ID',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 16),
-
-              selectedImages.isNotEmpty
-                  ? Wrap(
-                      spacing: 8.0,
-                      children: selectedImages.map((imageUrl) {
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.network(
-                            imageUrl,
-                            width: 60,
-                            height: 60,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Icon(Icons.error);
-                            },
-                          ),
-                        );
-                      }).toList(),
-                    )
-                  : Text('No images selected', style: TextStyle(fontSize: 14)),
-
-              SizedBox(height: 16),
-             InkWell(
-  onTap: () async {
-   
-    List<String>? selected = await showDialog<List<String>>(
-      
-      context: context,
-      builder: (BuildContext context) {
-        return ImagePickerDialog(
-          selectedImages: selectedImagesAsString, // Ensure it's properly converted
-          initialImages: widget.image, // Ensure widget.image is also a List<String>
-          startImage: startImage1,
-        );
-      },
-    );
-
-    if (selected != null) {
-      setState(() {
-        startImage1 = selected;
-        selectedImages = selected;
-      });
+    } catch (e) {
+      return false;
     }
-  },
-  child: Row(
-    children: [
-      Icon(Icons.add_a_photo, size: 24),
-      SizedBox(width: 8),
-      Text('Select Images', style: TextStyle(fontSize: 16)),
-    ],
-  ),
-),
+  }
 
-            ],
+  return true;
+}
+
+String? validateDiscountPrice() {
+  final discountText = discountController.text;
+  final priceText = priceController.text;
+
+  if (discountText.isEmpty || priceText.isEmpty) return null;
+
+  try {
+    final discount = double.parse(discountText);
+    final price = double.parse(priceText);
+    if (discount > price) {
+      return 'Discount price cannot be greater than MRP price';
+    }
+  } catch (e) {
+    return null;
+  }
+
+  return null;
+}
+
+void submitForm() {
+  widget.body({
+    'price': priceController.text,
+    'sku_id': skuIdController.text,
+    'discount': discountController.text,
+    'stock': stockController.text,
+    'selectedImages': selectedImages,
+  });
+  // Navigator.pop(context);
+}
+
+    return 
+    AlertDialog(
+  title: Text('Manage Inventory', style: TextStyle(fontSize: 18)),
+  content: SingleChildScrollView(
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (widget.firstVariantName.isNotEmpty)
+            Text(
+              '${widget.firstVariantName}: ${widget.size ?? ""}',
+              style: TextStyle(fontSize: 16),
+            ),
+          SizedBox(height: 8),
+          if (widget.secondVariantName.isNotEmpty)
+            Text(
+              '${widget.secondVariantName}: ${widget.color ?? ""}',
+              style: TextStyle(fontSize: 16),
+            ),
+          SizedBox(height: 8),
+          TextField(
+            controller: stockController,
+            decoration: InputDecoration(
+              labelText: 'Stock',
+              border: OutlineInputBorder(),
+            ),
+            keyboardType: TextInputType.number,
+            onChanged: (_) => setState(() {}), // live update
           ),
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text('Cancel'),
-        ),
-        // TextButton(
-        //   onPressed: () {
-        //     widget.body({
-        //       'price': priceController.text,
-        //       'sku_id': skuIdController.text,
-        //       'discount': discountController.text,
-        //       'stock': stockController.text,
-        //       'selectedImages': selectedImages,
-        //     });
-        //   },
-        //   child: Text('Submit'),
-        // ),
-        TextButton(
-  onPressed: isDiscountValid
-      ? () {
-          widget.body({
-            'price': priceController.text,
-            'sku_id': skuIdController.text,
-            'discount': discountController.text,
-            'stock': stockController.text,
-            'selectedImages': selectedImages,
-          });
-        }
-      : null, // 👈 disables the button if discount is invalid
-  child: Text('Submit'),
-),
+          SizedBox(height: 8),
+          TextField(
+            controller: priceController,
+            decoration: InputDecoration(
+              labelText: 'Price',
+              border: OutlineInputBorder(),
+            ),
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            onChanged: (_) => setState(() {}),
+          ),
+          SizedBox(height: 8),
+          TextField(
+            controller: discountController,
+            decoration: InputDecoration(
+              labelText: 'Discount Price',
+              border: OutlineInputBorder(),
+              errorText: validateDiscountPrice(),
+            ),
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            onChanged: (_) => setState(() {}),
+          ),
+          SizedBox(height: 8),
+          TextField(
+            controller: skuIdController,
+            decoration: InputDecoration(
+              labelText: 'SKU ID',
+              border: OutlineInputBorder(),
+            ),
+            onChanged: (_) => setState(() {}),
+          ),
+          SizedBox(height: 16),
+          selectedImages.isNotEmpty
+              ? 
+              // Wrap(
+              //     spacing: 8.0,
+              //     children: selectedImages.map((imageUrl) {
+              //       return ClipRRect(
+              //         borderRadius: BorderRadius.circular(8),
+              //         child: Image.network(
+              //           imageUrl,
+              //           width: 60,
+              //           height: 60,
+              //           fit: BoxFit.cover,
+              //           errorBuilder: (context, error, stackTrace) {
+              //             return Icon(Icons.error);
+              //           },
+              //         ),
+              //       );
+              //     }).toList(),
+              //   )
 
-      ],
+Wrap(
+  spacing: 8.0,
+  children: selectedImages.map((imageUrl) {
+    final fullUrl = imageUrl.contains(AppConstants.imageBaseUrl)
+        ? imageUrl
+        : AppConstants.imageBaseUrl + imageUrl;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: 
+      CachedNetworkImage(
+  imageUrl: (fullUrl != null && fullUrl.isNotEmpty)
+      ? (fullUrl.contains(AppConstants.imageBaseUrl)
+          ? fullUrl
+          : AppConstants.imageBaseUrl + fullUrl)
+      : '',
+  width: 60,
+  height: 60,
+  fit: BoxFit.cover,
+  placeholder: (context, url) => const SizedBox(
+    width: 60,
+    height: 60,
+    child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+  ),
+  errorWidget: (context, url, error) => const Icon(Icons.error, size: 24),
+)
+
+      // CachedNetworkImage(
+      //   imageUrl: fullUrl,
+      //   width: 60,
+      //   height: 60,
+      //   fit: BoxFit.cover,
+      //   placeholder: (context, url) => const SizedBox(
+      //     width: 60,
+      //     height: 60,
+      //     child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      //   ),
+      //   errorWidget: (context, url, error) => const Icon(Icons.error, size: 24),
+      // ),
     );
+  }).toList(),
+)
+              : Text('No images selected', style: TextStyle(fontSize: 14)),
+          SizedBox(height: 16),
+          InkWell(
+            onTap: () async {
+              List<String>? selected = await showDialog<List<String>>(
+                context: context,
+                builder: (BuildContext context) {
+                  return ImagePickerDialog(
+                    selectedImages: selectedImagesAsString,
+                    initialImages: widget.image,
+                    startImage: startImage1,
+                  );
+                },
+              );
+
+              if (selected != null) {
+                setState(() {
+                  startImage1 = selected;
+                  selectedImages = selected;
+                });
+              }
+            },
+            child: Row(
+              children: [
+                Icon(Icons.add_a_photo, size: 24),
+                SizedBox(width: 8),
+                Text('Select Images', style: TextStyle(fontSize: 16)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  ),
+  actions: [
+    TextButton(
+      onPressed: () => Navigator.pop(context),
+      child: Text('Cancel'),
+    ),
+    TextButton(
+      onPressed: validateInputs() ? submitForm : null, // Disable if invalid
+      child: Text('Submit'),
+    ),
+  ],
+);
+
+// ------------------------------
+// Helper methods outside build:
+
+
+
+
+
+//     AlertDialog(
+//       title: Text('Manage Inventory', style: TextStyle(fontSize: 18)),
+//       content: SingleChildScrollView(
+//         child: Padding(
+//           padding: const EdgeInsets.all(16.0),
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+            
+            
+//               if (widget.firstVariantName.isNotEmpty == true)
+//   Text(
+//     '${widget.firstVariantName}: ${widget.size ?? ""}',
+//     style: TextStyle(fontSize: 16),
+//   ),
+// SizedBox(height: 8),
+// if (widget.secondVariantName.isNotEmpty == true)
+//   Text(
+//     '${widget.secondVariantName}: ${widget.color ?? ""}',
+//     style: TextStyle(fontSize: 16),
+//   ),
+// SizedBox(height: 8),
+
+//               TextField(
+//                 controller: stockController,
+//                 decoration: InputDecoration(
+//                   labelText: 'Stock',
+//                   border: OutlineInputBorder(),
+//                 ),
+//                 keyboardType: TextInputType.number,
+//               ),
+//               SizedBox(height: 8),
+             
+//               TextField(
+//   controller: priceController,
+//   decoration: InputDecoration(
+//     labelText: 'Price',
+//     border: OutlineInputBorder(),
+//   ),
+//   keyboardType: TextInputType.numberWithOptions(decimal: true),
+//   onChanged: (_) => setState(() {}), // 👈 triggers live validation on price change
+// ),
+
+//               SizedBox(height: 8),
+              
+//               TextField(
+//   controller: discountController,
+//   decoration: InputDecoration(
+//     labelText: 'Discount Price',
+//     border: OutlineInputBorder(),
+//     errorText: () {
+//       final discountText = discountController.text;
+//       final priceText = priceController.text;
+
+//       if (discountText.isEmpty || priceText.isEmpty) return null;
+
+//       try {
+//         final discount = double.parse(discountText);
+//         final price = double.parse(priceText);
+//         if (discount > price) {
+//           return 'Discount price cannot be greater than MRP price';
+//         }
+//       } catch (e) {
+//         return null;
+//       }
+
+//       return null;
+//     }(),
+//   ),
+//   keyboardType: TextInputType.numberWithOptions(decimal: true),
+//   onChanged: (_) => setState(() {}), // 👈 live validation
+// ),
+
+//               SizedBox(height: 8),
+//               TextField(
+//                 controller: skuIdController,
+//                 decoration: InputDecoration(
+//                   labelText: 'SKU ID',
+//                   border: OutlineInputBorder(),
+//                 ),
+//               ),
+//               SizedBox(height: 16),
+
+//               selectedImages.isNotEmpty
+//                   ? Wrap(
+//                       spacing: 8.0,
+//                       children: selectedImages.map((imageUrl) {
+//                         return ClipRRect(
+//                           borderRadius: BorderRadius.circular(8),
+//                           child: Image.network(
+//                             imageUrl,
+//                             width: 60,
+//                             height: 60,
+//                             fit: BoxFit.cover,
+//                             errorBuilder: (context, error, stackTrace) {
+//                               return Icon(Icons.error);
+//                             },
+//                           ),
+//                         );
+//                       }).toList(),
+//                     )
+//                   : Text('No images selected', style: TextStyle(fontSize: 14)),
+
+//               SizedBox(height: 16),
+//              InkWell(
+//   onTap: () async {
+   
+//     List<String>? selected = await showDialog<List<String>>(
+      
+//       context: context,
+//       builder: (BuildContext context) {
+//         return ImagePickerDialog(
+//           selectedImages: selectedImagesAsString, // Ensure it's properly converted
+//           initialImages: widget.image, // Ensure widget.image is also a List<String>
+//           startImage: startImage1,
+//         );
+//       },
+//     );
+
+//     if (selected != null) {
+//       setState(() {
+//         startImage1 = selected;
+//         selectedImages = selected;
+//       });
+//     }
+//   },
+//   child: Row(
+//     children: [
+//       Icon(Icons.add_a_photo, size: 24),
+//       SizedBox(width: 8),
+//       Text('Select Images', style: TextStyle(fontSize: 16)),
+//     ],
+//   ),
+// ),
+
+//             ],
+//           ),
+//         ),
+//       ),
+//       actions: [
+//         TextButton(
+//           onPressed: () => Navigator.pop(context),
+//           child: Text('Cancel'),
+//         ),
+       
+//         TextButton(
+//   onPressed: isDiscountValid
+//       ? () {
+//           widget.body({
+//             'price': priceController.text,
+//             'sku_id': skuIdController.text,
+//             'discount': discountController.text,
+//             'stock': stockController.text,
+//             'selectedImages': selectedImages,
+//           });
+//         }
+//       : null, // 👈 disables the button if discount is invalid
+//   child: Text('Submit'),
+// ),
+
+//       ],
+//     );
   }
 }
 
@@ -355,27 +556,55 @@ class _ImagePickerDialogState extends State<ImagePickerDialog> {
                           }
                         });
                       },
-                      child: Stack(
-                        alignment: Alignment.topRight,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              imageUrl,
-                              width: 80,
-                              height: 80,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) => Icon(Icons.error),
-                            ),
-                          ),
-                          if (isSelected)
-                            Positioned(
-                              top: 4,
-                              right: 4,
-                              child: Icon(Icons.check_circle, color: Colors.green, size: 24),
-                            ),
-                        ],
-                      ),
+                      child: 
+                      Stack(
+  alignment: Alignment.topRight,
+  children: [
+    ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: CachedNetworkImage(
+        imageUrl: (imageUrl != null && imageUrl.isNotEmpty)
+            ? (imageUrl.contains(AppConstants.imageBaseUrl)
+                ? imageUrl
+                : AppConstants.imageBaseUrl + imageUrl)
+            : '', // Fallback if imageUrl is empty or null
+        width: 80,
+        height: 80,
+        fit: BoxFit.cover,
+        placeholder: (context, url) => const CircularProgressIndicator(),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
+      ),
+    ),
+    if (isSelected)
+      Positioned(
+        top: 4,
+        right: 4,
+        child: Icon(Icons.check_circle, color: Colors.green, size: 24),
+      ),
+  ],
+)
+
+                      // Stack(
+                      //   alignment: Alignment.topRight,
+                      //   children: [
+                      //     ClipRRect(
+                      //       borderRadius: BorderRadius.circular(8),
+                      //       child: Image.network(
+                      //         imageUrl,
+                      //         width: 80,
+                      //         height: 80,
+                      //         fit: BoxFit.cover,
+                      //         errorBuilder: (context, error, stackTrace) => Icon(Icons.error),
+                      //       ),
+                      //     ),
+                      //     if (isSelected)
+                      //       Positioned(
+                      //         top: 4,
+                      //         right: 4,
+                      //         child: Icon(Icons.check_circle, color: Colors.green, size: 24),
+                      //       ),
+                      //   ],
+                      // ),
                     );
                   }).toList(),
                 ),

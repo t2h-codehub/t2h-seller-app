@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -183,24 +184,54 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                           _userDetailService.userDetailResponse
                                                       ?.user?.profileImg !=
                                                   null
-                                              ? Container(
-                                                  height: 64,
-                                                  width: 64,
-                                                  margin: getMargin(
-                                                    top: 16,
-                                                    bottom: 23,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                      color: AppCol.gray700,
-                                                      image: DecorationImage(
-                                                          fit: BoxFit.cover,
-                                                          image: NetworkImage(
-                                                              _userDetailService
-                                                                      .userDetailResponse
-                                                                      ?.user
-                                                                      ?.profileImg ??
-                                                                  "")),
-                                                      shape: BoxShape.circle))
+                                              ? 
+                                              Container(
+  height: 64,
+  width: 64,
+  margin: getMargin(
+    top: 16,
+    bottom: 23,
+  ),
+  decoration: BoxDecoration(
+    color: AppCol.gray700,
+    shape: BoxShape.circle,
+  ),
+  clipBehavior: Clip.hardEdge,
+  child: CachedNetworkImage(
+    imageUrl: (_userDetailService.userDetailResponse?.user?.profileImg != null &&
+            _userDetailService.userDetailResponse!.user!.profileImg!.isNotEmpty)
+        ? (_userDetailService.userDetailResponse!.user!.profileImg!
+                .contains(AppConstants.imageBaseUrl)
+            ? _userDetailService.userDetailResponse!.user!.profileImg!
+            : AppConstants.imageBaseUrl +
+                _userDetailService.userDetailResponse!.user!.profileImg!)
+        : "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659651_640.png",
+    fit: BoxFit.cover,
+    placeholder: (context, url) => const Center(
+      child: CircularProgressIndicator(strokeWidth: 2),
+    ),
+    errorWidget: (context, url, error) => const Icon(Icons.error),
+  ),
+)
+
+                                              // Container(
+                                              //     height: 64,
+                                              //     width: 64,
+                                              //     margin: getMargin(
+                                              //       top: 16,
+                                              //       bottom: 23,
+                                              //     ),
+                                              //     decoration: BoxDecoration(
+                                              //         color: AppCol.gray700,
+                                              //         image: DecorationImage(
+                                              //             fit: BoxFit.cover,
+                                              //             image: NetworkImage(
+                                              //                 _userDetailService
+                                              //                         .userDetailResponse
+                                              //                         ?.user
+                                              //                         ?.profileImg ??
+                                              //                     "")),
+                                              //         shape: BoxShape.circle))
                                               : Container(
                                                   height: 64,
                                                   width: 64,
@@ -760,7 +791,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               child: RichText(
                                   text: TextSpan(children: [
                                     TextSpan(
-                                        text: "TaptoHello ",
+                                        text: "SocioShop ",
                                         style: TextStyle(
                                             color: Colors.black,
                                             fontSize: 14,
@@ -1018,7 +1049,6 @@ class _DeleteAccountState extends ConsumerState<DeleteAccount> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     indexSelected = AppConstants.selectedIndex;
@@ -1029,39 +1059,53 @@ class _DeleteAccountState extends ConsumerState<DeleteAccount> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            padding: EdgeInsets.all(17),
-            margin: EdgeInsets.symmetric(horizontal: 16, vertical: 30),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16), color: Colors.white),
-            child: SingleChildScrollView(
-              child: Column(children: [
-                Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  InkWell(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Icon(
-                      Icons.close,
-                      color: Color(0xFF000000).withOpacity(0.70),
+      body: Center(
+        child: Container(
+          padding: EdgeInsets.all(20),
+          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 30),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                spreadRadius: 5,
+                blurRadius: 10,
+                offset: Offset(0, 3), // changes position of shadow
+              ),
+            ],
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.black.withOpacity(0.70),
+                      ),
                     ),
-                  )
-                ]),
-                Text(
-                  'Delete Account',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w500,
+                  ],
+                ),
+                Center(
+                  child: Text(
+                    'Delete Account',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 22,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 20),
                 SizedBox(
                   width: 295,
                   child: Text.rich(
@@ -1071,7 +1115,7 @@ class _DeleteAccountState extends ConsumerState<DeleteAccount> {
                           text: 'Do you really want to ',
                           style: TextStyle(
                             color: Color(0xFF666666),
-                            fontSize: 15,
+                            fontSize: 16,
                             fontFamily: 'Roboto',
                             fontWeight: FontWeight.w400,
                           ),
@@ -1080,16 +1124,16 @@ class _DeleteAccountState extends ConsumerState<DeleteAccount> {
                           text: 'DELETE',
                           style: TextStyle(
                             color: Color(0xFF666666),
-                            fontSize: 15,
+                            fontSize: 16,
                             fontFamily: 'Roboto',
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                         TextSpan(
-                          text: ' your Hello Account and profile permanently?',
+                          text: ' your SocioShop Account and profile permanently?',
                           style: TextStyle(
                             color: Color(0xFF666666),
-                            fontSize: 15,
+                            fontSize: 16,
                             fontFamily: 'Roboto',
                             fontWeight: FontWeight.w400,
                           ),
@@ -1099,215 +1143,694 @@ class _DeleteAccountState extends ConsumerState<DeleteAccount> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                SizedBox(height: 44),
+                SizedBox(height: 30),
+                _buildCheckboxOption('I am not comfortable in paying charges anymore.', val1, (value) {
+                  setState(() {
+                    val1 = value ?? false;
+                    val5 = false;
+                  });
+                }),
+                _buildCheckboxOption('I am spending too much time on the platform and want to reduce screen time.', val2, (value) {
+                  setState(() {
+                    val2 = value ?? false;
+                    val5 = false;
+                  });
+                }),
+                _buildCheckboxOption('I prefer using other communication or networking tools.', val3, (value) {
+                  setState(() {
+                    val3 = value ?? false;
+                    val5 = false;
+                  });
+                }),
+                _buildCheckboxOption('Any other reason, don’t want to disclose.', val4, (value) {
+                  setState(() {
+                    val4 = value ?? false;
+                    val5 = false;
+                  });
+                }),
+                _buildCheckboxOption('None of the above', val5, (value) {
+                  setState(() {
+                    val5 = value ?? false;
+                    val1 = val2 = val3 = val4 = false;
+                  });
+                }),
+                SizedBox(height: 30),
                 Row(
                   children: [
-                    Checkbox(
-                        activeColor: AppCol.primary,
-                        value: val1,
-                        onChanged: (value) {
-                          val1 = value ?? false;
-                          val5 = false;
-
-                          setState(() {});
-                        }),
-                    Text(
-                      'I am not comfortable in paying charges \nanymore.',
-                      style: TextStyle(
-                        color: Color(0xFF6C757D),
-                        fontSize: 15,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w400,
-                      ),
+                    Expanded(
+                      child: _buildActionButton('Cancel', AppCol.primary, Colors.white, () {
+                        Navigator.of(context).pop();
+                      }),
                     ),
-                  ],
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Row(
-                  children: [
-                    Checkbox(
-                        activeColor: AppCol.primary,
-                        value: val2,
-                        onChanged: (value) {
-                          val2 = value ?? false;
-                          val5 = false;
-
-                          setState(() {});
-                        }),
-                    Text(
-                      'I am spending too much time on the \nplatform and want to reduce screen time.',
-                      style: TextStyle(
-                        color: Color(0xFF6C757D),
-                        fontSize: 15,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w400,
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Row(
-                  children: [
-                    Checkbox(
-                        activeColor: AppCol.primary,
-                        value: val3,
-                        onChanged: (value) {
-                          val3 = value ?? false;
-                          val5 = false;
-
-                          setState(() {});
-                        }),
-                    Text(
-                      'I prefer using other communication or\nnetworking tools.',
-                      style: TextStyle(
-                        color: Color(0xFF6C757D),
-                        fontSize: 15,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w400,
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Row(
-                  children: [
-                    Checkbox(
-                        activeColor: AppCol.primary,
-                        value: val4,
-                        onChanged: (value) {
-                          val4 = value ?? false;
-                          val5 = false;
-                          setState(() {});
-                        }),
-                    Text(
-                      'Any other reason, don’t want to disclose.',
-                      style: TextStyle(
-                        color: Color(0xFF6C757D),
-                        fontSize: 15,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w400,
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Row(
-                  children: [
-                    Checkbox(
-                        activeColor: AppCol.primary,
-                        value: val5,
-                        onChanged: (value) {
-                          val5 = value ?? false;
-                          val1 = false;
-                          val2 = false;
-                          val3 = false;
-                          val4 = false;
-                          setState(() {});
-                        }),
-                    Text(
-                      'None of the above ',
-                      style: TextStyle(
-                        color: Color(0xFF6C757D),
-                        fontSize: 15,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w400,
-                      ),
-                    )
+                    SizedBox(width: 16), // Adds space between buttons
+                    Expanded(
+                      child: _buildActionButton('Delete Account', Colors.white, AppCol.primary, () {
+                        // Show a confirmation dialog before deleting the account
+                        _showDeleteConfirmationDialog();
+                      }),
+                    ),
                   ],
                 ),
                 SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 48, vertical: 14),
-                      decoration: ShapeDecoration(
-                        color: AppCol.primary,
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(width: 1, color: AppCol.primary),
-                          borderRadius: BorderRadius.circular(23),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Cancel',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        ref
-                            .read(authViewModel)
-                            .deleteAccount()
-                            .then((value) => showDialog(
-                                  barrierDismissible: false,
-                                  context: context,
-                                  builder: (context) => DeleteSuccess(),
-                                ));
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 40, vertical: 14),
-                        decoration: ShapeDecoration(
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            side:
-                                BorderSide(width: 1, color: AppCol.primary),
-                            borderRadius: BorderRadius.circular(23),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Delete Account',
-                              style: TextStyle(
-                                color: AppCol.primary,
-                                fontSize: 16,
-                                fontFamily: 'Roboto',
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-              ]),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
+
+  Widget _buildCheckboxOption(String text, bool value, Function(bool?) onChanged) {
+    return Row(
+      children: [
+        Checkbox(
+          activeColor: AppCol.primary,
+          value: value,
+          onChanged: onChanged,
+        ),
+        Expanded(
+          child: Text(
+            text,
+            style: TextStyle(
+              color: Color(0xFF6C757D),
+              fontSize: 15,
+              fontFamily: 'Roboto',
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActionButton(String text, Color bgColor, Color textColor, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        decoration: ShapeDecoration(
+          color: bgColor,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(width: 1, color: AppCol.primary),
+            borderRadius: BorderRadius.circular(23),
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              text,
+              style: TextStyle(
+                color: textColor,
+                fontSize: 16,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showDeleteConfirmationDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Deletion'),
+          content: Text('Are you sure you want to delete your account permanently?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                ref.read(authViewModel).deleteAccount().then((value) {
+                  showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (context) => DeleteSuccess(),
+                  );
+                });
+              },
+              child: Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
+
+
+
+// class DeleteAccount extends ConsumerStatefulWidget {
+//   const DeleteAccount({
+//     super.key,
+//   });
+
+//   @override
+//   ConsumerState<DeleteAccount> createState() => _DeleteAccountState();
+// }
+
+// class _DeleteAccountState extends ConsumerState<DeleteAccount> {
+//   int indexSelected = 0;
+//   bool val1 = false;
+//   bool val2 = false;
+//   bool val3 = false;
+//   bool val4 = false;
+//   bool val5 = false;
+
+//   @override
+//   void initState() {
+//     super.initState();
+
+//     indexSelected = AppConstants.selectedIndex;
+//     setState(() {});
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Colors.transparent,
+//       body: Center(
+//         child: Container(
+//           padding: EdgeInsets.all(20),
+//           margin: EdgeInsets.symmetric(horizontal: 16, vertical: 30),
+//           decoration: BoxDecoration(
+//             borderRadius: BorderRadius.circular(16),
+//             color: Colors.white,
+//             boxShadow: [
+//               BoxShadow(
+//                 color: Colors.black.withOpacity(0.1),
+//                 spreadRadius: 5,
+//                 blurRadius: 10,
+//                 offset: Offset(0, 3), // changes position of shadow
+//               ),
+//             ],
+//           ),
+//           child: SingleChildScrollView(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Row(
+//                   mainAxisAlignment: MainAxisAlignment.end,
+//                   children: [
+//                     InkWell(
+//                       onTap: () {
+//                         Navigator.of(context).pop();
+//                       },
+//                       child: Icon(
+//                         Icons.close,
+//                         color: Colors.black.withOpacity(0.70),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//                 Center(
+//                   child: Text(
+//                     'Delete Account',
+//                     textAlign: TextAlign.center,
+//                     style: TextStyle(
+//                       color: Colors.black,
+//                       fontSize: 22,
+//                       fontFamily: 'Roboto',
+//                       fontWeight: FontWeight.bold,
+//                     ),
+//                   ),
+//                 ),
+//                 SizedBox(height: 20),
+//                 SizedBox(
+//                   width: 295,
+//                   child: Text.rich(
+//                     TextSpan(
+//                       children: [
+//                         TextSpan(
+//                           text: 'Do you really want to ',
+//                           style: TextStyle(
+//                             color: Color(0xFF666666),
+//                             fontSize: 16,
+//                             fontFamily: 'Roboto',
+//                             fontWeight: FontWeight.w400,
+//                           ),
+//                         ),
+//                         TextSpan(
+//                           text: 'DELETE',
+//                           style: TextStyle(
+//                             color: Color(0xFF666666),
+//                             fontSize: 16,
+//                             fontFamily: 'Roboto',
+//                             fontWeight: FontWeight.w700,
+//                           ),
+//                         ),
+//                         TextSpan(
+//                           text: ' your SocioShop Account and profile permanently?',
+//                           style: TextStyle(
+//                             color: Color(0xFF666666),
+//                             fontSize: 16,
+//                             fontFamily: 'Roboto',
+//                             fontWeight: FontWeight.w400,
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                     textAlign: TextAlign.center,
+//                   ),
+//                 ),
+//                 SizedBox(height: 30),
+//                 _buildCheckboxOption('I am not comfortable in paying charges anymore.', val1, (value) {
+//                   setState(() {
+//                     val1 = value ?? false;
+//                     val5 = false;
+//                   });
+//                 }),
+//                 _buildCheckboxOption('I am spending too much time on the platform and want to reduce screen time.', val2, (value) {
+//                   setState(() {
+//                     val2 = value ?? false;
+//                     val5 = false;
+//                   });
+//                 }),
+//                 _buildCheckboxOption('I prefer using other communication or networking tools.', val3, (value) {
+//                   setState(() {
+//                     val3 = value ?? false;
+//                     val5 = false;
+//                   });
+//                 }),
+//                 _buildCheckboxOption('Any other reason, don’t want to disclose.', val4, (value) {
+//                   setState(() {
+//                     val4 = value ?? false;
+//                     val5 = false;
+//                   });
+//                 }),
+//                 _buildCheckboxOption('None of the above', val5, (value) {
+//                   setState(() {
+//                     val5 = value ?? false;
+//                     val1 = val2 = val3 = val4 = false;
+//                   });
+//                 }),
+//                 SizedBox(height: 30),
+//                 Row(
+//                   children: [
+//                     Expanded(
+//                       child: _buildActionButton('Cancel', AppCol.primary, Colors.white, () {
+//                         Navigator.of(context).pop();
+//                       }),
+//                     ),
+//                     SizedBox(width: 16), // Adds space between buttons
+//                     Expanded(
+//                       child: _buildActionButton('Delete Account', Colors.white, AppCol.primary, () {
+//                         Navigator.of(context).pop();
+//                         ref.read(authViewModel).deleteAccount().then((value) => showDialog(
+//                               barrierDismissible: false,
+//                               context: context,
+//                               builder: (context) => DeleteSuccess(),
+//                             ));
+//                       }),
+//                     ),
+//                   ],
+//                 ),
+//                 SizedBox(height: 16),
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+
+//   Widget _buildCheckboxOption(String text, bool value, Function(bool?) onChanged) {
+//     return Row(
+//       children: [
+//         Checkbox(
+//           activeColor: AppCol.primary,
+//           value: value,
+//           onChanged: onChanged,
+//         ),
+//         Expanded(
+//           child: Text(
+//             text,
+//             style: TextStyle(
+//               color: Color(0xFF6C757D),
+//               fontSize: 15,
+//               fontFamily: 'Roboto',
+//               fontWeight: FontWeight.w400,
+//             ),
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+
+//   Widget _buildActionButton(String text, Color bgColor, Color textColor, VoidCallback onTap) {
+//     return InkWell(
+//       onTap: onTap,
+//       child: Container(
+//         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+//         decoration: ShapeDecoration(
+//           color: bgColor,
+//           shape: RoundedRectangleBorder(
+//             side: BorderSide(width: 1, color: AppCol.primary),
+//             borderRadius: BorderRadius.circular(23),
+//           ),
+//         ),
+//         child: Row(
+//           mainAxisSize: MainAxisSize.min,
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             Text(
+//               text,
+//               style: TextStyle(
+//                 color: textColor,
+//                 fontSize: 16,
+//                 fontFamily: 'Roboto',
+//                 fontWeight: FontWeight.w500,
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
+
+// class DeleteAccount extends ConsumerStatefulWidget {
+//   const DeleteAccount({
+//     super.key,
+//   });
+
+//   @override
+//   ConsumerState<DeleteAccount> createState() => _DeleteAccountState();
+// }
+
+// class _DeleteAccountState extends ConsumerState<DeleteAccount> {
+//   int indexSelected = 0;
+//   bool val1 = false;
+//   bool val2 = false;
+//   bool val3 = false;
+//   bool val4 = false;
+//   bool val5 = false;
+
+//   @override
+//   void initState() {
+//     // TODO: implement initState
+//     super.initState();
+
+//     indexSelected = AppConstants.selectedIndex;
+//     setState(() {});
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Colors.transparent,
+//       body: Column(
+//         mainAxisAlignment: MainAxisAlignment.center,
+//         crossAxisAlignment: CrossAxisAlignment.center,
+//         children: [
+//           Container(
+//             padding: EdgeInsets.all(17),
+//             margin: EdgeInsets.symmetric(horizontal: 16, vertical: 30),
+//             decoration: BoxDecoration(
+//                 borderRadius: BorderRadius.circular(16), color: Colors.white),
+//             child: SingleChildScrollView(
+//               child: Column(children: [
+//                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+//                   InkWell(
+//                     onTap: () {
+//                       Navigator.of(context).pop();
+//                     },
+//                     child: Icon(
+//                       Icons.close,
+//                       color: Color(0xFF000000).withOpacity(0.70),
+//                     ),
+//                   )
+//                 ]),
+//                 Text(
+//                   'Delete Account',
+//                   textAlign: TextAlign.center,
+//                   style: TextStyle(
+//                     color: Colors.black,
+//                     fontSize: 20,
+//                     fontFamily: 'Roboto',
+//                     fontWeight: FontWeight.w500,
+//                   ),
+//                 ),
+//                 SizedBox(height: 10),
+//                 SizedBox(
+//                   width: 295,
+//                   child: Text.rich(
+//                     TextSpan(
+//                       children: [
+//                         TextSpan(
+//                           text: 'Do you really want to ',
+//                           style: TextStyle(
+//                             color: Color(0xFF666666),
+//                             fontSize: 15,
+//                             fontFamily: 'Roboto',
+//                             fontWeight: FontWeight.w400,
+//                           ),
+//                         ),
+//                         TextSpan(
+//                           text: 'DELETE',
+//                           style: TextStyle(
+//                             color: Color(0xFF666666),
+//                             fontSize: 15,
+//                             fontFamily: 'Roboto',
+//                             fontWeight: FontWeight.w700,
+//                           ),
+//                         ),
+//                         TextSpan(
+//                           text: ' your SocioShop Account and profile permanently?',
+//                           style: TextStyle(
+//                             color: Color(0xFF666666),
+//                             fontSize: 15,
+//                             fontFamily: 'Roboto',
+//                             fontWeight: FontWeight.w400,
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                     textAlign: TextAlign.center,
+//                   ),
+//                 ),
+//                 SizedBox(height: 44),
+//                 Row(
+//                   children: [
+//                     Checkbox(
+//                         activeColor: AppCol.primary,
+//                         value: val1,
+//                         onChanged: (value) {
+//                           val1 = value ?? false;
+//                           val5 = false;
+
+//                           setState(() {});
+//                         }),
+//                     Text(
+//                       'I am not comfortable in paying charges \nanymore.',
+//                       style: TextStyle(
+//                         color: Color(0xFF6C757D),
+//                         fontSize: 15,
+//                         fontFamily: 'Roboto',
+//                         fontWeight: FontWeight.w400,
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//                 SizedBox(
+//                   height: 8,
+//                 ),
+//                 Row(
+//                   children: [
+//                     Checkbox(
+//                         activeColor: AppCol.primary,
+//                         value: val2,
+//                         onChanged: (value) {
+//                           val2 = value ?? false;
+//                           val5 = false;
+
+//                           setState(() {});
+//                         }),
+//                     Text(
+//                       'I am spending too much time on the \nplatform and want to reduce screen time.',
+//                       style: TextStyle(
+//                         color: Color(0xFF6C757D),
+//                         fontSize: 15,
+//                         fontFamily: 'Roboto',
+//                         fontWeight: FontWeight.w400,
+//                       ),
+//                     )
+//                   ],
+//                 ),
+//                 SizedBox(
+//                   height: 8,
+//                 ),
+//                 Row(
+//                   children: [
+//                     Checkbox(
+//                         activeColor: AppCol.primary,
+//                         value: val3,
+//                         onChanged: (value) {
+//                           val3 = value ?? false;
+//                           val5 = false;
+
+//                           setState(() {});
+//                         }),
+//                     Text(
+//                       'I prefer using other communication or\nnetworking tools.',
+//                       style: TextStyle(
+//                         color: Color(0xFF6C757D),
+//                         fontSize: 15,
+//                         fontFamily: 'Roboto',
+//                         fontWeight: FontWeight.w400,
+//                       ),
+//                     )
+//                   ],
+//                 ),
+//                 SizedBox(
+//                   height: 8,
+//                 ),
+//                 Row(
+//                   children: [
+//                     Checkbox(
+//                         activeColor: AppCol.primary,
+//                         value: val4,
+//                         onChanged: (value) {
+//                           val4 = value ?? false;
+//                           val5 = false;
+//                           setState(() {});
+//                         }),
+//                     Text(
+//                       'Any other reason, don’t want to disclose.',
+//                       style: TextStyle(
+//                         color: Color(0xFF6C757D),
+//                         fontSize: 15,
+//                         fontFamily: 'Roboto',
+//                         fontWeight: FontWeight.w400,
+//                       ),
+//                     )
+//                   ],
+//                 ),
+//                 SizedBox(
+//                   height: 8,
+//                 ),
+//                 Row(
+//                   children: [
+//                     Checkbox(
+//                         activeColor: AppCol.primary,
+//                         value: val5,
+//                         onChanged: (value) {
+//                           val5 = value ?? false;
+//                           val1 = false;
+//                           val2 = false;
+//                           val3 = false;
+//                           val4 = false;
+//                           setState(() {});
+//                         }),
+//                     Text(
+//                       'None of the above ',
+//                       style: TextStyle(
+//                         color: Color(0xFF6C757D),
+//                         fontSize: 15,
+//                         fontFamily: 'Roboto',
+//                         fontWeight: FontWeight.w400,
+//                       ),
+//                     )
+//                   ],
+//                 ),
+//                 SizedBox(height: 16),
+//                 Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                   children: [
+//                     Container(
+//                       padding: const EdgeInsets.symmetric(
+//                           horizontal: 48, vertical: 14),
+//                       decoration: ShapeDecoration(
+//                         color: AppCol.primary,
+//                         shape: RoundedRectangleBorder(
+//                           side: BorderSide(width: 1, color: AppCol.primary),
+//                           borderRadius: BorderRadius.circular(23),
+//                         ),
+//                       ),
+//                       child: Row(
+//                         mainAxisSize: MainAxisSize.min,
+//                         mainAxisAlignment: MainAxisAlignment.center,
+//                         crossAxisAlignment: CrossAxisAlignment.center,
+//                         children: [
+//                           Text(
+//                             'Cancel',
+//                             style: TextStyle(
+//                               color: Colors.white,
+//                               fontSize: 16,
+//                               fontFamily: 'Roboto',
+//                               fontWeight: FontWeight.w500,
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                     ),
+//                     InkWell(
+//                       onTap: () {
+//                         Navigator.of(context).pop();
+//                         ref
+//                             .read(authViewModel)
+//                             .deleteAccount()
+//                             .then((value) => showDialog(
+//                                   barrierDismissible: false,
+//                                   context: context,
+//                                   builder: (context) => DeleteSuccess(),
+//                                 ));
+//                       },
+//                       child: Container(
+//                         padding: const EdgeInsets.symmetric(
+//                             horizontal: 40, vertical: 14),
+//                         decoration: ShapeDecoration(
+//                           color: Colors.white,
+//                           shape: RoundedRectangleBorder(
+//                             side:
+//                                 BorderSide(width: 1, color: AppCol.primary),
+//                             borderRadius: BorderRadius.circular(23),
+//                           ),
+//                         ),
+//                         child: Row(
+//                           mainAxisSize: MainAxisSize.min,
+//                           mainAxisAlignment: MainAxisAlignment.center,
+//                           crossAxisAlignment: CrossAxisAlignment.center,
+//                           children: [
+//                             Text(
+//                               'Delete Account',
+//                               style: TextStyle(
+//                                 color: AppCol.primary,
+//                                 fontSize: 16,
+//                                 fontFamily: 'Roboto',
+//                                 fontWeight: FontWeight.w500,
+//                               ),
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                     )
+//                   ],
+//                 ),
+//                 SizedBox(
+//                   height: 16,
+//                 ),
+//               ]),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 class DeleteSuccess extends ConsumerStatefulWidget {
   const DeleteSuccess({

@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:taptohello/core/app_export.dart';
+import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/data/productCategoryModel/awsPhotoUploadApiResModel.dart';
 import 'package:taptohello/data/productCategoryModel/deleteProductApiResModel.dart';
 import 'package:taptohello/data/productCategoryModel/editProductApiResModel.dart';
@@ -466,9 +468,20 @@ class _InstagramEditProductListScreenState extends State<InstagramEditProductLis
                                       return Stack(
                                         alignment: Alignment.center,
                                         children: [
-                                          Image.network(
-                                            selectedImages[index],
-                                          ),
+                                          CachedNetworkImage(
+  imageUrl: (selectedImages[index] != null && selectedImages[index].isNotEmpty)
+      ? (selectedImages[index].contains(AppConstants.imageBaseUrl)
+          ? selectedImages[index]
+          : AppConstants.imageBaseUrl + selectedImages[index])
+      : '', // Fallback if imageUrl is empty or null
+  fit: BoxFit.cover,
+  placeholder: (context, url) => const CircularProgressIndicator(),
+  errorWidget: (context, url, error) => const Icon(Icons.error),
+),
+
+                                          // Image.network(
+                                          //   selectedImages[index],
+                                          // ),
                                           Positioned(
                                             top: 0,
                                             right: 0,

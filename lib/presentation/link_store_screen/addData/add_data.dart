@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:taptohello/core/app_export.dart';
+import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/data/auth/model/add_service.dart';
 import 'package:taptohello/data/auth/model/services.dart';
 import 'package:taptohello/helper/base_screen_view.dart';
@@ -99,12 +101,27 @@ class _AddDataState extends ConsumerState<AddData> with BaseScreenView {
                 child: Column(
                   children: [
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        widget.value.logo ?? "",
-                        height: 100,
-                      ),
-                    ),
+  borderRadius: BorderRadius.circular(10),
+  child: CachedNetworkImage(
+    imageUrl: (widget.value.logo != null && widget.value.logo!.isNotEmpty)
+        ? (widget.value.logo!.contains(AppConstants.imageBaseUrl)
+            ? widget.value.logo!
+            : AppConstants.imageBaseUrl + widget.value.logo!)
+        : '', // Fallback if the logo is null or empty
+    height: 100,
+    fit: BoxFit.cover, // Or any fit you want
+    placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+    errorWidget: (context, url, error) => const Icon(Icons.error),
+  ),
+),
+
+                    // ClipRRect(
+                    //   borderRadius: BorderRadius.circular(10),
+                    //   child: Image.network(
+                    //     widget.value.logo ?? "",
+                    //     height: 100,
+                    //   ),
+                    // ),
                     SizedBox(height: 8),
                     Text(widget.value.title ?? "",
                         style: TextStyle(

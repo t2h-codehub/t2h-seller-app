@@ -158,6 +158,7 @@ class AuthRepoImpl implements AuthRepo {
       return Left(ApiException(e.toString()));
     }
   }
+  
 
   @override
   Future<Either<ApiException, GetServiceResponse>> services() async {

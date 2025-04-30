@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/core/utils/color_constant.dart';
 import 'package:taptohello/data/auth/model/add_hello_direct.dart';
 import 'package:taptohello/helper/base_screen_view.dart';
@@ -68,7 +70,7 @@ class _HelloDirectBottomSheetState extends ConsumerState<HelloDirectBottomSheet>
           ),
           SizedBox(height: 8),
           Text(
-            'When someone taps or scans your HelloCode they will be directed to the selected link',
+            'When someone taps or scans your SocioCode™ they will be directed to the selected link',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Color(0xFF666666),
@@ -143,15 +145,28 @@ class _HelloDirectBottomSheetState extends ConsumerState<HelloDirectBottomSheet>
                                   child: Stack(
                                     children: [
                                       Column(children: [
-                                        Image.network(
-                                          widget
-                                              .viewModel
-                                              .userServicesResponse!
-                                              .services![index]
-                                              .logo ??
-                                              "",
-                                          height: 50,
-                                        ),
+                                        CachedNetworkImage(
+  imageUrl: (widget.viewModel.userServicesResponse?.services?[index].logo != null && 
+             widget.viewModel.userServicesResponse!.services![index].logo!.isNotEmpty)
+      ? (widget.viewModel.userServicesResponse!.services![index].logo!
+          .contains(AppConstants.imageBaseUrl)
+          ? widget.viewModel.userServicesResponse!.services![index].logo!
+          : AppConstants.imageBaseUrl + widget.viewModel.userServicesResponse!.services![index].logo!)
+      : '', // Provide a fallback image URL if needed
+  height: 50,
+  placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+  errorWidget: (context, url, error) => const Icon(Icons.error),
+),
+
+                                        // Image.network(
+                                        //   widget
+                                        //       .viewModel
+                                        //       .userServicesResponse!
+                                        //       .services![index]
+                                        //       .logo ??
+                                        //       "",
+                                        //   height: 50,
+                                        // ),
                                         SizedBox(height: 8),
                                         Text(
                                           widget

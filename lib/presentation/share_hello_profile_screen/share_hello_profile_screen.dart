@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -52,6 +53,7 @@ class _ShareHelloProfileScreenState extends State<ShareHelloProfileScreen>
 
   @override
   Widget build(BuildContext context) {
+     final qrCodeUrl = _userDetailService.userDetailResponse?.user?.qrCode;
     return SafeArea(
         child: Scaffold(
             backgroundColor: AppCol.bgColor,
@@ -144,17 +146,42 @@ class _ShareHelloProfileScreenState extends State<ShareHelloProfileScreen>
                                                             child: Row(
                                                                 children: [
                                                                   Container(
-                                                                    height: 40,
-                                                                    width: 40,
-                                                                    decoration: BoxDecoration(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(
-                                                                                8),
-                                                                        image: DecorationImage(
-                                                                            fit:
-                                                                                BoxFit.cover,
-                                                                            image: NetworkImage(_userDetailService.userDetailResponse?.user?.profileImg ?? "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659651_640.png"))),
-                                                                  ),
+  height: 40,
+  width: 40,
+  decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(8),
+  ),
+  clipBehavior: Clip.hardEdge, // Ensures image respects borderRadius
+  child: CachedNetworkImage(
+    imageUrl: (_userDetailService.userDetailResponse?.user?.profileImg != null &&
+            _userDetailService.userDetailResponse!.user!.profileImg!.isNotEmpty)
+        ? (_userDetailService.userDetailResponse!.user!.profileImg!
+                .contains(AppConstants.imageBaseUrl)
+            ? _userDetailService.userDetailResponse!.user!.profileImg!
+            : AppConstants.imageBaseUrl +
+                _userDetailService.userDetailResponse!.user!.profileImg!)
+        : "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659651_640.png",
+    fit: BoxFit.cover,
+    placeholder: (context, url) => const Center(
+      child: CircularProgressIndicator(strokeWidth: 2),
+    ),
+    errorWidget: (context, url, error) => const Icon(Icons.error),
+  ),
+)
+,
+                                                                  // Container(
+                                                                  //   height: 40,
+                                                                  //   width: 40,
+                                                                  //   decoration: BoxDecoration(
+                                                                  //       borderRadius:
+                                                                  //           BorderRadius.circular(
+                                                                  //               8),
+                                                                  //       image: DecorationImage(
+                                                                  //           fit:
+                                                                  //               BoxFit.cover,
+                                                                  //           image: NetworkImage(_userDetailService.userDetailResponse?.user?.profileImg ?? "https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659651_640.png"))
+                                                                  //           ),
+                                                                  // ),
                                                                   Padding(
                                                                       padding: getPadding(
                                                                           left:
@@ -191,92 +218,109 @@ class _ShareHelloProfileScreenState extends State<ShareHelloProfileScreen>
                                         color: Colors.white),
                                 child: Column(
                                   children: [
-                                    Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        Image.network(
-                                          _userDetailService.userDetailResponse
-                                                  ?.user?.qrCode ??
-                                              "",
-                                          // svgPath: ImageConstant
-                                          //     .imgGroup1000001797BlueGray90001,
-                                          height: 150,
-                                          width: 160,
-                                          // color: ,
-                                        ),
-                                        Image.asset(
-                                            height: 157,
-                                            width: 130,
-                                            "assets/newIcons/qr_overlay.png")
-                                      ],
-                                    ),
+                                   
+
+Stack(
+  alignment: Alignment.center,
+  children: [
+    qrCodeUrl != null && qrCodeUrl.isNotEmpty
+        ? 
+        // CachedNetworkImage(
+        //     imageUrl: qrCodeUrl,
+        //     height: 150,
+        //     width: 160,
+        //     placeholder: (context, url) => const CircularProgressIndicator(),
+        //     errorWidget: (context, url, error) => const Icon(Icons.error),
+        //     fit: BoxFit.contain,
+        //   )
+        CachedNetworkImage(
+  imageUrl: (qrCodeUrl != null && qrCodeUrl.isNotEmpty)
+      ? (qrCodeUrl.contains(AppConstants.imageBaseUrl)
+          ? qrCodeUrl
+          : AppConstants.imageBaseUrl + qrCodeUrl)
+      : '', // Empty URL fallback, will show errorWidget
+  height: 150,
+  width: 160,
+  placeholder: (context, url) => const CircularProgressIndicator(),
+  errorWidget: (context, url, error) => const Icon(Icons.error),
+  fit: BoxFit.contain,
+)
+        : const Icon(Icons.qr_code, size: 150), // Fallback if null or empty
+    Image.asset(
+      "assets/newIcons/qr_overlay.png",
+      height: 157,
+      width: 130,
+    ),
+  ],
+),
+
                                     
-                                    // SizedBox(height: 12),
-                                    // InkWell(
-                                    //   onTap: () {
-                                    //     bool? isBranding = _userDetailService
-                                    //             .userDetailResponse
-                                    //             ?.user
-                                    //             ?.isCustomBranding ??
-                                    //         false;
-                                    //     if (isBranding) {
-                                    //       Navigator.of(context)
-                                    //           .push(MaterialPageRoute(
-                                    //         builder: (context) =>
-                                    //             CustomBrandingView(),
-                                    //       ));
-                                    //     } else {
-                                    //       showSnackbar(
-                                    //           "Please enable custom branding from edit profile section");
-                                    //     }
-                                    //   },
-                                    //   child: Row(
-                                    //     mainAxisAlignment:
-                                    //         MainAxisAlignment.center,
-                                    //     children: [
-                                    //       Container(
-                                    //         padding: getPadding(
-                                    //             left: 32,
-                                    //             top: 17,
-                                    //             right: 32,
-                                    //             bottom: 17),
-                                    //         decoration: AppDecoration
-                                    //             .outlineBlack9003f
-                                    //             .copyWith(
-                                    //                 borderRadius:
-                                    //                     BorderRadiusStyle
-                                    //                         .roundedBorder5,
-                                    //                 border: Border.all(
-                                    //                     color:
-                                    //                         Color(0xFFF05323))),
-                                    //         child: Row(children: [
-                                    //           Text("Edit HelloCode™ with",
-                                    //               style: AppStyle
-                                    //                   .txtPoppinsSemiBold12
-                                    //                   .copyWith(
-                                    //                       fontSize: 14,
-                                    //                       color: Color(
-                                    //                           0xFFF05323))),
-                                    //           Text(" Pro",
-                                    //               style: AppStyle
-                                    //                   .txtPoppinsSemiBold12
-                                    //                   .copyWith(
-                                    //                       fontSize: 14,
-                                    //                       fontWeight:
-                                    //                           FontWeight.bold,
-                                    //                       color: Color(
-                                    //                           0xFFF05323))),
-                                    //           SizedBox(width: 8),
-                                    //           Image.asset(
-                                    //             "assets/newIcons/premium.png",
-                                    //             height: 16,
-                                    //             width: 18,
-                                    //           )
-                                    //         ]),
-                                    //       ),
-                                    //     ],
-                                    //   ),
-                                    // ),
+                                    SizedBox(height: 12),
+                                    InkWell(
+                                      onTap: () {
+                                        bool? isBranding = _userDetailService
+                                                .userDetailResponse
+                                                ?.user
+                                                ?.isCustomBranding ??
+                                            false;
+                                        if (isBranding) {
+                                          Navigator.of(context)
+                                              .push(MaterialPageRoute(
+                                            builder: (context) =>
+                                                CustomBrandingView(),
+                                          ));
+                                        } else {
+                                          showSnackbar(
+                                              "Please enable custom branding from edit profile section");
+                                        }
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            padding: getPadding(
+                                                left: 32,
+                                                top: 17,
+                                                right: 32,
+                                                bottom: 17),
+                                            decoration: AppDecoration
+                                                .outlineBlack9003f
+                                                .copyWith(
+                                                    borderRadius:
+                                                        BorderRadiusStyle
+                                                            .roundedBorder5,
+                                                    border: Border.all(
+                                                        color:
+                                                            Color(0xFFF05323))),
+                                            child: Row(children: [
+                                              Text("Edit SocioCode™ with",
+                                                  style: AppStyle
+                                                      .txtPoppinsSemiBold12
+                                                      .copyWith(
+                                                          fontSize: 14,
+                                                          color: Color(
+                                                              0xFFF05323))),
+                                              Text(" Pro",
+                                                  style: AppStyle
+                                                      .txtPoppinsSemiBold12
+                                                      .copyWith(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Color(
+                                                              0xFFF05323))),
+                                              SizedBox(width: 8),
+                                              Image.asset(
+                                                "assets/newIcons/premium.png",
+                                                height: 16,
+                                                width: 18,
+                                              )
+                                            ]),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                     InkWell(
                                       splashColor: Colors.transparent,
                                       highlightColor: Colors.transparent,
@@ -413,7 +457,7 @@ class _ShareHelloProfileScreenState extends State<ShareHelloProfileScreen>
                                                           padding: getPadding(
                                                               left: 13),
                                                           child: Text(
-                                                              "Save HelloCode™ to Photos",
+                                                              "Save SocioCode™ to Photos",
                                                               overflow:
                                                                   TextOverflow
                                                                       .ellipsis,
