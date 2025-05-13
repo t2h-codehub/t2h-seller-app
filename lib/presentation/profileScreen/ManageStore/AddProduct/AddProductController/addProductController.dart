@@ -30,7 +30,7 @@ class AddProductController{
   }
 
   /// Get Produuct
-  Future<GetProductApiResModel> getProductList() async {
+  Future<GetProductApiResModel> getProductList({Map<String, dynamic>? filters}) async {
     GetProductApiResModel getProductApiResModel = GetProductApiResModel();
     try {
       final response = await ApiFun.apiGet('user/get-seller-products');
@@ -38,7 +38,7 @@ class AddProductController{
       if (getProductApiResModel.products != null && getProductApiResModel.products!.isNotEmpty) {
   List<String?> productIds = getProductApiResModel.products!.map((product) => product.id).toList();
   
-  debugPrint("All Product IDs: $productIds");
+  //debugPrint("All Product IDs: $productIds");
 } else {
   debugPrint("No products found!");
 }

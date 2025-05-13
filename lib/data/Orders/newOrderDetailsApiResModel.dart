@@ -234,7 +234,7 @@ class NewOrderDetailsApiResModel {
   Order? order;
 
   NewOrderDetailsApiResModel({this.message, this.order});
-
+// _TypeError (type 'String' is not a subtype of type 'List<dynamic>?' in type cast)
   NewOrderDetailsApiResModel.fromJson(Map<String, dynamic> json) {
     message = json['message'];
     order = json['order'] != null ? new Order.fromJson(json['order']) : null;
@@ -356,7 +356,8 @@ class Order {
 class Products {
   String? productId;
   String? productName;
-  List<String>? productImage;
+  // List<String>? productImage;
+  String? productImage;
   List<VariantId>? variantId;
   String? variantTitle;
   int? quantity;
@@ -389,13 +390,14 @@ class Products {
   Products.fromJson(Map<String, dynamic> json) {
     productId = json['productId'];
     productName = json['productName'];
-    productImage = (json['productImage'] as List?)?.map((e) => e.toString()).toList();
-    if (json['variantId'] != null) {
-      variantId = [];
-      json['variantId'].forEach((v) {
-        variantId!.add(VariantId.fromJson(v));
-      });
-    }
+    // productImage = (json['productImage'] as List?)?.map((e) => e.toString()).toList();
+    // if (json['variantId'] != null) {
+    //   variantId = [];
+    //   json['variantId'].forEach((v) {
+    //     variantId!.add(VariantId.fromJson(v));
+    //   });
+    // }
+    productImage = json['productImage'];
     variantTitle = json['variantTitle'];
     quantity = json['quantity'];
     price = json['price'];
@@ -412,10 +414,11 @@ class Products {
     final data = <String, dynamic>{};
     data['productId'] = productId;
     data['productName'] = productName;
+    // data['productImage'] = productImage;
+    // if (variantId != null) {
+    //   data['variantId'] = variantId!.map((v) => v.toJson()).toList();
+    // }
     data['productImage'] = productImage;
-    if (variantId != null) {
-      data['variantId'] = variantId!.map((v) => v.toJson()).toList();
-    }
     data['variantTitle'] = variantTitle;
     data['quantity'] = quantity;
     data['price'] = price;

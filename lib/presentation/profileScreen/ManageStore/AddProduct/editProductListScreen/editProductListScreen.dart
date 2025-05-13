@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -22,9 +21,9 @@ import 'package:taptohello/data/productCategoryModel/manageCollectionApiResModel
 import 'package:taptohello/data/productCategoryModel/productCategoryApiResModel.dart';
 import 'package:taptohello/data/productCategoryModel/sizeChartFirstTimeDataModel.dart';
 import 'package:taptohello/data/productCategoryModel/viewCategoryApiResModel.dart';
-import 'package:taptohello/presentation/home/home_view.dart';
 import 'package:taptohello/presentation/profileScreen/ManageStore/AddProduct/AddProductController/addProductController.dart';
 import 'package:taptohello/presentation/profileScreen/ManageStore/AddProduct/addProductDialog.dart';
+import 'package:taptohello/presentation/profileScreen/ManageStore/CatalogueScreen/catalogueScreen.dart';
 import 'package:taptohello/presentation/profileScreen/ManageStore/ManageVariants/ManageVariantController.dart';
 import 'package:taptohello/presentation/profileScreen/ManageStore/SizeChart/sizeChartScreen.dart';
 import 'package:taptohello/presentation/profileScreen/ManageStore/ManageCollection/ManageCollectionController/manageCollectionController.dart';
@@ -217,9 +216,11 @@ class _EditProductListScreenState extends ConsumerState<EditProductListScreen> {
    Future.delayed(Duration.zero, () {
   // Safely convert List<dynamic> to List<String>
   List<String> images = List<String>.from(selectedImages);
+  List<String> videos = List<String>.from(selectedVideos);
 
   // Add the images to the provider
   ref.read(manageVariantProvider.notifier).addImage(images);
+    ref.read(manageVariantProvider.notifier).addImage(videos);
   print("Images added: $images");
 });
 
@@ -266,10 +267,6 @@ String? findIdByTitle(String title) {
     minHeight: 600,
     quality: 80,
   );
-
-  if (compressedImage == null) {
-    throw Exception('Image compression failed');
-  }
     // Get the directory to store the image file
     final directory = await getApplicationDocumentsDirectory();
     
@@ -309,7 +306,12 @@ String? findIdByTitle(String title) {
         TextButton(
           onPressed:() {
             Navigator.of(context).pop(true);
-            openScreenWithoutBack(context, HomeView(indexfromPrevious: 1,));
+             Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => CatalogueScreen(),
+                        ),
+                      );
+          //  openScreenWithoutBack(context, HomeView(indexfromPrevious: 1,));
             // Navigator.of(context).pop(true);
             // Navigator.of(context).pop(true);
           }, // Return `true` if the user confirms.
@@ -1435,7 +1437,7 @@ String? findIdByTitle(String title) {
              decoratorProps: DropDownDecoratorProps(
              
                      decoration: InputDecoration(
-                        labelText: 'Product Sub Category',
+                        labelText: 'Product Sub Category*',
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -1574,19 +1576,37 @@ String? findIdByTitle(String title) {
                                 SizedBox(height: 24),
       
                                 /// SKU Id field
-                                Container(
-                                  child: TextFormField(
-                                    controller: _SKUIDController,
-                                    decoration: InputDecoration(
-                                      labelText: 'SKU ID',
-                                      floatingLabelBehavior:
-                                          FloatingLabelBehavior.always,
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                 Container(
+            child: TextFormField(
+              controller: _SKUIDController,
+                     validator: (value) {
+                              if (value != null && value.isEmpty) {
+                                return 'SKU ID is required';
+                              }
+                              return null;
+                            },
+              decoration: InputDecoration(
+                labelText: 'SKU ID*',
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+          ),
+                                // Container(
+                                //   child: TextFormField(
+                                //     controller: _SKUIDController,
+                                //     decoration: InputDecoration(
+                                //       labelText: 'SKU ID',
+                                //       floatingLabelBehavior:
+                                //           FloatingLabelBehavior.always,
+                                //       border: OutlineInputBorder(
+                                //         borderRadius: BorderRadius.circular(10),
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
                                 SizedBox(height: 24),
       
       
@@ -1796,9 +1816,11 @@ String? findIdByTitle(String title) {
                                        Future.delayed(Duration.zero, () {
   // Safely convert List<dynamic> to List<String>
   List<String> images = List<String>.from(selectedImages);
+  List<String> videos = List<String>.from(selectedImages);
 
   // Add the images to the provider
   ref.read(manageVariantProvider.notifier).addImage(images);
+  ref.read(manageVariantProvider.notifier).addImage(videos);
   print("Images added: $images");
 });
 
@@ -1988,9 +2010,11 @@ String? findIdByTitle(String title) {
     Future.delayed(Duration.zero, () {
   // Safely convert List<dynamic> to List<String>
   List<String> images = List<String>.from(selectedImages);
+  List<String> videos = List<String>.from(selectedVideos);
 
   // Add the images to the provider
   ref.read(manageVariantProvider.notifier).addImage(images);
+  ref.read(manageVariantProvider.notifier).addImage(videos);
   print("Images added: $images");
 });
 
@@ -2488,7 +2512,7 @@ _discountPriceController.text = editProductApiResModel.product?.price?.toString(
     debugPrint('My Admin category function');
     productCategoryApiResModel.categories?.forEach((element) {
       adminCategories.add(element.title ?? '');
-      debugPrint('My Admin caetgpry is: $adminCategories');
+     // debugPrint('My Admin caetgpry is: $adminCategories');
     });
     isApiDataAvailable = true;
     setState(() {});
@@ -2737,20 +2761,23 @@ _discountPriceController.text = editProductApiResModel.product?.price?.toString(
   }
 
   /// get collection
-  void getCollection() async {
-    manageCollectionApiResModel =
-        await _manageCollectionController.getAllCollection();
-    if (manageCollectionApiResModel.success == true) {
-      manageCollectionApiResModel.collections?.forEach((element) {
-        if (element.id == _addToCollectionController.text) {
-          _addToCollectionController.text = element.title ?? '';
-        }
-      });
-      isApiDataAvailable = true;
-    } else {
-      isApiDataAvailable = true;
+ void getCollection() async {
+  manageCollectionApiResModel =
+      await _manageCollectionController.getAllCollection();
+  if (manageCollectionApiResModel.success == true) {
+    bool isMatched = false;
+    manageCollectionApiResModel.collections?.forEach((element) {
+      if (element.id == _addToCollectionController.text) {
+        _addToCollectionController.text = element.title ?? '';
+        isMatched = true;
+      }
+    });
+    if (!isMatched) {
+      _addToCollectionController.text = '';
     }
   }
+  isApiDataAvailable = true;
+}
 
   /// add product dialog
   void showProductDialog() {

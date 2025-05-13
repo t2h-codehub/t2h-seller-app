@@ -1,3 +1,5 @@
+import 'package:taptohello/config/flavor_config.dart';
+
 class AppConstants {
   
   static const userIdPref = 'userId';
@@ -34,9 +36,9 @@ class AppConstants {
   // static const String websiteUrl = "https://taptohello.com/";
   
   //Test- Url
-  static const String baseUrl = "https://api.mysocio.shop/";
-  static const String domainName = "mysocio.shop";
-  static const String storeUrl = "https://test.mysocio.shop/";
+  // static const String baseUrl = "https://api.mysocio.shop/";
+  // static const String domainName = "mysocio.shop";
+  // static const String storeUrl = "https://test.mysocio.shop/";
   
   
   //Live- Url
@@ -44,7 +46,9 @@ class AppConstants {
   // static const String domainName = "mysocio.shop";
   //  static const String storeUrl = "https://mysocio.shop/";
 
-
+static String get baseUrl => FlavorConfig.currentBaseUrl;
+static String get domainName => FlavorConfig.currentDomain;
+static String get storeUrl => FlavorConfig.currentStoreUrl;
   
   
 static const String imageBaseUrl = "https://hello-image-bucket.s3.ap-south-1.amazonaws.com/";
@@ -138,7 +142,7 @@ static const String imageBaseUrl = "https://hello-image-bucket.s3.ap-south-1.ama
     "CustomHello™ - ಆದ್ಯತೆಯ ಭಾಷಾ ಲಿಪಿಯಲ್ಲಿ ಪ್ರೊಫೈಲ್ ವಿವರಗಳು ಮತ್ತು ಕಸ್ಟಮ್ ಲಿಂಕ್‌ಗಳನ್ನು ಬರೆಯುವ ಮೂಲಕ ನಿಮ್ಮನ್ನು ಪರಿಚಯಿಸಿಕೊಳ್ಳಿ.",
     "CustomHello™ -  விருப்பமான மொழி ஸ்கிரிப்ட்டில் சுயவிவர விவரங்கள் மற்றும் தனிப்பயன் இணைப்புகளை எழுதுவதன் மூலம் உங்களை அறிமுகப்படுத்திக் கொள்ளுங்கள்.",
     "CustomHello™ -  തിരഞ്ഞെടുത്ത ഭാഷാ ലിപിയിൽ പ്രൊഫൈൽ വിശദാംശങ്ങളും ഇഷ്‌ടാനുസൃത ലിങ്കുകളും എഴുതി സ്വയം പരിചയപ്പെടുത്തുക.",
-    "CustomHello™ -  পছন্দের ভাষার স্ক্রিপ্টে প্রোফাইলের বিবরণ এবং কাস্টম লিঙ্কগুলি লিখে নিজের পরিচয় দিন।",
+    "CustomHello™ -  পছন্দের ভাষার লিপিত প্ৰফাইলৰ বিৱৰণ আৰু স্বনিৰ্বাচিত লিংক লিখি নিজৰ পৰিচয় দিয়ক।",
     "CustomHello™ - ପସନ୍ଦିତ ଭାଷା ସ୍କ୍ରିପ୍ଟରେ ପ୍ରୋଫାଇଲ୍ ବିବରଣୀ ଏବଂ କଷ୍ଟମ୍ ଲିଙ୍କ୍ ଲେଖି ନିଜକୁ ପରିଚିତ କର |",
     "CustomHello™ - ਤਰਜੀਹੀ ਭਾਸ਼ਾ ਲਿਪੀ ਵਿੱਚ ਪ੍ਰੋਫਾਈਲ ਵੇਰਵੇ ਅਤੇ ਕਸਟਮ ਲਿੰਕ ਲਿਖ ਕੇ ਆਪਣੇ ਆਪ ਨੂੰ ਪੇਸ਼ ਕਰੋ।",
     "CustomHello™ -  পছন্দৰ ভাষাৰ লিপিত প্ৰফাইলৰ বিৱৰণ আৰু স্বনিৰ্বাচিত লিংক লিখি নিজৰ পৰিচয় দিয়ক।",

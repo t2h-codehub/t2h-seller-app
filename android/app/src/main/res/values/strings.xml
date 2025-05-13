@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Define the app name placeholder -->
     <!-- <string name="app_name">@string/app_name_env</string> -->
@@ -6,10 +7,10 @@
     <!-- <string name="app_name">${APP_NAME}</string> -->
     <!-- <string name="app_name">@string/app_name_env</string> -->
     <!-- <string name="app_name">TaptoHello5</string> -->
-      <string name="app_name">@string/app_name_env</string>
+    <string name="app_name">SocioShop</string>
 
     <!-- Facebook configuration -->
-    <string name="facebook_app_id">2071769666505226</string>
+    <string name="facebook_app_id">fb2071769666505226</string>
     <string name="fb_login_protocol_scheme">fb2071769666505226</string>
-    <string name="facebook_client_token">d44771e1609fa0ec856b336d0815038f</string>
+    <string name="facebook_client_token">your_client_token</string>
 </resources>

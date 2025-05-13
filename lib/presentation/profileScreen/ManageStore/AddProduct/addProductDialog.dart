@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:taptohello/core/utils/commonFun.dart';
 import 'package:taptohello/presentation/home/home_view.dart';
+import 'package:taptohello/presentation/profileScreen/ManageStore/CatalogueScreen/catalogueScreen.dart';
 
 class AddProductDialog extends StatefulWidget {
   const AddProductDialog({super.key, this.isFromVariant, this.isFromCatalogue});
@@ -37,6 +38,12 @@ class _AddProductDialogState extends State<AddProductDialog> {
                   onTap:
                   // widget.isFromVariant ?? false ?
                   () {
+                    widget.isFromCatalogue ?? false ?  Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => CatalogueScreen(),
+                        ),
+                      )
+                      :
                     openScreenWithoutBack(context, HomeView(indexfromPrevious: 1,));
                   },
                   // : () {

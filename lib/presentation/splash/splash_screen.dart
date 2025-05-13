@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:taptohello/core/constants.dart';
+import 'package:taptohello/config/flavor_config.dart';
 
 import 'package:taptohello/helper/base_screen_view.dart';
 
@@ -39,54 +40,89 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _viewModel = ref.read(splashViewModel);
     _viewModel.attachView(this);
+    _initializeApp();
+  }
 
-    Future.delayed(Duration(seconds: 3)).then((value) async {
-    
+  Future<void> _initializeApp() async {
+    try {
+      // Initialize SharedPreferences
+      // await SharedPreferenceService.init();
+      
+      // Add a small delay for splash screen
+      await Future.delayed(Duration(seconds: 2));
 
-      debugPrint('My token is are: ${AppConstants.authToken}');
+      // Get stored values
       token = SharedPreferenceService.getString(AppConstants.authToken);
       userId = SharedPreferenceService.getString(AppConstants.userIdPref);
       int selectedIndex = SharedPreferenceService.getInt("language") ?? 0;
+      isOnboardingViewed = SharedPreferenceService.getBool(AppConstants.isOnboardingViewed);
+
+      debugPrint('Stored Token: $token');
+      debugPrint('Stored UserId: $userId');
+
+      // Update app constants
       AppConstants.selectedIndex = selectedIndex;
-
-      setState(() {});
-      isOnboardingViewed =
-          SharedPreferenceService.getBool(AppConstants.isOnboardingViewed);
-
       AppConstants.token = token ?? "";
       AppConstants.userId = userId ?? "";
       AppConstants.isOnboarding = isOnboardingViewed ?? false;
-      
-      
-      
-      if (token == "" ||
-          token == null ||
-          userId == "" ||
-          userId == null) {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => SignInScreen(),
-        ));
+
+      // Check if user is logged in
+      bool isLoggedIn = token != null && token!.isNotEmpty && 
+                       userId != null && userId!.isNotEmpty;
+
+      if (!isLoggedIn) {
+        debugPrint('User not logged in, navigating to sign in');
+        _navigateToSignIn();
       } else {
-        debugPrint('My token is are: $token');
-        AppConstants.token = token ?? "";
-        debugPrint('My token is are: ${AppConstants.token}');
+        debugPrint('User is logged in, verifying details');
+        // Always verify user details, regardless of flavor
         await _viewModel.getUserDetail();
-        if (_viewModel.userDetailResponse != null &&
-            _viewModel.userDetailResponse?.user?.phone != null) {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => HomeView(),
-          ));
+        if (_viewModel.userDetailResponse?.user?.phone != null) {
+          debugPrint('User details verified, navigating to home');
+          _navigateToHome();
         } else {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => SignInScreen(),
-          ));
+          debugPrint('Invalid user details, clearing data and navigating to sign in');
+          await _clearAuthData();
+          _navigateToSignIn();
         }
       }
-    });
+    } catch (e) {
+      debugPrint("Error in splash screen: $e");
+      // Clear potentially corrupted data
+      await _clearAuthData();
+      _navigateToSignIn();
+    }
+  }
+
+  Future<void> _clearAuthData() async {
+    try {
+      await SharedPreferenceService.remove(AppConstants.authToken);
+      await SharedPreferenceService.remove(AppConstants.userIdPref);
+      AppConstants.token = "";
+      AppConstants.userId = "";
+      debugPrint('Auth data cleared successfully');
+    } catch (e) {
+      debugPrint('Error clearing auth data: $e');
+    }
+  }
+
+  void _navigateToSignIn() {
+    if (mounted) {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => SignInScreen(),
+      ));
+    }
+  }
+
+  void _navigateToHome() {
+    if (mounted) {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => HomeView(),
+      ));
+    }
   }
 
   @override
@@ -96,9 +132,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-            image: DecorationImage(
-                fit: BoxFit.fitHeight,
-                image: AssetImage("assets/images/SplashSocialShop.gif"))),
+          image: DecorationImage(
+            fit: BoxFit.fitHeight,
+            image: AssetImage("assets/images/SplashSocialShop.gif"),
+          ),
+        ),
       ),
     );
   }

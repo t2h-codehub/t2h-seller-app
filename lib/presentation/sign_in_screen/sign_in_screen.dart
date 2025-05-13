@@ -36,6 +36,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
 
   bool checkbox = false;
   bool obscurePassword = true;
+  bool _isLoading = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late AuthViewModel _viewModel;
@@ -75,484 +76,460 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
     // setState(() {});
   }
 
+  void _handleLogin() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await _viewModel.login(
+        LoginRequest(
+          email: entermobilenumbController.text.trim(),
+          password: passwordController.text.trim(),
+          fcm: AppConstants.fcmToken,
+        ),
+        context,
+        checkbox,
+        lang,
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppCol.whiteA700,
         resizeToAvoidBottomInset: false,
-        body: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              SizedBox(height: 16),
-              Container(
-                height: getVerticalSize(180),
-                // width:
-                //     getHorizontalSize(280),
-                // padding: getPadding(left: 10, top: 14, right: 10, bottom: 20),
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: AssetImage("assets/images/socioshopImage.jpeg"))),
-              ),
-              Container(
-                width: double.maxFinite,
-                padding: getPadding(
-                  left: 24,
-                  right: 24,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CustomTextFormField(
-                      controller: entermobilenumbController,
-                      label: "Email or Phone Number",
-                      hintText: "Enter email address or phone number",
-                      margin: getMargin(
-                        top: 24,
-                      ),
-                      textInputType: TextInputType.emailAddress,
-                      suffix: Icon(
-                        Icons.person_outline,
-                        size: 26,
-                      ),
-                      maxlength: 50,
-                      onChange: (val) {
-                        
-                       // SharedPreferenceService.setString('signInPhoneAndEmail', val);
-                       box.write('signInPhoneAndEmail', val);
-                      },
+        body: Stack(
+          children: [
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  SizedBox(height: 16),
+                  Container(
+                    height: getVerticalSize(180),
+                    // width:
+                    //     getHorizontalSize(280),
+                    // padding: getPadding(left: 10, top: 14, right: 10, bottom: 20),
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AssetImage("assets/images/socioshopImage.jpeg"))),
+                  ),
+                  Container(
+                    width: double.maxFinite,
+                    padding: getPadding(
+                      left: 24,
+                      right: 24,
                     ),
-                    SizedBox(height: 16),
-                    CustomTextFormField(
-                      controller: passwordController,
-                      label: "Password",
-                      hintText: "Enter password",
-                      margin: getMargin(
-                        top: 9,
-                      ),
-                      textInputAction: TextInputAction.done,
-                      textInputType: TextInputType.visiblePassword,
-                      isObscureText: obscurePassword,
-                      suffix: InkWell(
-                        onTap: () {
-                          obscurePassword = !obscurePassword;
-                          setState(() {});
-                        },
-                        child: Icon(
-                          obscurePassword
-                              ? Icons.visibility_off_outlined
-                              : Icons.visibility_outlined,
-                          size: 26,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CustomTextFormField(
+                          controller: entermobilenumbController,
+                          label: "Email or Phone Number",
+                          hintText: "Enter email address or phone number",
+                          margin: getMargin(
+                            top: 24,
+                          ),
+                          textInputType: TextInputType.emailAddress,
+                          suffix: Icon(
+                            Icons.person_outline,
+                            size: 26,
+                          ),
+                          maxlength: 50,
+                          onChange: (val) {
+                            
+                           // SharedPreferenceService.setString('signInPhoneAndEmail', val);
+                           box.write('signInPhoneAndEmail', val);
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter email or phone number';
+                            }
+                            return null;
+                          },
                         ),
-                      ),
-                      onChange: (pass) {
-                        
-                         
-                      //  SharedPreferenceService.setString('signInPassword', pass);
-                        box.write('signInPassword', pass);
-                      },
-                    ),
-                    Padding(
-                      padding: getPadding(
-                        left: 1,
-                        top: 7,
-                        right: 1,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          InkWell(
-  onTap: () {
-    setState(() {
-      checkbox = !checkbox;
-      box.write('rememberMe', checkbox);  // Save checkbox state
-
-      if (checkbox) {
-        box.write('signInPhoneAndEmail', entermobilenumbController.text);
-        box.write('signInPassword', passwordController.text);
-      } else {
-        box.remove('signInPhoneAndEmail'); // Remove saved credentials
-        box.remove('signInPassword');
-      }
-    });
-  },
-  child: CustomCheckbox(
-    text: "Remember Me",
-    iconSize: getHorizontalSize(15),
-    value: checkbox,
-    margin: getMargin(bottom: 1),
-    fontStyle: CheckboxFontStyle.PoppinsRegular12,
-    onChange: (value) {
+                        SizedBox(height: 16),
+                        CustomTextFormField(
+                          controller: passwordController,
+                          label: "Password",
+                          hintText: "Enter password",
+                          margin: getMargin(
+                            top: 9,
+                          ),
+                          textInputAction: TextInputAction.done,
+                          textInputType: TextInputType.visiblePassword,
+                          isObscureText: obscurePassword,
+                          suffix: InkWell(
+                            onTap: () {
+                              setState(() {
+                                obscurePassword = !obscurePassword;
+                              });
+                            },
+                            child: Icon(
+                              obscurePassword
+                                  ? Icons.visibility_off_outlined
+                                  : Icons.visibility_outlined,
+                              size: 26,
+                            ),
+                          ),
+                          onChange: (pass) {
+                            
+                             
+                          //  SharedPreferenceService.setString('signInPassword', pass);
+                            box.write('signInPassword', pass);
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter password';
+                            }
+                            return null;
+                          },
+                        ),
+                        Padding(
+                          padding: getPadding(
+                            left: 1,
+                            top: 7,
+                            right: 1,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+    onTap: () {
       setState(() {
-        checkbox = value;
-        box.write('rememberMe', checkbox); // Save checkbox state
+        checkbox = !checkbox;
+        box.write('rememberMe', checkbox);  // Save checkbox state
 
         if (checkbox) {
           box.write('signInPhoneAndEmail', entermobilenumbController.text);
           box.write('signInPassword', passwordController.text);
         } else {
-          box.remove('signInPhoneAndEmail');
+          box.remove('signInPhoneAndEmail'); // Remove saved credentials
           box.remove('signInPassword');
         }
       });
     },
+    child: CustomCheckbox(
+      text: "Remember Me",
+      iconSize: getHorizontalSize(15),
+      value: checkbox,
+      margin: getMargin(bottom: 1),
+      fontStyle: CheckboxFontStyle.PoppinsRegular12,
+      onChange: (value) {
+        setState(() {
+          checkbox = value;
+          box.write('rememberMe', checkbox); // Save checkbox state
+
+          if (checkbox) {
+            box.write('signInPhoneAndEmail', entermobilenumbController.text);
+            box.write('signInPassword', passwordController.text);
+          } else {
+            box.remove('signInPhoneAndEmail');
+            box.remove('signInPassword');
+          }
+        });
+      },
+    ),
   ),
-),
 
-                          // InkWell(
-                          //   onTap: () {
-                          //     setState(() {
-                          //       checkbox = !checkbox;
-                          //       if(checkbox == true) {
-                          //         // SharedPreferenceService.setString('signInPhoneAndEmail', entermobilenumbController.text);
-                          //         //  SharedPreferenceService.setString('signInPassword', passwordController.text);
+                              // InkWell(
+                              //   onTap: () {
+                              //     setState(() {
+                              //       checkbox = !checkbox;
+                              //       if(checkbox == true) {
+                              //         // SharedPreferenceService.setString('signInPhoneAndEmail', entermobilenumbController.text);
+                              //         //  SharedPreferenceService.setString('signInPassword', passwordController.text);
 
-                          //          box.write('signInPhoneAndEmail', entermobilenumbController.text);
-                          //          box.write('signInPassword', passwordController.text);
-                          //       } else {
-                          //       //  SharedPreferenceService.setString('signInPhoneAndEmail', '');
-                          //       //   SharedPreferenceService.setString('signInPassword', '');
+                              //          box.write('signInPhoneAndEmail', entermobilenumbController.text);
+                              //          box.write('signInPassword', passwordController.text);
+                              //       } else {
+                              //       //  SharedPreferenceService.setString('signInPhoneAndEmail', '');
+                              //       //   SharedPreferenceService.setString('signInPassword', '');
 
-                          //       box.write('signInPhoneAndEmail', '');
-                          //          box.write('signInPassword', '');
-                          //       }
-                          //       debugPrint('My saved email is: ${SharedPreferenceService.getString('signInPhoneAndEmail')}');
-                          //     });
-                          //   },
-                          //   child: CustomCheckbox(
-                          //     text: "Remember Me",
-                          //     iconSize: getHorizontalSize(
-                          //       15,
-                          //     ),
-                          //     value: checkbox,
-                          //     margin: getMargin(
-                          //       bottom: 1,
-                          //     ),
-                          //     fontStyle: CheckboxFontStyle.PoppinsRegular12,
-                          //     onChange: (value) {
-                          //       checkbox = value;
-                          //       setState(() {});
-                          //       print('Remember me --- : $checkbox');
-                          //       if(checkbox == true) {
+                              //       box.write('signInPhoneAndEmail', '');
+                              //          box.write('signInPassword', '');
+                              //       }
+                              //       debugPrint('My saved email is: ${SharedPreferenceService.getString('signInPhoneAndEmail')}');
+                              //     });
+                              //   },
+                              //   child: CustomCheckbox(
+                              //     text: "Remember Me",
+                              //     iconSize: getHorizontalSize(
+                              //       15,
+                              //     ),
+                              //     value: checkbox,
+                              //     margin: getMargin(
+                              //       bottom: 1,
+                              //     ),
+                              //     fontStyle: CheckboxFontStyle.PoppinsRegular12,
+                              //     onChange: (value) {
+                              //       checkbox = value;
+                              //       setState(() {});
+                              //       print('Remember me --- : $checkbox');
+                              //       if(checkbox == true) {
 
-                          //             box.write('signInPhoneAndEmail', entermobilenumbController.text);
-                          //          box.write('signInPassword', passwordController.text);
-                 
-                 
+                              //             box.write('signInPhoneAndEmail', entermobilenumbController.text);
+                              //          box.write('signInPassword', passwordController.text);
+                               
+                               
 
-                          //         // SharedPreferenceService.setString('signInPhoneAndEmail', entermobilenumbController.text);
-                          //         //  SharedPreferenceService.setString('signInPassword', passwordController.text);
-                          //       } else {
-                          //         // SharedPreferenceService.setString('signInPhoneAndEmail', '');
-                          //         //  SharedPreferenceService.setString('signInPassword', '');
+                              //         // SharedPreferenceService.setString('signInPhoneAndEmail', entermobilenumbController.text);
+                              //         //  SharedPreferenceService.setString('signInPassword', passwordController.text);
+                              //       } else {
+                              //         // SharedPreferenceService.setString('signInPhoneAndEmail', '');
+                              //         //  SharedPreferenceService.setString('signInPassword', '');
 
-                          //          box.write('signInPhoneAndEmail', '');
-                          //          box.write('signInPassword', '');
-                          //       }
-                          //       debugPrint('My saved email is: ${SharedPreferenceService.getString('signInPhoneAndEmail')}');
-                          //     },
-                          //   ),
-                          // ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => ForgetPasswordView(),
-                              ));
-                            },
-                            child: Padding(
-                              padding: getPadding(
-                                top: 1,
-                              ),
-                              child: Text(
-                                "Forgot Password?",
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.left,
-                                style: AppStyle.txtPoppinsRegular12
-                                    .copyWith(fontSize: 14),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 25,
-                    ),
-                    InkWell(
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      onTap: () {
-                        FocusScopeNode currentFocus = FocusScope.of(context);
-
-                        if (!currentFocus.hasPrimaryFocus) {
-                          currentFocus.unfocus();
-                        }
-
-                        if (entermobilenumbController.text.isEmpty) {
-                          showSnackbar(
-                              "Please enter a mobile number on an email");
-                          showSnackbar("Please enter a valid email");
-                        } else if (passwordController.text.isEmpty) {
-                          showSnackbar("Please enter a password");
-                        } else {
-                          if(checkbox == true) {
-                            // SharedPreferenceService.setString('signInPhoneAndEmail', entermobilenumbController.text);
-                            //  SharedPreferenceService.setString('signInPassword', passwordController.text);
-
-                             box.write('signInPhoneAndEmail', entermobilenumbController.text);
-                                   box.write('signInPassword', passwordController.text);
-                          } else {
-                            // SharedPreferenceService.setString('signInPhoneAndEmail', '');
-                            //  SharedPreferenceService.setString('signInPassword', '');
-
-                             box.write('signInPhoneAndEmail', '');
-                                   box.write('signInPassword', '');
-                          }
-                        //  debugPrint('My saved email is: ${SharedPreferenceService.getString('signInPhoneAndEmail')}');
-                          onSave(_formKey, context);
-                        }
-                      },
-                      child: SizedBox(
-                        height: getVerticalSize(
-                          55,
-                        ),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Align(
-                              alignment: Alignment.center,
-                              child: Container(
-                                padding: getPadding(
-                                  left: 16,
-                                  top: 16,
-                                  right: 16,
-                                  bottom: 16,
-                                ),
-                                // height: getVerticalSize(
-                                //   60,
-                                // ),
-                                // width: getHorizontalSize(
-                                //   281,
-                                // ),
-                                decoration: BoxDecoration(
-                                  color: AppCol.primary,
-                                  borderRadius: BorderRadius.circular(
-                                    getHorizontalSize(
-                                      10,
-                                    ),
+                              //          box.write('signInPhoneAndEmail', '');
+                              //          box.write('signInPassword', '');
+                              //       }
+                              //       debugPrint('My saved email is: ${SharedPreferenceService.getString('signInPhoneAndEmail')}');
+                              //     },
+                              //   ),
+                              // ),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => ForgetPasswordView(),
+                                  ));
+                                },
+                                child: Padding(
+                                  padding: getPadding(
+                                    top: 1,
+                                  ),
+                                  child: Text(
+                                    "Forgot Password?",
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.left,
+                                    style: AppStyle.txtPoppinsRegular12
+                                        .copyWith(fontSize: 14),
                                   ),
                                 ),
                               ),
-                            ),
-                            Center(
-                              // alignment: Alignment.bottomCenter,
-                              child: Text(
-                                "Sign In",
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.left,
-                                style: AppStyle.txtPoppinsBold15.copyWith(
-                                    fontSize: 16, color: Colors.white),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 25,
+                        ),
+                        Padding(
+                          padding: getPadding(top: 24),
+                          child: ElevatedButton(
+                            onPressed: _isLoading ? null : _handleLogin,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppCol.primary,
+                              minimumSize: Size(double.infinity, 50),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                   
-                   
-                    SizedBox(height: 12),
-
-                  
-                  
-                    /// new Sign in page sign up text
-                    Padding(
-                      padding: getPadding(
-                        top: 12,
-                      ),
-                      child: Text(
-                        "New to Hello? ",
-                        style: TextStyle(
-                          color: AppCol.gray900,
-                          fontSize: getFontSize(
-                            15,
+                            child: Text(
+                              'Sign In',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w400,
                         ),
-                      ),
-                    ),
+                       
+                       
+                        SizedBox(height: 12),
 
-                    /// Create Your Account
-                    InkWell(
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => RegistrationScreen(),
-                        ));
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(top: 18),
-                        height: getVerticalSize(
-                          55,
+                      
+                      
+                        /// new Sign in page sign up text
+                        Padding(
+                          padding: getPadding(
+                            top: 12,
+                          ),
+                          child: Text(
+                            "New to Hello? ",
+                            style: TextStyle(
+                              color: AppCol.gray900,
+                              fontSize: getFontSize(
+                                15,
+                              ),
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
                         ),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Align(
+
+                        /// Create Your Account
+                        InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => RegistrationScreen(),
+                            ));
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(top: 18),
+                            height: getVerticalSize(
+                              55,
+                            ),
+                            child: Stack(
                               alignment: Alignment.center,
-                              child: Container(
-                                padding: getPadding(
-                                  left: 16,
-                                  top: 16,
-                                  right: 16,
-                                  bottom: 16,
-                                ),
-                               
-                               
-                                decoration: BoxDecoration(
-                                  color: AppCol.lightestgrey,
-                                  borderRadius: BorderRadius.circular(
-                                    getHorizontalSize(
-                                      10,
+                              children: [
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Container(
+                                    padding: getPadding(
+                                      left: 16,
+                                      top: 16,
+                                      right: 16,
+                                      bottom: 16,
+                                    ),
+                                   
+                                   
+                                    decoration: BoxDecoration(
+                                      color: AppCol.lightestgrey,
+                                      borderRadius: BorderRadius.circular(
+                                        getHorizontalSize(
+                                          10,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
+                                Center(
+                                  // alignment: Alignment.bottomCenter,
+                                  child: Text(
+                                    "Create Your Account",
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.left,
+                                    style: AppStyle.txtPoppinsBold15.copyWith(
+                                        fontSize: 16, color: AppCol.primary),
+                                  ),
+                                ),
+                              ],
                             ),
-                            Center(
-                              // alignment: Alignment.bottomCenter,
-                              child: Text(
-                                "Create Your Account",
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.left,
-                                style: AppStyle.txtPoppinsBold15.copyWith(
-                                    fontSize: 16, color: AppCol.primary),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
 
 
-                    Align(
-                      alignment: Alignment.center,
-                      child: Padding(
-                        padding: getPadding(
-                          top: 12,
-                          // right: 83,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CustomImageView(
-                              imagePath: ImageConstant.imgImage41,
-                              height: getVerticalSize(
-                                34,
-                              ),
-                              width: getHorizontalSize(
-                                28,
-                              ),
-                              margin: getMargin(
-                                top: 14,
-                                bottom: 8,
-                              ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: Padding(
+                            padding: getPadding(
+                              top: 12,
+                              // right: 83,
                             ),
-                            CustomImageView(
-                              imagePath: ImageConstant.imgImage42,
-                              height: getSize(
-                                56,
-                              ),
-                              width: getSize(
-                                56,
-                              ),
-                              margin: getMargin(
-                                left: 11,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: getHorizontalSize(
-                        270,
-                      ),
-                      margin: getMargin(
-                        left: 5,
-                        top: 22,
-                        right: 5,
-                      ),
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text:
-                                  "This page is protected by Google reCAPTCHA to ensure you’re not a bot. ",
-                              style: TextStyle(
-                                color: AppCol.gray900,
-                                fontSize: getFontSize(
-                                  12,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CustomImageView(
+                                  imagePath: ImageConstant.imgImage41,
+                                  height: getVerticalSize(
+                                    34,
+                                  ),
+                                  width: getHorizontalSize(
+                                    28,
+                                  ),
+                                  margin: getMargin(
+                                    top: 14,
+                                    bottom: 8,
+                                  ),
                                 ),
-                                fontFamily: 'Roboto',
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            TextSpan(
-                              text: "Learn more.",
-                              style: TextStyle(
-                                color: AppCol.primary,
-                                fontSize: getFontSize(
-                                  12,
+                                CustomImageView(
+                                  imagePath: ImageConstant.imgImage42,
+                                  height: getSize(
+                                    56,
+                                  ),
+                                  width: getSize(
+                                    56,
+                                  ),
+                                  margin: getMargin(
+                                    left: 11,
+                                  ),
                                 ),
-                                fontFamily: 'Roboto',
-                                fontWeight: FontWeight.w500,
-                              ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
-                        textAlign: TextAlign.center,
-                      ),
+                        Container(
+                          width: getHorizontalSize(
+                            270,
+                          ),
+                          margin: getMargin(
+                            left: 5,
+                            top: 22,
+                            right: 5,
+                          ),
+                          child: RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text:
+                                      "This page is protected by Google reCAPTCHA to ensure you're not a bot. ",
+                                  style: TextStyle(
+                                    color: AppCol.gray900,
+                                    fontSize: getFontSize(
+                                      12,
+                                    ),
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: "Learn more.",
+                                  style: TextStyle(
+                                    color: AppCol.primary,
+                                    fontSize: getFontSize(
+                                      12,
+                                    ),
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
+                ],
+              ),
+            ),
+            if (_isLoading)
+              Container(
+                color: Colors.black.withOpacity(0.3),
+                child: Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(AppCol.primary),
+                  ),
                 ),
               ),
-            ],
-          ),
+          ],
         ),
       ),
     );
   }
 
-  void onSave(GlobalKey<FormState> formKey, BuildContext context) async {
-    if (formKey.currentState!.validate()) {
-      _viewModel.loginRequest = LoginRequest(
-          phone: entermobilenumbController.text.toLowerCase(),
-          email: entermobilenumbController.text.toLowerCase(),
-          fcm: AppConstants.fcmToken,
-          password: passwordController.text);
-      _viewModel.login(_viewModel.loginRequest, context, checkbox, lang);
-    }
-  }
-
   @override
   void showSnackbar(String message, {Color? color}) {
-    final snackBar = SnackBar(
-      backgroundColor: color,
-      content: Text(message.toString()),
-      action: SnackBarAction(
-        label: 'Close',
-        onPressed: () {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          // Some code to undo the change.
-        },
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: color ?? Colors.red,
       ),
     );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    // TODO: implement showSnackbar
   }
 
   @override

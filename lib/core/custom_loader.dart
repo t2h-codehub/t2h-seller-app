@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-// import 'package:taptohello/core/utils/color_constant.dart';
+
 
 class DialogBuilder {
   final BuildContext context;

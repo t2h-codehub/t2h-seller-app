@@ -1,7 +1,5 @@
 // ignore_for_file: avoid_dynamic_calls
 
-
-
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -10,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/core/exceptions.dart';
 import 'package:taptohello/core/utils/logger.dart';
+import 'package:taptohello/config/flavor_config.dart';
 
 class ApiClient {
 
@@ -19,19 +18,18 @@ class ApiClient {
   final Dio dio = Dio();
 
   Future<void> loadCertificate() async {
-  SecurityContext securityContext = SecurityContext.defaultContext;
-  final ByteData certData = await rootBundle.load('assets/api_taptohello_com.pem');
-  securityContext.setTrustedCertificatesBytes(certData.buffer.asUint8List());
-  print("Certificate loaded successfully!");
-}
+    SecurityContext securityContext = SecurityContext.defaultContext;
+    final ByteData certData = await rootBundle.load('assets/api_taptohello_com.pem');
+    securityContext.setTrustedCertificatesBytes(certData.buffer.asUint8List());
+    print("Certificate loaded successfully!");
+  }
 
   ApiClient() {
     loadCertificate();
-    // dio.options.baseUrl = Environment.value.baseUrl!;
-    dio.options.connectTimeout =  Duration(minutes: 3);
-     //const Duration(minutes: 3).inMilliseconds;
+    dio.options.baseUrl = FlavorConfig.currentBaseUrl;
+    dio.options.connectTimeout = Duration(minutes: 3);
     dio.options.receiveTimeout = Duration(minutes: 3);
-    //const Duration(minutes: 3).inMilliseconds;
+    print("Using API URL: ${FlavorConfig.currentBaseUrl}");
     // if (Environment.value.environmentType != EnvType.PRODUCTION) {
     //   dio.interceptors.add(
     //     PrettyDioLogger(

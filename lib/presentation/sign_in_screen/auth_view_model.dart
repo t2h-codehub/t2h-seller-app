@@ -342,7 +342,7 @@ class AuthViewModel extends BaseViewModel<BaseScreenView> {
               view?.showSnackbar(l.message, color: Colors.red);
             }, (r) async {
               _userDetailResponse = r;
-              print('My updated mdoel: $_userDetailResponse');
+            //  print('My updated mdoel: $_userDetailResponse');
               // await elegibility();
               _userDetailService.setuserDetail(_userDetailResponse);
             }),

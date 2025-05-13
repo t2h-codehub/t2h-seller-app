@@ -40,21 +40,11 @@ class _MyWebViewState extends State<ProfileScreenWebview> {
   }
 
   @override
-void dispose() {
-  // Stop any loading in the WebView
-  _webViewController.stopLoading();
-
-  // Clear the cache (use the static method correctly)
-  InAppWebViewController.clearAllCache(includeDiskFiles: true);
-
-  // Delete all cookies
-  CookieManager().deleteAllCookies();
-
-  // Dispose the WebView controller
-  _webViewController.dispose();
-
-  super.dispose();
-}
+  void dispose() {
+    // Do not manually dispose or stop the controller!
+    // The widget will handle it.
+    super.dispose();
+  }
 
 
   @override

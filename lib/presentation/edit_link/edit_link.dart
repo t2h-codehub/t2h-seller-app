@@ -147,10 +147,22 @@ void initState() {
   },
   controller: linkController,
   label: "Profile Link",
-  suffix: Padding(
-    padding: const EdgeInsets.fromLTRB(16.0, 16, 14, 16),
-    child: Image.asset("assets/newIcons/pro_link.png"),
+  // suffix: Padding(
+  //   padding: const EdgeInsets.fromLTRB(16.0, 16, 14, 16),
+  //   child: Image.asset("assets/newIcons/pro_link.png"),
+  // ),
+  suffix: SizedBox(
+  width: 40,
+  height: 40,
+  child: Center(
+    child: Image.asset(
+      "assets/newIcons/pro_link.png",
+      width: 20,
+      height: 20,
+    ),
   ),
+),
+
 ),
 
 

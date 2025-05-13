@@ -1,0 +1,6 @@
+#include "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"
+#include "Generated.xcconfig"
+
+// Enable release builds on simulator
+ENABLE_BITCODE=NO
+# VALID_ARCHS=x86_64 

@@ -1,61 +1,206 @@
-{
-    "version": "0.2.0",
-    "configurations": [
+// {
+//     "version": "0.2.0",
+//     "configurations": [
+
         
-        {
-            "name": "Dart: Attach to Process",
-            "type": "dart",
-            "request": "attach"
-        },
-        {
-            "name": "Flutter: Attach to Device",
-            "type": "dart",
-            "request": "attach"
-        },
-        {
-            "name": "Flutter",
-            "type": "dart",
-            "request": "launch",
-            "program": "lib/main.dart"
-        },
-        {
-            "name": "Dart",
-            "type": "dart",
-            "request": "launch",
-            "program": "bin/main.dart"
-        },
-        {
-            "name": "Flutter: Attach to Device",
-            "type": "dart",
-            "request": "attach"
-        },
-        {
-            "name": "Flutter: Attach to Device",
-            "type": "dart",
-            "request": "attach"
-        },
-        {
-            "name": "taptohello",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "taptohello (profile mode)",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "taptohello (release mode)",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
-        },
-        {
-            "name": "taptohello (Flutter)",
-            "program": "lib/main.dart",
-            "request": "launch",
-            "type": "dart"
-        }
-    ]
+//         {
+//             "name": "Dart: Attach to Process",
+//             "type": "dart",
+//             "request": "attach"
+//         },
+//         {
+//             "name": "Flutter: Attach to Device",
+//             "type": "dart",
+//             "request": "attach"
+//         },
+//         {
+//             "name": "Flutter",
+//             "type": "dart",
+//             "request": "launch",
+//             "program": "lib/main.dart"
+//         },
+//         {
+//             "name": "Dart",
+//             "type": "dart",
+//             "request": "launch",
+//             "program": "bin/main.dart"
+//         },
+//         {
+//             "name": "Flutter: Attach to Device",
+//             "type": "dart",
+//             "request": "attach"
+//         },
+//         {
+//             "name": "Flutter: Attach to Device",
+//             "type": "dart",
+//             "request": "attach"
+//         },
+//         {
+//             "name": "taptohello",
+//             "request": "launch",
+//             "type": "dart"
+//         },
+//         {
+//             "name": "taptohello (profile mode)",
+//             "request": "launch",
+//             "type": "dart",
+//             "flutterMode": "profile"
+//         },
+//         {
+//             "name": "taptohello (release mode)",
+//             "request": "launch",
+//             "type": "dart",
+//             "flutterMode": "release"
+//         },
+//         {
+//             "name": "taptohello (Flutter)",
+//             "program": "lib/main.dart",
+//             "request": "launch",
+//             "type": "dart"
+//         }
+//     ]
+// }
+
+
+// {
+//     "version": "0.2.0",
+//     "configurations": [
+//       {
+//         "name": "SocioShopTest (debug)",
+//         "request": "launch",
+//         "type": "dart",
+//         "flutterMode": "debug",
+//         "program": "lib/main.dart",
+//         "args": [
+//           "--flavor",
+//           "socioshoptest",
+//           "--dart-define=FLAVOR=socioshoptest"
+//         ]
+//       },
+//       {
+//         "name": "Flutter",
+//         "type": "dart",
+//         "request": "launch",
+//         "program": "lib/main.dart"
+//       },
+//       {
+//         "name": "Dart",
+//         "type": "dart",
+//         "request": "launch",
+//         "program": "bin/main.dart"
+//       },
+//       {
+//         "name": "Flutter: Attach to Device",
+//         "type": "dart",
+//         "request": "attach"
+//       },
+//       {
+//         "name": "Dart: Attach to Process",
+//         "type": "dart",
+//         "request": "attach"
+//       },
+//       {
+//         "name": "taptohello",
+//         "request": "launch",
+//         "type": "dart"
+//       },
+//       {
+//         "name": "taptohello (profile mode)",
+//         "request": "launch",
+//         "type": "dart",
+//         "flutterMode": "profile"
+//       },
+//       {
+//         "name": "taptohello (release mode)",
+//         "request": "launch",
+//         "type": "dart",
+//         "flutterMode": "release"
+//       },
+//       {
+//         "name": "taptohello (Flutter)",
+//         "program": "lib/main.dart",
+//         "request": "launch",
+//         "type": "dart"
+//       }
+//     ]
+//   }
+  
+
+
+{
+  "version": "0.2.0",
+  "configurations": [
+
+    {
+      "name": "SocioShop (debug)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "debug",
+      "program": "lib/main.dart",
+      "args": [
+        "--flavor",
+        "socioshop",
+        "--dart-define=FLAVOR=socioshop"
+      ]
+    },
+
+    {
+      "name": "SocioShopTest (debug)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "debug",
+      "program": "lib/main.dart",
+      "args": [
+        "--flavor",
+        "socioshoptest",
+        "--dart-define=FLAVOR=socioshoptest"
+      ]
+    },
+   
+    {
+      "name": "Flutter",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart"
+    },
+    {
+      "name": "Dart",
+      "type": "dart",
+      "request": "launch",
+      "program": "bin/main.dart"
+    },
+    {
+      "name": "Flutter: Attach to Device",
+      "type": "dart",
+      "request": "attach"
+    },
+    {
+      "name": "Dart: Attach to Process",
+      "type": "dart",
+      "request": "attach"
+    },
+    {
+      "name": "taptohello",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "taptohello (profile mode)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile"
+    },
+    {
+      "name": "taptohello (release mode)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release"
+    },
+    {
+      "name": "taptohello (Flutter)",
+      "program": "lib/main.dart",
+      "request": "launch",
+      "type": "dart"
+    }
+  ]
 }

@@ -991,7 +991,7 @@ class _InstagramEditProductListScreenState extends State<InstagramEditProductLis
                             controller: _productSubCategoryController,
                             readOnly: true,
                             decoration: InputDecoration(
-                              labelText: 'Product Sub Category',
+                              labelText: 'Product Sub Category*',
                               floatingLabelBehavior:
                               FloatingLabelBehavior.always,
                               border: OutlineInputBorder(
@@ -1605,7 +1605,7 @@ class _InstagramEditProductListScreenState extends State<InstagramEditProductLis
     debugPrint('My Admin category function');
     productCategoryApiResModel.categories?.forEach((element) {
       adminCategories.add(element.title ?? '');
-      debugPrint('My Admin caetgpry is: $adminCategories');
+    // debugPrint('My Admin caetgpry is: $adminCategories');
     });
     isApiDataAvailable = true;
     setState(() {});

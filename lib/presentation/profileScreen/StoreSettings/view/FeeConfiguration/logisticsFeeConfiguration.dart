@@ -279,7 +279,7 @@ class _LogisticsFeeConfigurationsScreenState extends State<LogisticsFeeConfigura
       "feeValue":logisticsFeeConfiguration.text
     };
     createLogisticFeeConfiguration = await _feeConfigurationController.createLogisticFee(body);
-    debugPrint('My response is: $createLogisticFeeConfiguration');
+   // debugPrint('My response is: $createLogisticFeeConfiguration');
     if(createLogisticFeeConfiguration.success == true) {
       Navigator.pop(context);
     } else {

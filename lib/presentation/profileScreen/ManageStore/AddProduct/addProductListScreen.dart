@@ -329,6 +329,7 @@ void checkImageSize(File imageFile) async {
     .showLoadingIndicator('Loading...');
     await uploadImage();
     if (selectedImageVideos.isNotEmpty) {
+      if(_SKUIDController.text.isNotEmpty){
                   if (selectedNewVariant.isNotEmpty) {
     
                     setState(() {
@@ -383,6 +384,12 @@ void checkImageSize(File imageFile) async {
                       "sizeChart": sizeChart
                     }, false);
                   }
+      }
+      else{
+         ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Please fill the SKU ID')));
+        
+      }
                    } else {
                 setState(() {
       isButtonDisabled = false;
@@ -397,9 +404,17 @@ void checkImageSize(File imageFile) async {
                     SnackBar(content: Text('Please select Category')));
                 }
                 }
+                else{
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content: Text('Please fill all mandatory fields')));
+                }
                
    
               
+                }
+                else{
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content: Text('Please fill all mandatory fields')));
                 }
                
               
@@ -1115,7 +1130,7 @@ String? findIdByTitle(String title) {
              decoratorProps: DropDownDecoratorProps(
              
                      decoration: InputDecoration(
-                        labelText: 'Product Sub Category',
+                        labelText: 'Product Sub Category*',
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -1143,7 +1158,7 @@ String? findIdByTitle(String title) {
                               // ;
                             //  debugPrint('selected sub data value $selectedSubCategoryId.text');
                               debugPrint('res data 1$_productCategoryController.text');
-                               debugPrint('akshay bug data $adminSubCategories');
+                               debugPrint(' bug data $adminSubCategories');
                                 setState(() {});
           },
         )
@@ -1256,17 +1271,45 @@ String? findIdByTitle(String title) {
       
                   /// SKU Id field
                   Container(
-                    child: TextFormField(
-                      controller: _SKUIDController,
-                      decoration: InputDecoration(
-                        labelText: 'SKU ID (Optional)',
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                  ),
+            child: TextFormField(
+              controller: _SKUIDController,
+                     validator: (value) {
+                              if (value != null && value.isEmpty) {
+                                return 'SKU ID is required';
+                              }
+                              return null;
+                            },
+                              onChanged: (value) {
+                              _SKUIDController.text = value;
+                              setState(() {});
+                            },
+              decoration: InputDecoration(
+                labelText: 'SKU ID*',
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+          ),
+                  // Container(
+                  //   child: TextFormField(
+                  //     controller: _SKUIDController,
+                  //       validator: (value) {
+                  //             if (value != null && value.isEmpty) {
+                  //               return 'SKU ID is required';
+                  //             }
+                  //             return null;
+                  //           },
+                  //     decoration: InputDecoration(
+                  //       labelText: 'SKU ID',
+                  //       floatingLabelBehavior: FloatingLabelBehavior.always,
+                  //       border: OutlineInputBorder(
+                  //         borderRadius: BorderRadius.circular(10),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                   SizedBox(height: 24),
       
                   
@@ -1414,6 +1457,7 @@ String? findIdByTitle(String title) {
                           // if(_productDescriptionController.isNotEmpty) {
                             if(_mrpController.text.isNotEmpty) {
                               if((_inventoryController.text.isNotEmpty && isUnlimitedStock == false) || (isUnlimitedStock == true)) {
+                                if(_SKUIDController.text.isNotEmpty){
                                 if(selectedNewVariant != "") {
                                   debugPrint('My selected mrp price is: ${_mrpController.text}');
                                   debugPrint('My selected mrp discount price is: ${_discountPriceController.text}');
@@ -1459,6 +1503,11 @@ String? findIdByTitle(String title) {
                                 
                                 
                                 }
+                                }
+                                 else {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content: Text('Please fill the SKU ID')));
+                              }
                               }
                               else {
                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -1848,7 +1897,7 @@ Future.delayed(Duration(seconds: 1), () {
     debugPrint('My Admin category function');
     productCategoryApiResModel.categories?.forEach((element) {
       adminCategories.add(element.title ?? '');
-      debugPrint('My Admin caetgpry is: $adminCategories');
+     // debugPrint('My Admin caetgpry is: $adminCategories');
     });
     isApiDataAvailable = true;
     setState(() {});

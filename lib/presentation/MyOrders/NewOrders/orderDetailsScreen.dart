@@ -831,7 +831,7 @@ Future<void> showCancelOrderDialog(BuildContext context) async {
 
               child: _buildDetailRow('AWB Code:', widget.orderDetails?.awbCode)),
        
-        _buildDetailRow('Order Total:', 'Rs. ${widget.orderDetails?.amount ?? '0'}',
+        _buildDetailRow('Order Total:', 'Rs. ${widget.orderDetails?.totalAmt ?? '0'}',
             isBold: true, color: Colors.black),
             
       ],
@@ -867,7 +867,9 @@ Future<void> showCancelOrderDialog(BuildContext context) async {
           final product = widget.orderDetails?.products?[index];
           return ListTile(
             title: Text(product?.productName ?? '-'),
-            subtitle: Text('Qty: ${product?.quantity ?? '-'} | Price: Rs. ${product?.mrp ?? '-'}'),
+            subtitle: Text(
+  'Qty: ${product?.quantity ?? '-'} | Price: Rs. ${product?.price == 0 ? product?.mrp : product?.price ?? '-'}',
+),
             // leading: Image.network(product?.productImage.first ?? '', width: 50, height: 50, fit: BoxFit.cover),
 //             leading: Image.network(
 //   (product?.productImage != null && product!.productImage!.isNotEmpty)
@@ -879,9 +881,9 @@ Future<void> showCancelOrderDialog(BuildContext context) async {
 // ),
 leading: Image.network(
   (product?.productImage != null && product!.productImage!.isNotEmpty)
-      ? (product.productImage!.first.contains(AppConstants.imageBaseUrl)
-          ? product.productImage!.first
-          : AppConstants.imageBaseUrl + product.productImage!.first)
+      ? (product.productImage!.contains(AppConstants.imageBaseUrl)
+          ? product.productImage!
+          : AppConstants.imageBaseUrl + product.productImage!)
       : 'https://via.placeholder.com/50', // fallback placeholder image
   width: 50,
   height: 50,

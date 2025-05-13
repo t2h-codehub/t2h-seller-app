@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:taptohello/core/apiFunction.dart';
 import 'package:taptohello/core/constants.dart';
@@ -234,8 +235,6 @@ class OrderControllers with ChangeNotifier{
   }
 }
 
-
-
 Future<OrderDetailsReviewModelAndStatusCode> getOrderDetails(Map<String, String> body) async {
   NewOrderDetailsApiResModel newOrderDetailsApiResModel = NewOrderDetailsApiResModel();
   ErrorOrderDetailsApiResModel errorOrderDetailsApiResModel = ErrorOrderDetailsApiResModel();
@@ -249,9 +248,9 @@ Future<OrderDetailsReviewModelAndStatusCode> getOrderDetails(Map<String, String>
       Uri.parse('${AppConstants.baseUrl}customer/ordersSellerDetails'),
       headers: {
         'token': AppConstants.token,
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
       },
-      body: body,
+      body: jsonEncode(body), // 🔥 Encode the map to JSON
     );
 
     statusCode = response.statusCode;
@@ -266,14 +265,13 @@ Future<OrderDetailsReviewModelAndStatusCode> getOrderDetails(Map<String, String>
       if ((statusCode == 201 || statusCode == 200) && jsonData['order'] != null) {
         try {
           printLongJson(jsonData);
-
-          /// 🛠 Main fix
           newOrderDetailsApiResModel = NewOrderDetailsApiResModel.fromJson(jsonData);
-
           debugPrint('Order fetched successfully.');
         } catch (e) {
           debugPrint('Error parsing Order JSON: $e');
         }
+      } else {
+        debugPrint('Order not found or invalid response structure.');
       }
     } else {
       debugPrint('Empty response from server.');
@@ -288,6 +286,92 @@ Future<OrderDetailsReviewModelAndStatusCode> getOrderDetails(Map<String, String>
     statusCode: statusCode,
   );
 }
+
+
+// Future<OrderDetailsReviewModelAndStatusCode> getOrderDetails(Map<String, String> body) async {
+//   NewOrderDetailsApiResModel newOrderDetailsApiResModel = NewOrderDetailsApiResModel();
+//   ErrorOrderDetailsApiResModel errorOrderDetailsApiResModel = ErrorOrderDetailsApiResModel();
+//   int statusCode = 0;
+
+//   try {
+//     debugPrint('Request Body: $body');
+//     debugPrint('Token: ${AppConstants.token}');
+
+//     var response = await http.post(
+//       Uri.parse('${AppConstants.baseUrl}customer/ordersSellerDetails'),
+//       headers: {
+//         'token': AppConstants.token,
+//         'Content-Type': 'application/json'
+//       },
+//       body: body,
+//     );
+
+//     statusCode = response.statusCode;
+//     String responseBody = response.body;
+
+//     debugPrint('Response Code: $statusCode');
+//     debugPrint('Response Body: $responseBody');
+
+//     if (responseBody.isNotEmpty) {
+//       var jsonData = jsonDecode(responseBody);
+
+//       if ((statusCode == 201 || statusCode == 200) && jsonData['order'] != null) {
+//         try {
+//           printLongJson(jsonData);
+
+//           /// 🛠 Main fix
+//           newOrderDetailsApiResModel = NewOrderDetailsApiResModel.fromJson(jsonData);
+
+//           debugPrint('Order fetched successfully.');
+//         } catch (e) {
+//           debugPrint('Error parsing Order JSON: $e');
+//         }
+//       }
+//     } else {
+//       debugPrint('Empty response from server.');
+//     }
+//   } catch (e) {
+//     debugPrint('API Call Error: $e');
+//   }
+
+//   return OrderDetailsReviewModelAndStatusCode(
+//     newOrderDetailsApiResModel: newOrderDetailsApiResModel.order,
+//     errorOrderDetailsApiResModel: errorOrderDetailsApiResModel,
+//     statusCode: statusCode,
+//   );
+// }
+
+//   var headers = {
+//   'token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Nzk5YTY5MmViM2RiMzI3ZjIwOGYyN2EiLCJleHAiOjE3NTEzNTYwMjAsImlhdCI6MTc0NjE3MjAyMH0.Koab2RVhLPu50ua2gDgsgx4xDcxm3qgMO9SJpTQDauw',
+//   'Content-Type': 'application/json'
+// };
+// var data = json.encode({
+//   "orderId": "681474c50f09d208a5765163"
+// });
+// var dio = Dio();
+// var response = await dio.request(
+//   'https://api.mysocio.shop/customer/ordersSellerDetails',
+//   options: Options(
+//     method: 'POST',
+//     headers: headers,
+//   ),
+//   data: data,
+// );
+
+// if (response.statusCode == 200 || response.statusCode == 201) {
+//   print(json.encode(response.data));
+//   newOrderDetailsApiResModel = NewOrderDetailsApiResModel.fromJson(response.data);
+// }
+// else {
+//   print(response.statusMessage);
+// }
+
+// return OrderDetailsReviewModelAndStatusCode(
+//     newOrderDetailsApiResModel: newOrderDetailsApiResModel.order,
+//     errorOrderDetailsApiResModel: errorOrderDetailsApiResModel,
+//     statusCode: statusCode,
+//   );
+//}
 
 //     newOrderDetailsApiResModel: newOrderDetailsApiResModel.order,
 //     errorOrderDetailsApiResModel: errorOrderDetailsApiResModel,

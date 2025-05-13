@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:taptohello/core/constants.dart';
 import 'package:http/http.dart' as http;
-import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
 
 

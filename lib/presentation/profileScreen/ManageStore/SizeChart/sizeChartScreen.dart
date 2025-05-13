@@ -86,10 +86,10 @@ late String sharedPrefImage;
     }
   }
 
-  Future<void> _loadImage() async {
-    loadedImage = (SharedPreferenceService.getString('mySizeChartCustomImageIsByProductId/${widget.productId}') != "" ? SharedPreferenceService.getString('mySizeChartCustomImageIsByProductId/${widget.productId}') : '')!;
-    debugPrint('My image data is: $loadedImage');
-  }
+  // Future<void> _loadImage() async {
+  //   loadedImage = (SharedPreferenceService.getString('mySizeChartCustomImageIsByProductId/${widget.productId}') != "" ? SharedPreferenceService.getString('mySizeChartCustomImageIsByProductId/${widget.productId}') : '')!;
+  //   debugPrint('My image data is: $loadedImage');
+  // }
 
   @override
   void initState() {
@@ -432,9 +432,20 @@ if (sizeChartApiResModel.data != null && sizeChartApiResModel.success == true) .
                               Icon(Icons.cloud_upload_outlined,
                                   size: 100, color: Colors.grey),
                             ],
-                            if(loadedImage != "")...[
-                              Image.network(loadedImage)
-                            ],
+      //                       if(loadedImage != "")...[
+      //                          loadedImage.contains(AppConstants.imageBaseUrl)
+      // ? loadedImage
+      // : AppConstants.imageBaseUrl + loadedImage,
+      //                         Image.network(loadedImage)
+      //                       ],
+      if (loadedImage != '') ...[
+  Image.network(
+    loadedImage.contains(AppConstants.imageBaseUrl)
+        ? loadedImage
+        : AppConstants.imageBaseUrl + loadedImage,
+  ),
+]
+,
                             SizedBox(height: 20),
                             Text(
                               'Upload',

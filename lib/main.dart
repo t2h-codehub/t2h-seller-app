@@ -10,13 +10,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nfc_manager/nfc_manager.dart';
-import 'package:taptohello/constants/app_constants.dart';
+import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/core/app_export.dart';
 import 'package:taptohello/core/core.dart';
 import 'package:taptohello/helper/locator.dart';
 import 'package:taptohello/presentation/MyOrders/controllers/ordersControllers.dart';
 import 'package:taptohello/presentation/splash/splash_screen.dart';
 import 'package:taptohello/services/shared_preference_service.dart';
+import 'package:taptohello/config/flavor_config.dart';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -38,81 +39,111 @@ Future<void> loadCertificate() async {
 
 
 
-Future<void> updateAppName() async {
-  await dotenv.load();
+// Future<void> updateAppName() async {
+//   await dotenv.load();
   
-  // Get APP_NAME from the .env file
-  String appName = dotenv.env['APP_NAME'] ?? 'DefaultAppName';
+//   // Get APP_NAME from the .env file
+//   String appName = dotenv.env['APP_NAME'] ?? 'DefaultAppName';
 
-  ///  Update Android strings.xml (without creating the file)
-  final androidFile = File('android/app/src/main/res/values/strings.xml');
+//   ///  Update Android strings.xml (without creating the file)
+//   final androidFile = File('android/app/src/main/res/values/strings.xml');
   
-  if (!androidFile.existsSync()) {
-    print("Android strings.xml file does not exist. Please create it manually.");
-    return;
-  }
+//   if (!androidFile.existsSync()) {
+//     print("Android strings.xml file does not exist. Please create it manually.");
+//     return;
+//   }
 
-  // Update app_name in strings.xml using correct regex
-  String androidContent = await androidFile.readAsString();
-  androidContent = androidContent.replaceAllMapped(
-    RegExp(r'<string name="app_name">.*?</string>'), 
-    (match) => '<string name="app_name">$appName</string>'
-  );
-  await androidFile.writeAsString(androidContent);
-  print("Android app name updated to: $appName");
+//   // Update app_name in strings.xml using correct regex
+//   String androidContent = await androidFile.readAsString();
+//   androidContent = androidContent.replaceAllMapped(
+//     RegExp(r'<string name="app_name">.*?</string>'), 
+//     (match) => '<string name="app_name">$appName</string>'
+//   );
+//   await androidFile.writeAsString(androidContent);
+//   print("Android app name updated to: $appName");
 
-  ///  Update iOS Info.plist
-  final iosFile = File('ios/Runner/Info.plist');
+//   ///  Update iOS Info.plist
+//   final iosFile = File('ios/Runner/Info.plist');
   
-  if (!iosFile.existsSync()) {
-    print("❌ iOS Info.plist file does not exist. Please create it manually.");
-    return;
-  }
+//   if (!iosFile.existsSync()) {
+//     print("❌ iOS Info.plist file does not exist. Please create it manually.");
+//     return;
+//   }
 
-  String iosContent = await iosFile.readAsString();
-  iosContent = iosContent.replaceAllMapped(
-    RegExp(r'(<key>CFBundleDisplayName<\/key>\s*<string>).*?(<\/string>)'), 
-    (match) => '${match.group(1)}$appName${match.group(2)}'
-  );
-  await iosFile.writeAsString(iosContent);
-  print("iOS app name updated to: $appName");
+//   String iosContent = await iosFile.readAsString();
+//   iosContent = iosContent.replaceAllMapped(
+//     RegExp(r'(<key>CFBundleDisplayName<\/key>\s*<string>).*?(<\/string>)'), 
+//     (match) => '${match.group(1)}$appName${match.group(2)}'
+//   );
+//   await iosFile.writeAsString(iosContent);
+//   print("iOS app name updated to: $appName");
 
-  print("🎉 App name successfully updated to: $appName");
-}
+//   print("🎉 App name successfully updated to: $appName");
+// }
 
 
 void main() async {
-  // Load the certificate
-  //await loadCertificate();
-  // Ensure that the .env file is loaded before the app starts
-  
-  // print("datttta");
-  // print(dotenv.env['APP_NAME']);
-  
-   
   WidgetsFlutterBinding.ensureInitialized();
-  await NfcManager.instance.isAvailable();
+
+  // Initialize flavor configuration
+  const flavor = String.fromEnvironment('FLAVOR', defaultValue: 'socioshop');
+  FlavorConfig(
+    flavor: flavor == 'socioshop' ? Flavor.socioshop : Flavor.socioshoptest,
+    name: flavor == 'socioshop' ? 'SocioShop' : 'SocioShop Test',
+    apiBaseUrl: flavor == 'socioshop' 
+        ? 'https://api.socioshop.in/' 
+        : 'https://api.mysocio.shop/',
+    domainName: flavor == 'socioshop' 
+        ? 'mysocio.shop' 
+        : 'mysocio.shop',
+    storeUrl: flavor == 'socioshop' 
+        ? 'https://mysocio.shop/' 
+        : 'https://test.mysocio.shop/',
+  );
+
+   //Test- Url
+  // static const String baseUrl = "https://api.mysocio.shop/";
+  // static const String domainName = "mysocio.shop";
+  // static const String storeUrl = "https://test.mysocio.shop/";
+  
+  
+  //Live- Url
+  // static const String baseUrl = "https://api.socioshop.in/";
+  // static const String domainName = "mysocio.shop";
+  //  static const String storeUrl = "https://mysocio.shop/";
+
+
+
+  // await NfcManager.instance.isAvailable();
   await SharedPreferenceService.init();
-  if (Platform.isIOS) {
-    await Firebase.initializeApp();
-    String? token = await FirebaseMessaging.instance.getAPNSToken();
-    if (token != null) {
-      AppConstants.fcmToken = token;
+
+  // Initialize Firebase based on flavor
+  if (FlavorConfig.instance.flavor == Flavor.socioshop) {
+    if (Platform.isIOS) {
+      // await Firebase.initializeApp();
+      // String? token = await FirebaseMessaging.instance.getAPNSToken();
+      // if (token != null) {
+      //   AppConstants.fcmToken = token;
+      // } else {
+      //   await Future<void>.delayed(
+      //     const Duration(
+      //       seconds: 1,
+      //     ),
+      //   );
+      //   // token = await FirebaseMessaging.instance.getAPNSToken();
+      //   // if (token != null) {
+      //   //   AppConstants.fcmToken = token;
+      //   // }
+      // }
     } else {
-      await Future<void>.delayed(
-        const Duration(
-          seconds: 3,
-        ),
-      );
-      token = await FirebaseMessaging.instance.getAPNSToken();
-      if (token != null) {
-        AppConstants.fcmToken = token;
-      }
+      // await Firebase.initializeApp();
+      // final String? token = await FirebaseMessaging.instance.getToken();
+      // AppConstants.fcmToken = token ?? "";
     }
   } else {
-    await Firebase.initializeApp();
-  final String? token = await FirebaseMessaging.instance.getToken();
-  AppConstants.fcmToken = token ?? "";
+    // For test flavor, set a dummy token and skip Firebase
+    AppConstants.fcmToken = "test_token";
+    print("Test flavor detected, skipping Firebase initialization");
   }
 
   
@@ -138,15 +169,15 @@ void main() async {
   ]);
   try {
     setupServiceLocator();
-    // await dotenv.load();
   } catch (e) {
-    // Logger.write(e.toString());
+    print("Service locator setup failed: $e");
   }
   
-    await loadCertificate();
-     await dotenv.load();
-  await updateAppName();
-    
+  await loadCertificate();
+  await dotenv.load();
+  
+  // await updateAppName();
+  
   runApp(ProviderScope(child: MyApp()));
   
 }
@@ -180,8 +211,8 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    _handleIncomingLinks();
-    _handleInitialUri();
+    // _handleIncomingLinks();
+    // _handleInitialUri();
   }
 
   @override

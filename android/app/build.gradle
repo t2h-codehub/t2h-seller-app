@@ -39,7 +39,7 @@ android {
         // minSdk = flutter.minSdkVersion
         minSdkVersion 26
         targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
+        versionCode = flutter.versionCode.toInteger()
         versionName = flutter.versionName
         // Automatically read the app name from dart-define
 
@@ -57,8 +57,19 @@ android {
         buildConfig true // Enable the buildConfig feature
     }
 
-   
-   
+    flavorDimensions "environment"
+    productFlavors {
+        socioshop {
+            dimension "environment"
+            applicationId "com.socio.shop"
+            resValue "string", "app_name", "SocioShop"
+        }
+        socioshoptest {
+            dimension "environment"
+            applicationId "com.socio.shop.test"
+            resValue "string", "app_name", "SocioShop Test"
+        }
+    }
 
     signingConfigs {
         release {

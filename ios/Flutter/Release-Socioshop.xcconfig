@@ -1,0 +1,6 @@
+#include "Generated.xcconfig"
+#include "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
+
+PRODUCT_BUNDLE_IDENTIFIER=com.socio.shop
+DISPLAY_NAME=SocioShop
+FLUTTER_TARGET=/Users/mac/Documents/TaptoHelloBackup-30-04-25-Latest/taptohello/lib/main.dart 

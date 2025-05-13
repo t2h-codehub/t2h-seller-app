@@ -1,0 +1,22 @@
+{
+  "project_info": {
+    "project_number": "82267455961",
+    "project_id": "hello-e79ba",
+    "storage_bucket": "hello-e79ba.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:82267455961:android:6ee772ea32cbbb37af59c8",
+        "android_client_info": {
+          "package_name": "com.socio.shop.test"
+        }
+      },
+      "api_key": [
+        {
+          "current_key": "AIzaSyD70o2wtDT8-HDUOK59r6D-luAs2VKvAGA"
+        }
+      ]
+    }
+  ]
+} 

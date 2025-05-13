@@ -1,15 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:taptohello/core/app_export.dart';
 import 'package:taptohello/core/constants.dart';
 import 'package:taptohello/presentation/profileScreen/ManageStore/AddProduct/editProductListScreen/editProductListScreen.dart';
+import 'package:video_player/video_player.dart';
 
 
-
-
-
-
+// The dialog widget to manage inventory and SKU ID
 class ManageInventoryPriceAndSKUIdDialog extends ConsumerStatefulWidget {
   const ManageInventoryPriceAndSKUIdDialog({
     super.key,
@@ -24,6 +21,7 @@ class ManageInventoryPriceAndSKUIdDialog extends ConsumerStatefulWidget {
     this.image,
     required this.discountPrice,
     required this.productId,
+    required this.isUnlimitedInventory,
   });
 
   final String productId;
@@ -37,6 +35,7 @@ class ManageInventoryPriceAndSKUIdDialog extends ConsumerStatefulWidget {
   final List<String>? image;
   final String discountPrice;
   final Function(Map<String, dynamic>) body;
+  final bool isUnlimitedInventory;
 
   @override
   _ManageInventoryPriceAndSKUIdDialogState createState() =>
@@ -52,7 +51,7 @@ class _ManageInventoryPriceAndSKUIdDialogState
   bool isUnlimitedStock = false;
 
   List<String> selectedImages = [];
-   List<String> startImage1 = [];
+  List<String> startImage1 = [];
 
   @override
   void initState() {
@@ -61,575 +60,229 @@ class _ManageInventoryPriceAndSKUIdDialogState
     priceController.text = widget.mrp;
     discountController.text = widget.discountPrice;
     skuIdController.text = widget.skuid;
-    isUnlimitedStock = widget.stock == "unlimited"; 
-
-    // Initialize selected images with widget.image
+    isUnlimitedStock = widget.stock == "unlimited";
     selectedImages = widget.image ?? [];
   }
 
   bool get isDiscountValid {
-  final discountText = discountController.text;
-  final priceText = priceController.text;
+    final discountText = discountController.text;
+    final priceText = priceController.text;
 
-  if (discountText.isEmpty || priceText.isEmpty) return true;
+    if (discountText.isEmpty || priceText.isEmpty) return true;
 
-  try {
-    final discount = double.parse(discountText);
-    final price = double.parse(priceText);
-    return discount <= price;
-  } catch (e) {
-    return true; // fallback: allow submit when parsing fails
-  }
-}
-
-
-  @override
-  Widget build(BuildContext context) {
-    // final selectedImagesDynamic = ref.watch(manageVariantProvider);
-
-    // List<String> selectedImagesAsString = List<String>.from(
-    //     selectedImagesDynamic.map((item) => item.toString()));
-    final selectedImagesDynamic = ref.watch(manageVariantProvider);
-final List<String> selectedImagesAsString = List<String>.from(selectedImagesDynamic ?? []);
-
-bool validateInputs() {
-  final stockText = stockController.text.trim();
-  final skuIdText = skuIdController.text.trim();
-  final priceText = priceController.text.trim();
-  final discountText = discountController.text.trim();
-
-  if (skuIdText.isEmpty) return false;
-
-  if (stockText.isEmpty || int.tryParse(stockText) == null || int.parse(stockText) < 0) {
-    return false;
+    try {
+      final discount = double.parse(discountText);
+      final price = double.parse(priceText);
+      return discount <= price;
+    } catch (e) {
+      return true;
+    }
   }
 
-  if (discountText.isNotEmpty && priceText.isNotEmpty) {
+  bool validateInputs() {
+    final skuIdText = skuIdController.text.trim();
+    final priceText = priceController.text.trim();
+    final discountText = discountController.text.trim();
+
+    if (skuIdText.isEmpty) return false;
+
+    if (!widget.isUnlimitedInventory) {
+      final stockText = stockController.text.trim();
+      if (stockText.isEmpty || int.tryParse(stockText) == null || int.parse(stockText) < 0) {
+        return false;
+      }
+    }
+
+    if (discountText.isNotEmpty && priceText.isNotEmpty) {
+      try {
+        final discount = double.parse(discountText);
+        final price = double.parse(priceText);
+        if (discount > price) {
+          return false;
+        }
+      } catch (e) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  String? validateDiscountPrice() {
+    final discountText = discountController.text;
+    final priceText = priceController.text;
+
+    if (discountText.isEmpty || priceText.isEmpty) return null;
+
     try {
       final discount = double.parse(discountText);
       final price = double.parse(priceText);
       if (discount > price) {
-        return false;
+        return 'Discount price cannot be greater than MRP price';
       }
     } catch (e) {
-      return false;
+      return null;
     }
-  }
 
-  return true;
-}
-
-String? validateDiscountPrice() {
-  final discountText = discountController.text;
-  final priceText = priceController.text;
-
-  if (discountText.isEmpty || priceText.isEmpty) return null;
-
-  try {
-    final discount = double.parse(discountText);
-    final price = double.parse(priceText);
-    if (discount > price) {
-      return 'Discount price cannot be greater than MRP price';
-    }
-  } catch (e) {
     return null;
   }
 
-  return null;
-}
-
-void submitForm() {
-  widget.body({
-    'price': priceController.text,
-    'sku_id': skuIdController.text,
-    'discount': discountController.text,
-    'stock': stockController.text,
-    'selectedImages': selectedImages,
-  });
-  // Navigator.pop(context);
-}
-
-    return 
-    AlertDialog(
-  title: Text('Manage Inventory', style: TextStyle(fontSize: 18)),
-  content: SingleChildScrollView(
-    child: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (widget.firstVariantName.isNotEmpty)
-            Text(
-              '${widget.firstVariantName}: ${widget.size ?? ""}',
-              style: TextStyle(fontSize: 16),
-            ),
-          SizedBox(height: 8),
-          if (widget.secondVariantName.isNotEmpty)
-            Text(
-              '${widget.secondVariantName}: ${widget.color ?? ""}',
-              style: TextStyle(fontSize: 16),
-            ),
-          SizedBox(height: 8),
-          TextField(
-            controller: stockController,
-            decoration: InputDecoration(
-              labelText: 'Stock',
-              border: OutlineInputBorder(),
-            ),
-            keyboardType: TextInputType.number,
-            onChanged: (_) => setState(() {}), // live update
-          ),
-          SizedBox(height: 8),
-          TextField(
-            controller: priceController,
-            decoration: InputDecoration(
-              labelText: 'Price',
-              border: OutlineInputBorder(),
-            ),
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            onChanged: (_) => setState(() {}),
-          ),
-          SizedBox(height: 8),
-          TextField(
-            controller: discountController,
-            decoration: InputDecoration(
-              labelText: 'Discount Price',
-              border: OutlineInputBorder(),
-              errorText: validateDiscountPrice(),
-            ),
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            onChanged: (_) => setState(() {}),
-          ),
-          SizedBox(height: 8),
-          TextField(
-            controller: skuIdController,
-            decoration: InputDecoration(
-              labelText: 'SKU ID',
-              border: OutlineInputBorder(),
-            ),
-            onChanged: (_) => setState(() {}),
-          ),
-          SizedBox(height: 16),
-          selectedImages.isNotEmpty
-              ? 
-              // Wrap(
-              //     spacing: 8.0,
-              //     children: selectedImages.map((imageUrl) {
-              //       return ClipRRect(
-              //         borderRadius: BorderRadius.circular(8),
-              //         child: Image.network(
-              //           imageUrl,
-              //           width: 60,
-              //           height: 60,
-              //           fit: BoxFit.cover,
-              //           errorBuilder: (context, error, stackTrace) {
-              //             return Icon(Icons.error);
-              //           },
-              //         ),
-              //       );
-              //     }).toList(),
-              //   )
-
-Wrap(
-  spacing: 8.0,
-  children: selectedImages.map((imageUrl) {
-    final fullUrl = imageUrl.contains(AppConstants.imageBaseUrl)
-        ? imageUrl
-        : AppConstants.imageBaseUrl + imageUrl;
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: 
-      CachedNetworkImage(
-  imageUrl: (fullUrl != null && fullUrl.isNotEmpty)
-      ? (fullUrl.contains(AppConstants.imageBaseUrl)
-          ? fullUrl
-          : AppConstants.imageBaseUrl + fullUrl)
-      : '',
-  width: 60,
-  height: 60,
-  fit: BoxFit.cover,
-  placeholder: (context, url) => const SizedBox(
-    width: 60,
-    height: 60,
-    child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-  ),
-  errorWidget: (context, url, error) => const Icon(Icons.error, size: 24),
-)
-
-      // CachedNetworkImage(
-      //   imageUrl: fullUrl,
-      //   width: 60,
-      //   height: 60,
-      //   fit: BoxFit.cover,
-      //   placeholder: (context, url) => const SizedBox(
-      //     width: 60,
-      //     height: 60,
-      //     child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-      //   ),
-      //   errorWidget: (context, url, error) => const Icon(Icons.error, size: 24),
-      // ),
-    );
-  }).toList(),
-)
-              : Text('No images selected', style: TextStyle(fontSize: 14)),
-          SizedBox(height: 16),
-          InkWell(
-            onTap: () async {
-              List<String>? selected = await showDialog<List<String>>(
-                context: context,
-                builder: (BuildContext context) {
-                  return ImagePickerDialog(
-                    selectedImages: selectedImagesAsString,
-                    initialImages: widget.image,
-                    startImage: startImage1,
-                  );
-                },
-              );
-
-              if (selected != null) {
-                setState(() {
-                  startImage1 = selected;
-                  selectedImages = selected;
-                });
-              }
-            },
-            child: Row(
-              children: [
-                Icon(Icons.add_a_photo, size: 24),
-                SizedBox(width: 8),
-                Text('Select Images', style: TextStyle(fontSize: 16)),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ),
-  ),
-  actions: [
-    TextButton(
-      onPressed: () => Navigator.pop(context),
-      child: Text('Cancel'),
-    ),
-    TextButton(
-      onPressed: validateInputs() ? submitForm : null, // Disable if invalid
-      child: Text('Submit'),
-    ),
-  ],
-);
-
-// ------------------------------
-// Helper methods outside build:
-
-
-
-
-
-//     AlertDialog(
-//       title: Text('Manage Inventory', style: TextStyle(fontSize: 18)),
-//       content: SingleChildScrollView(
-//         child: Padding(
-//           padding: const EdgeInsets.all(16.0),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-            
-            
-//               if (widget.firstVariantName.isNotEmpty == true)
-//   Text(
-//     '${widget.firstVariantName}: ${widget.size ?? ""}',
-//     style: TextStyle(fontSize: 16),
-//   ),
-// SizedBox(height: 8),
-// if (widget.secondVariantName.isNotEmpty == true)
-//   Text(
-//     '${widget.secondVariantName}: ${widget.color ?? ""}',
-//     style: TextStyle(fontSize: 16),
-//   ),
-// SizedBox(height: 8),
-
-//               TextField(
-//                 controller: stockController,
-//                 decoration: InputDecoration(
-//                   labelText: 'Stock',
-//                   border: OutlineInputBorder(),
-//                 ),
-//                 keyboardType: TextInputType.number,
-//               ),
-//               SizedBox(height: 8),
-             
-//               TextField(
-//   controller: priceController,
-//   decoration: InputDecoration(
-//     labelText: 'Price',
-//     border: OutlineInputBorder(),
-//   ),
-//   keyboardType: TextInputType.numberWithOptions(decimal: true),
-//   onChanged: (_) => setState(() {}), // 👈 triggers live validation on price change
-// ),
-
-//               SizedBox(height: 8),
-              
-//               TextField(
-//   controller: discountController,
-//   decoration: InputDecoration(
-//     labelText: 'Discount Price',
-//     border: OutlineInputBorder(),
-//     errorText: () {
-//       final discountText = discountController.text;
-//       final priceText = priceController.text;
-
-//       if (discountText.isEmpty || priceText.isEmpty) return null;
-
-//       try {
-//         final discount = double.parse(discountText);
-//         final price = double.parse(priceText);
-//         if (discount > price) {
-//           return 'Discount price cannot be greater than MRP price';
-//         }
-//       } catch (e) {
-//         return null;
-//       }
-
-//       return null;
-//     }(),
-//   ),
-//   keyboardType: TextInputType.numberWithOptions(decimal: true),
-//   onChanged: (_) => setState(() {}), // 👈 live validation
-// ),
-
-//               SizedBox(height: 8),
-//               TextField(
-//                 controller: skuIdController,
-//                 decoration: InputDecoration(
-//                   labelText: 'SKU ID',
-//                   border: OutlineInputBorder(),
-//                 ),
-//               ),
-//               SizedBox(height: 16),
-
-//               selectedImages.isNotEmpty
-//                   ? Wrap(
-//                       spacing: 8.0,
-//                       children: selectedImages.map((imageUrl) {
-//                         return ClipRRect(
-//                           borderRadius: BorderRadius.circular(8),
-//                           child: Image.network(
-//                             imageUrl,
-//                             width: 60,
-//                             height: 60,
-//                             fit: BoxFit.cover,
-//                             errorBuilder: (context, error, stackTrace) {
-//                               return Icon(Icons.error);
-//                             },
-//                           ),
-//                         );
-//                       }).toList(),
-//                     )
-//                   : Text('No images selected', style: TextStyle(fontSize: 14)),
-
-//               SizedBox(height: 16),
-//              InkWell(
-//   onTap: () async {
-   
-//     List<String>? selected = await showDialog<List<String>>(
-      
-//       context: context,
-//       builder: (BuildContext context) {
-//         return ImagePickerDialog(
-//           selectedImages: selectedImagesAsString, // Ensure it's properly converted
-//           initialImages: widget.image, // Ensure widget.image is also a List<String>
-//           startImage: startImage1,
-//         );
-//       },
-//     );
-
-//     if (selected != null) {
-//       setState(() {
-//         startImage1 = selected;
-//         selectedImages = selected;
-//       });
-//     }
-//   },
-//   child: Row(
-//     children: [
-//       Icon(Icons.add_a_photo, size: 24),
-//       SizedBox(width: 8),
-//       Text('Select Images', style: TextStyle(fontSize: 16)),
-//     ],
-//   ),
-// ),
-
-//             ],
-//           ),
-//         ),
-//       ),
-//       actions: [
-//         TextButton(
-//           onPressed: () => Navigator.pop(context),
-//           child: Text('Cancel'),
-//         ),
-       
-//         TextButton(
-//   onPressed: isDiscountValid
-//       ? () {
-//           widget.body({
-//             'price': priceController.text,
-//             'sku_id': skuIdController.text,
-//             'discount': discountController.text,
-//             'stock': stockController.text,
-//             'selectedImages': selectedImages,
-//           });
-//         }
-//       : null, // 👈 disables the button if discount is invalid
-//   child: Text('Submit'),
-// ),
-
-//       ],
-//     );
-  }
-}
-
-
-class ImagePickerDialog extends StatefulWidget {
-  final List<String>? selectedImages; // Previously selected images
-  final List<String>? initialImages;  // Initial set of images
-  List<String>? startImage;  // List to store the initial set of images (not final)
-
-  ImagePickerDialog({
-    Key? key,
-    this.selectedImages,
-    this.initialImages,
-    this.startImage,
-  }) : super(key: key);
-
-  @override
-  _ImagePickerDialogState createState() => _ImagePickerDialogState();
-}
-
-class _ImagePickerDialogState extends State<ImagePickerDialog> {
-  late List<String> pickedImages; // Tracks selected images
-  late List<String> allAvailableImages; // Displays all available images
-  late List<String> startImage; // Non-nullable list to store the images
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Initialize startImage: Use widget.startImage if available, else use widget.initialImages
-    startImage = widget.startImage?.isNotEmpty == true
-        ? List.from(widget.startImage!)
-        : (widget.initialImages ?? []);
-
-    // Initialize pickedImages to only contain the startImage (non-nullable list)
-    pickedImages = List.from(startImage);
-
-    // Ensure allAvailableImages contains only unique images from initial and selected images
-    allAvailableImages = {
-      ...startImage,
-      ...(widget.selectedImages ?? []),
-    }.toList();
+  void submitForm() {
+    widget.body({
+      'price': priceController.text,
+      'sku_id': skuIdController.text,
+      'discount': discountController.text,
+      'stock': widget.isUnlimitedInventory ? 'unlimited' : stockController.text,
+      'selectedImages': selectedImages,
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final selectedImagesDynamic = ref.watch(manageVariantProvider);
+    final List<String> selectedImagesAsString = List<String>.from(selectedImagesDynamic ?? []);
+
     return AlertDialog(
-      title: Text('Select Images'),
-      content: allAvailableImages.isNotEmpty
-          ? Container(
-            width: 450,
-              height: 300, // Fixed height for the content area
-              child: SingleChildScrollView(
-                child: Wrap(
-                  spacing: 8.0, // Space between items horizontally
-                  runSpacing: 8.0, // Space between items vertically
-                  children: allAvailableImages.map((imageUrl) {
-                    bool isSelected = pickedImages.contains(imageUrl);
+      title: Text('Manage Inventory', style: TextStyle(fontSize: 18)),
+      content: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (widget.firstVariantName.isNotEmpty)
+                Text(
+                  '${widget.firstVariantName}: ${widget.size ?? ""}',
+                  style: TextStyle(fontSize: 16),
+                ),
+              SizedBox(height: 8),
+              if (widget.secondVariantName.isNotEmpty)
+                Text(
+                  '${widget.secondVariantName}: ${widget.color ?? ""}',
+                  style: TextStyle(fontSize: 16),
+                ),
+              SizedBox(height: 8),
+              if (!widget.isUnlimitedInventory) ...[
+                TextField(
+                  controller: stockController,
+                  decoration: InputDecoration(
+                    labelText: 'Stock',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.number,
+                  onChanged: (_) => setState(() {}),
+                ),
+                SizedBox(height: 8),
+              ],
+              TextField(
+                controller: priceController,
+                decoration: InputDecoration(
+                  labelText: 'Price',
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                onChanged: (_) => setState(() {}),
+              ),
+              SizedBox(height: 8),
+              TextField(
+                controller: discountController,
+                decoration: InputDecoration(
+                  labelText: 'Discount Price',
+                  border: OutlineInputBorder(),
+                  errorText: validateDiscountPrice(),
+                ),
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                onChanged: (_) => setState(() {}),
+              ),
+              SizedBox(height: 8),
+              TextField(
+                controller: skuIdController,
+                decoration: InputDecoration(
+                  labelText: 'SKU ID',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (_) => setState(() {}),
+              ),
+              SizedBox(height: 16),
+              selectedImages.isNotEmpty
+    ? Wrap(
+        spacing: 8.0,
+        runSpacing: 8.0,
+        children: selectedImages.map((mediaUrl) {
+          final fullUrl = mediaUrl.contains(AppConstants.imageBaseUrl)
+              ? mediaUrl
+              : AppConstants.imageBaseUrl + mediaUrl;
 
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          if (isSelected) {
-                            pickedImages.remove(imageUrl);  // Deselect image
-                          } else {
-                            pickedImages.add(imageUrl); // Select image
-                          }
-                        });
-                      },
-                      child: 
-                      Stack(
-  alignment: Alignment.topRight,
-  children: [
-    ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: CachedNetworkImage(
-        imageUrl: (imageUrl != null && imageUrl.isNotEmpty)
-            ? (imageUrl.contains(AppConstants.imageBaseUrl)
-                ? imageUrl
-                : AppConstants.imageBaseUrl + imageUrl)
-            : '', // Fallback if imageUrl is empty or null
-        width: 80,
-        height: 80,
-        fit: BoxFit.cover,
-        placeholder: (context, url) => const CircularProgressIndicator(),
-        errorWidget: (context, url, error) => const Icon(Icons.error),
-      ),
-    ),
-    if (isSelected)
-      Positioned(
-        top: 4,
-        right: 4,
-        child: Icon(Icons.check_circle, color: Colors.green, size: 24),
-      ),
-  ],
-)
+          //final isVideo = fullUrl.toLowerCase().endsWith(".mp4");
+          final isVideo = fullUrl.toLowerCase().endsWith(".mp4") || fullUrl.toLowerCase().endsWith(".mov");
 
-                      // Stack(
-                      //   alignment: Alignment.topRight,
-                      //   children: [
-                      //     ClipRRect(
-                      //       borderRadius: BorderRadius.circular(8),
-                      //       child: Image.network(
-                      //         imageUrl,
-                      //         width: 80,
-                      //         height: 80,
-                      //         fit: BoxFit.cover,
-                      //         errorBuilder: (context, error, stackTrace) => Icon(Icons.error),
-                      //       ),
-                      //     ),
-                      //     if (isSelected)
-                      //       Positioned(
-                      //         top: 4,
-                      //         right: 4,
-                      //         child: Icon(Icons.check_circle, color: Colors.green, size: 24),
-                      //       ),
-                      //   ],
-                      // ),
-                    );
-                  }).toList(),
+
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: isVideo
+                ? Container(
+                    width: 60,
+                    height: 60,
+                    color: Colors.black,
+                    child: VideoPlayerWidget(url: fullUrl),
+                  )
+                : CachedNetworkImage(
+                    imageUrl: fullUrl,
+                    width: 60,
+                    height: 60,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => const SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                    ),
+                    errorWidget: (context, url, error) => const Icon(Icons.error, size: 24),
+                  ),
+          );
+        }).toList(),
+      )
+    : Text('No images selected', style: TextStyle(fontSize: 14)),
+              SizedBox(height: 16),
+              InkWell(
+                onTap: () async {
+                  List<String>? selected = await showDialog<List<String>>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return ImagePickerDialog(
+                        selectedImages: selectedImagesAsString,
+                        initialImages: widget.image,
+                        startImage: startImage1,
+                      );
+                    },
+                  );
+
+                  if (selected != null) {
+                    setState(() {
+                      startImage1 = selected;
+                      selectedImages = selected;
+                    });
+                  }
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.add_a_photo, size: 24),
+                    SizedBox(width: 8),
+                    Text('Select Images', style: TextStyle(fontSize: 16)),
+                  ],
                 ),
               ),
-            )
-          : Text(
-              "No images available",
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
-          child: ElevatedButton(
-            onPressed: () {
-              // Return updated picked images (no duplicates)
-              Navigator.pop(context, pickedImages);
-            },
-            child: Text('Done', style: TextStyle(fontSize: 18)),
-            style: ElevatedButton.styleFrom(
-              minimumSize: Size(120, 50), // Set button size
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
+            ],
           ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: validateInputs() ? submitForm : null, 
+          child: Text('Submit'),
         ),
       ],
     );
@@ -638,607 +291,220 @@ class _ImagePickerDialogState extends State<ImagePickerDialog> {
 
 
 
+class ImagePickerDialog extends StatefulWidget {
+  final List<String>? selectedImages;
+  final List<String>? initialImages;
+  final List<String>? startImage;
 
+  const ImagePickerDialog({
+    Key? key,
+    this.selectedImages,
+    this.initialImages,
+    this.startImage,
+  }) : super(key: key);
 
+  @override
+  State<ImagePickerDialog> createState() => _ImagePickerDialogState();
+}
 
+class _ImagePickerDialogState extends State<ImagePickerDialog> {
+  late List<String> pickedImages;
+  late List<String> allAvailableImages;
+  late List<String> startImage;
 
+  String normalizeUrl(String url) {
+    return url.contains(AppConstants.imageBaseUrl)
+        ? url
+        : AppConstants.imageBaseUrl + url;
+  }
 
+  @override
+  void initState() {
+    super.initState();
+    final all = {
+      ...(widget.startImage ?? []),
+      ...(widget.initialImages ?? []),
+      ...(widget.selectedImages ?? []),
+    }.map(normalizeUrl).toSet();
 
+    allAvailableImages = all.toList();
+    // pickedImages = widget.startImage?.map(normalizeUrl).toList() ?? [];
+     startImage = widget.startImage?.isNotEmpty == true
+        ? List.from(widget.startImage!)
+        : (widget.initialImages ?? []);
 
+    // Initialize pickedImages to only contain the startImage (non-nullable list)
+    pickedImages = List.from(startImage);
+  }
 
+  Widget loadMedia(String url) {
+    if (url.endsWith('.mp4')) {
+      return Container(
+        color: Colors.black,
+        child: VideoPlayerWidget(url: url),
+      );
+    } else {
+      return CachedNetworkImage(
+        imageUrl: url,
+        fit: BoxFit.cover,
+        placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+        errorWidget: (context, url, error) => Icon(Icons.error),
+      );
+    }
+  }
 
-// class ImagePickerDialog extends StatefulWidget {
-//   final List<String> selectedImages;
+ @override
+Widget build(BuildContext context) {
+  return AlertDialog(
+    title: const Text("Select Media"),
+    content: SizedBox(
+      width: double.maxFinite,
+      height: 500,
+      child: allAvailableImages.isEmpty
+          ? const Center(child: Text("No images/videos available"))
+          : GridView.builder(
+              shrinkWrap: true,
+              itemCount: allAvailableImages.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+                childAspectRatio: 0.8,
+              ),
+              itemBuilder: (context, index) {
+                // final mediaUrl = allAvailableImages[index];
+                // final isSelected = pickedImages.contains(mediaUrl);
 
-//   const ImagePickerDialog({Key? key, required this.selectedImages}) : super(key: key);
+                // final fullUrl = (mediaUrl.isNotEmpty)
+                //     ? (mediaUrl.contains(AppConstants.imageBaseUrl)
+                //         ? mediaUrl
+                //         : AppConstants.imageBaseUrl + mediaUrl)
+                //     : '';
 
-//   @override
-//   _ImagePickerDialogState createState() => _ImagePickerDialogState();
-// }
+                final mediaUrl = allAvailableImages[index];
 
-// class _ImagePickerDialogState extends State<ImagePickerDialog> {
-//   List<String> pickedImages = [];
+// Extract the relative path from the full URL
+final relativePath = mediaUrl.replaceFirst(AppConstants.imageBaseUrl, '');
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     pickedImages = []; // No images selected by default
-//   }
+// Use relative path for selection logic
+final isSelected = pickedImages.contains(relativePath);
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return AlertDialog(
-//       title: Text('Select Images'),
-//       content: Container(
-//         width: double.maxFinite, // To allow GridView to expand fully
-//         child: Column(
-//           mainAxisSize: MainAxisSize.min,
-//           children: [
-//             widget.selectedImages.isNotEmpty
-//                 ? SizedBox(
-//                     height: 250, // Adjust height dynamically if needed
-//                     child: GridView.builder(
-//                       shrinkWrap: true,
-//                       physics: BouncingScrollPhysics(),
-//                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-//                         crossAxisCount: 3, // 3 images per row
-//                         crossAxisSpacing: 8,
-//                         mainAxisSpacing: 8,
-//                         childAspectRatio: 1, // Square images
-//                       ),
-//                       itemCount: widget.selectedImages.length,
-//                       itemBuilder: (context, index) {
-//                         String imageUrl = widget.selectedImages[index];
-//                         return GestureDetector(
-//                           onTap: () {
-//                             setState(() {
-//                               if (pickedImages.contains(imageUrl)) {
-//                                 pickedImages.remove(imageUrl);
-//                               } else {
-//                                 pickedImages.add(imageUrl);
-//                               }
-//                             });
-//                           },
-//                           child: Container(
-//                             decoration: BoxDecoration(
-//                               border: Border.all(
-//                                 color: pickedImages.contains(imageUrl) ? Colors.blue : Colors.transparent,
-//                                 width: 3,
-//                               ),
-//                               borderRadius: BorderRadius.circular(8),
-//                             ),
-//                             child: ClipRRect(
-//                               borderRadius: BorderRadius.circular(8),
-//                               child: Image.network(
-//                                 imageUrl,
-//                                 width: 100,
-//                                 height: 100,
-//                                 fit: BoxFit.cover,
-//                                 errorBuilder: (context, error, stackTrace) => Icon(Icons.error),
-//                               ),
-//                             ),
-//                           ),
-//                         );
-//                       },
-//                     ),
-//                   )
-//                 : Padding(
-//                     padding: const EdgeInsets.all(8.0),
-//                     child: Text("No images available", style: TextStyle(fontSize: 16, color: Colors.grey)),
-//                   ),
-//           ],
-//         ),
-//       ),
-//       actions: [
-//         SizedBox(
-//           width: double.infinity,
-//           child: ElevatedButton(
-//             style: ElevatedButton.styleFrom(
-//               backgroundColor: AppCol.primary,
-//               padding: EdgeInsets.symmetric(vertical: 14), // Bigger pop button
-//               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-//             ),
-//             onPressed: () {
-//               Navigator.pop(context, pickedImages); // Return selected images
-//             },
-//             child: Text(
-//               'Done',
-//               style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
-//             ),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }
+// Prepare full URL to load the image/video
+final fullUrl = (mediaUrl.contains(AppConstants.imageBaseUrl))
+    ? mediaUrl
+    : AppConstants.imageBaseUrl + mediaUrl;
 
+                return Column(
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: mediaUrl.toLowerCase().endsWith(".mp4") || mediaUrl.toLowerCase().endsWith(".mov")
+                        //mediaUrl.endsWith(".mp4")
+                            ? VideoPlayerWidget(url: fullUrl)
+                            : CachedNetworkImage(
+                                imageUrl: fullUrl,
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) =>
+                                    const CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
+                              ),
+                      ),
+                    ),
+                    // Checkbox(
+                    //   value: isSelected,
+                    //   onChanged: (value) {
+                    //     setState(() {
+                    //       if (value == true) {
+                    //         pickedImages.add(mediaUrl);
+                    //       } else {
+                    //         pickedImages.remove(mediaUrl);
+                    //       }
+                    //     });
+                    //   },
+                    // ),
+                    Checkbox(
+  value: isSelected,
+  onChanged: (value) {
+    setState(() {
+      if (value == true) {
+        pickedImages.add(relativePath);
+      } else {
+        pickedImages.remove(relativePath);
+      }
+    });
+  },
+)
 
+                  ],
+                );
+              },
+            ),
+    ),
+    actions: [
+      TextButton(
+        onPressed: () => Navigator.of(context).pop(pickedImages),
+        child: const Text("Done"),
+      ),
+    ],
+  );
+}
+}
 
+// Video player widget for video URLs
+class VideoPlayerWidget extends StatefulWidget {
+  final String url;
 
+  VideoPlayerWidget({required this.url});
 
+  @override
+  _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
+}
 
+class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
+  late VideoPlayerController _controller;
+  bool _isPlaying = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.network(widget.url)
+      ..initialize().then((_) {
+        setState(() {});
+      });
+  }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
 
-
-
-
-
-// class ManageInventoryPriceAndSKUIdDialog extends ConsumerStatefulWidget {
-//   const ManageInventoryPriceAndSKUIdDialog({
-//     super.key,
-//     required this.size,
-//     this.color,
-//     required this.stock,
-//     required this.firstVariantName,
-//     required this.secondVariantName,
-//     required this.body,
-//     required this.skuid,
-//     required this.mrp,
-//     this.image,
-//     required this.discountPrice,
-//     required this.productId,
-//   });
-
-//   final String productId;
-//   final String firstVariantName;
-//   final String secondVariantName;
-//   final String size;
-//   final String? color;
-//   final String stock;
-//   final String skuid;
-//   final String mrp;
-//   final List<String>? image;
-//   final String discountPrice;
-//   final Function(Map<String, dynamic>) body;
-
-//   @override
-//   _ManageInventoryPriceAndSKUIdDialogState createState() =>
-//       _ManageInventoryPriceAndSKUIdDialogState();
-// }
-
-// class _ManageInventoryPriceAndSKUIdDialogState
-//     extends ConsumerState<ManageInventoryPriceAndSKUIdDialog> {
-//   TextEditingController stockController = TextEditingController();
-//   TextEditingController priceController = TextEditingController();
-//   TextEditingController discountController = TextEditingController();
-//   TextEditingController skuIdController = TextEditingController();
-//   bool isUnlimitedStock = false;
-
-//   // Start with an empty list
-//   List<String> selectedImages = [];
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     stockController.text = widget.stock;
-//     priceController.text = widget.mrp;
-//     discountController.text = widget.discountPrice;
-//     skuIdController.text = widget.skuid;
-//     isUnlimitedStock = widget.stock == "unlimited"; // Example logic
-//     print(widget.image);
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     // Watching the provider for dynamic selected images
-//     final selectedImagesDynamic = ref.watch(manageVariantProvider);
-    
-//     // Convert dynamic images to String if needed (assuming the provider returns a list of URLs as dynamic data)
-//     List<String> selectedImagesAsString = List<String>.from(
-//         selectedImagesDynamic.map((item) => item.toString()));
-
-//     return AlertDialog(
-//       title: Text('Manage Inventory', style: TextStyle(fontSize: 18)),
-//       content: SingleChildScrollView(
-//         child: Padding(
-//           padding: const EdgeInsets.all(16.0),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Text('Size: ${widget.size}', style: TextStyle(fontSize: 16)),
-//               SizedBox(height: 8),
-//               Text('Color: ${widget.color ?? "N/A"}', style: TextStyle(fontSize: 16)),
-//               SizedBox(height: 8),
-//               TextField(
-//                 controller: stockController,
-//                 decoration: InputDecoration(
-//                   labelText: 'Stock',
-//                   border: OutlineInputBorder(),
-//                 ),
-//                 keyboardType: TextInputType.number,
-//               ),
-//               SizedBox(height: 8),
-//               TextField(
-//                 controller: priceController,
-//                 decoration: InputDecoration(
-//                   labelText: 'Price',
-//                   border: OutlineInputBorder(),
-//                 ),
-//                 keyboardType: TextInputType.numberWithOptions(decimal: true),
-//               ),
-//               SizedBox(height: 8),
-//               TextField(
-//                 controller: discountController,
-//                 decoration: InputDecoration(
-//                   labelText: 'Discount Price',
-//                   border: OutlineInputBorder(),
-//                 ),
-//                 keyboardType: TextInputType.numberWithOptions(decimal: true),
-//               ),
-//               SizedBox(height: 8),
-//               TextField(
-//                 controller: skuIdController,
-//                 decoration: InputDecoration(
-//                   labelText: 'SKU ID',
-//                   border: OutlineInputBorder(),
-//                 ),
-//               ),
-//               SizedBox(height: 16),
-//               // Only show images if there are selected images
-//               selectedImages.isNotEmpty
-//                   ? Wrap(
-//                       spacing: 8.0,
-//                       children: selectedImages.map((imageUrl) {
-//                         return ClipRRect(
-//                           borderRadius: BorderRadius.circular(8),
-//                           child: Image.network(
-//                             imageUrl,
-//                             width: 60,
-//                             height: 60,
-//                             fit: BoxFit.cover,
-//                             errorBuilder: (context, error, stackTrace) {
-//                               return Icon(Icons.error);
-//                             },
-//                           ),
-//                         );
-//                       }).toList(),
-//                     )
-//                   : Text('No images selected', style: TextStyle(fontSize: 14)),
-//               SizedBox(height: 16),
-//               InkWell(
-//   onTap: () async {
-//     List<String>? selected = await showDialog<List<String>>(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return ImagePickerDialog(
-//           selectedImages: selectedImagesAsString, // The images from provider
-//           initialImages: widget.image, // Default images from widget.image
-//         );
-//       },
-//     );
-//     if (selected != null) {
-//       setState(() {
-//         selectedImages = selected; // Update the selected images after picking
-//       });
-//     }
-//   },
-//   child: Row(
-//     children: [
-//       Icon(Icons.add_a_photo, size: 24),
-//       SizedBox(width: 8),
-//       Text('Select Images', style: TextStyle(fontSize: 16)),
-//     ],
-//   ),
-// ),
-
-//             ],
-//           ),
-//         ),
-//       ),
-//      actions: [
-//   // Cancel Button (Same InkWell Design)
-//   InkWell(
-//     onTap: () {
-//       Navigator.pop(context);  // Close the dialog on Cancel
-//     },
-//     child: Container(
-//       width: double.infinity,
-//       padding: EdgeInsets.only(top: 14, bottom: 14),
-//       margin: EdgeInsets.only(top: 10, bottom: 10),
-//       decoration: BoxDecoration(
-//         color: Colors.red,  // Red for Cancel
-//         borderRadius: BorderRadius.circular(10),
-//       ),
-//       child: Center(
-//         child: Text(
-//           'Cancel',
-//           style: TextStyle(
-//             color: Colors.white,
-//             fontSize: 12,
-//             fontWeight: FontWeight.bold,
-//           ),
-//         ),
-//       ),
-//     ),
-//   ),
-
-//   // Submit Button (Same InkWell Design)
-//   InkWell(
-//                       onTap: () {
-//                         // widget.body({
-//                         //   'price': priceController.text,
-//                         //   'sku_id': skuIdController.text,
-//                         //   'discount': discountController.text,
-//                         //   'stock': stockController.text,
-//                         // });
-//                         // Navigator.pop(context);
-//                         widget.body({
-//   'price': priceController.text,
-//   'sku_id': skuIdController.text,
-//   'discount': discountController.text,
-//   'stock': stockController.text,
-//   'selectedImages': selectedImages,
-// });
-//                       },
-//                       child: Container(
-//                         width: double.infinity,
-//                         padding: EdgeInsets.only(top: 14, bottom: 14),
-//                         margin: EdgeInsets.only(top: 10, bottom: 10),
-//                         decoration: BoxDecoration(
-//                           color: AppCol.primary,
-//                           borderRadius: BorderRadius.circular(10),
-//                         ),
-//                         child: Center(
-//                           child: Text(
-//                             'Submit',
-//                             style: TextStyle(
-//                               color: Colors.white,
-//                               fontSize: 12,
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-// ],
-
-//     );
-//   }
-// }
-
-
-// class ImagePickerDialog extends StatefulWidget {
-//   final List<String> selectedImages;
-//   final List<String>? initialImages; // Newly added to hold the initial images
-
-//   const ImagePickerDialog({
-//     Key? key,
-//     required this.selectedImages,
-//     this.initialImages,
-//   }) : super(key: key);
-
-//   @override
-//   _ImagePickerDialogState createState() => _ImagePickerDialogState();
-// }
-
-// class _ImagePickerDialogState extends State<ImagePickerDialog> {
-//   List<String> pickedImages = [];
-
-//   @override
-//   void initState() {
-//     super.initState();
-    
-//     // Set initially selected images (if they exist in widget.selectedImages)
-//     if (widget.initialImages != null) {
-//       pickedImages = widget.initialImages!
-//           .where((image) => widget.selectedImages.contains(image))
-//           .toList();
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return AlertDialog(
-//       title: Text('Select Images'),
-//       content: Container(
-//         width: double.maxFinite, // Allow GridView to expand fully
-//         child: Column(
-//           mainAxisSize: MainAxisSize.min,
-//           children: [
-//             // ✅ Show the default images (from widget.initialImages)
-//             if (widget.initialImages != null && widget.initialImages!.isNotEmpty)
-//               Wrap(
-//                 spacing: 8.0,
-//                 children: widget.initialImages!.map((imageUrl) {
-//                   return ClipRRect(
-//                     borderRadius: BorderRadius.circular(8),
-//                     child: Image.network(
-//                       imageUrl,
-//                       width: 100,
-//                       height: 100,
-//                       fit: BoxFit.cover,
-//                       errorBuilder: (context, error, stackTrace) => Icon(Icons.error),
-//                     ),
-//                   );
-//                 }).toList(),
-//               ),
-
-//             SizedBox(height: 12),
-
-//             // ✅ Show the GridView with selectable images
-//             widget.selectedImages.isNotEmpty
-//                 ? SizedBox(
-//                     height: 250, // Adjust height dynamically if needed
-//                     child: GridView.builder(
-//                       shrinkWrap: true,
-//                       physics: BouncingScrollPhysics(),
-//                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-//                         crossAxisCount: 3, // 3 images per row
-//                         crossAxisSpacing: 8,
-//                         mainAxisSpacing: 8,
-//                         childAspectRatio: 1, // Square images
-//                       ),
-//                       itemCount: widget.selectedImages.length,
-//                       itemBuilder: (context, index) {
-//                         String imageUrl = widget.selectedImages[index];
-//                         return GestureDetector(
-//                           onTap: () {
-//                             setState(() {
-//                               if (pickedImages.contains(imageUrl)) {
-//                                 pickedImages.remove(imageUrl);
-//                               } else {
-//                                 pickedImages.add(imageUrl);
-//                               }
-//                             });
-//                           },
-//                           child: Container(
-//                             decoration: BoxDecoration(
-//                               border: Border.all(
-//                                 color: pickedImages.contains(imageUrl) ? Colors.blue : Colors.transparent,
-//                                 width: 3,
-//                               ),
-//                               borderRadius: BorderRadius.circular(8),
-//                             ),
-//                             child: ClipRRect(
-//                               borderRadius: BorderRadius.circular(8),
-//                               child: Image.network(
-//                                 imageUrl,
-//                                 width: 100,
-//                                 height: 100,
-//                                 fit: BoxFit.cover,
-//                                 errorBuilder: (context, error, stackTrace) => Icon(Icons.error),
-//                               ),
-//                             ),
-//                           ),
-//                         );
-//                       },
-//                     ),
-//                   )
-//                 : Padding(
-//                     padding: const EdgeInsets.all(8.0),
-//                     child: Text("No images available", style: TextStyle(fontSize: 16, color: Colors.grey)),
-//                   ),
-//           ],
-//         ),
-//       ),
-//       actions: [
-//         SizedBox(
-//           width: double.infinity,
-//           child: ElevatedButton(
-//             style: ElevatedButton.styleFrom(
-//               backgroundColor: Colors.blue,
-//               padding: EdgeInsets.symmetric(vertical: 14), // Bigger pop button
-//               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-//             ),
-//             onPressed: () {
-//               Navigator.pop(context, pickedImages); // Return selected images
-//             },
-//             child: Text(
-//               'Done',
-//               style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
-//             ),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }
-
-
-
-// class ImagePickerDialog extends StatefulWidget {
-//   final List<String> selectedImages;
-
-//   const ImagePickerDialog({Key? key, required this.selectedImages}) : super(key: key);
-
-//   @override
-//   _ImagePickerDialogState createState() => _ImagePickerDialogState();
-// }
-
-// class _ImagePickerDialogState extends State<ImagePickerDialog> {
-//   List<String> pickedImages = [];
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     pickedImages = []; // No images selected by default
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return AlertDialog(
-//       title: Text('Select Images'),
-//       content: Container(
-//         width: double.maxFinite, // To allow GridView to expand fully
-//         child: Column(
-//           mainAxisSize: MainAxisSize.min,
-//           children: [
-//             widget.selectedImages.isNotEmpty
-//                 ? SizedBox(
-//                     height: 250, // Adjust height dynamically if needed
-//                     child: GridView.builder(
-//                       shrinkWrap: true,
-//                       physics: BouncingScrollPhysics(),
-//                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-//                         crossAxisCount: 3, // 3 images per row
-//                         crossAxisSpacing: 8,
-//                         mainAxisSpacing: 8,
-//                         childAspectRatio: 1, // Square images
-//                       ),
-//                       itemCount: widget.selectedImages.length,
-//                       itemBuilder: (context, index) {
-//                         String imageUrl = widget.selectedImages[index];
-//                         return GestureDetector(
-//                           onTap: () {
-//                             setState(() {
-//                               if (pickedImages.contains(imageUrl)) {
-//                                 pickedImages.remove(imageUrl);
-//                               } else {
-//                                 pickedImages.add(imageUrl);
-//                               }
-//                             });
-//                           },
-//                           child: Container(
-//                             decoration: BoxDecoration(
-//                               border: Border.all(
-//                                 color: pickedImages.contains(imageUrl) ? Colors.blue : Colors.transparent,
-//                                 width: 3,
-//                               ),
-//                               borderRadius: BorderRadius.circular(8),
-//                             ),
-//                             child: ClipRRect(
-//                               borderRadius: BorderRadius.circular(8),
-//                               child: Image.network(
-//                                 imageUrl,
-//                                 width: 100,
-//                                 height: 100,
-//                                 fit: BoxFit.cover,
-//                                 errorBuilder: (context, error, stackTrace) => Icon(Icons.error),
-//                               ),
-//                             ),
-//                           ),
-//                         );
-//                       },
-//                     ),
-//                   )
-//                 : Padding(
-//                     padding: const EdgeInsets.all(8.0),
-//                     child: Text("No images available", style: TextStyle(fontSize: 16, color: Colors.grey)),
-//                   ),
-//           ],
-//         ),
-//       ),
-//       actions: [
-//         SizedBox(
-//           width: double.infinity,
-//           child: ElevatedButton(
-//             style: ElevatedButton.styleFrom(
-//               backgroundColor: AppCol.primary,
-//               padding: EdgeInsets.symmetric(vertical: 14), // Bigger pop button
-//               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-//             ),
-//             onPressed: () {
-//               Navigator.pop(context, pickedImages); // Return selected images
-//             },
-//             child: Text(
-//               'Done',
-//               style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
-//             ),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }
-
-
+  @override
+  Widget build(BuildContext context) {
+    return _controller.value.isInitialized
+        ? GestureDetector(
+            onTap: () {
+              setState(() {
+                if (_isPlaying) {
+                  _controller.pause();
+                } else {
+                  _controller.play();
+                }
+                _isPlaying = !_isPlaying;
+              });
+            },
+            child: AspectRatio(
+              aspectRatio: _controller.value.aspectRatio,
+              child: VideoPlayer(_controller),
+            ),
+          )
+        : Container(
+            width: 80,
+            height: 80,
+            color: Colors.black,
+            child: Center(child: CircularProgressIndicator()),
+          );
+  }
+}

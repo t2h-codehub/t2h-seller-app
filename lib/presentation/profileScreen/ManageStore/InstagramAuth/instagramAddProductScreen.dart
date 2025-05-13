@@ -776,7 +776,7 @@ if (widget.imageMedia.contains(AppConstants.imageBaseUrl)) {
                       controller: _productSubCategoryController,
                       readOnly: true,
                       decoration: InputDecoration(
-                        labelText: 'Product Sub Category',
+                        labelText: 'Product Sub Category*',
                         floatingLabelBehavior:
                         FloatingLabelBehavior.always,
                         border: OutlineInputBorder(
@@ -1192,7 +1192,7 @@ if (widget.imageMedia.contains(AppConstants.imageBaseUrl)) {
     debugPrint('My Admin category function');
     productCategoryApiResModel.categories?.forEach((element) {
       adminCategories.add(element.title ?? '');
-      debugPrint('My Admin caetgpry is: $adminCategories');
+     // debugPrint('My Admin caetgpry is: $adminCategories');
     });
     isApiDataAvailable = true;
     setState(() {});

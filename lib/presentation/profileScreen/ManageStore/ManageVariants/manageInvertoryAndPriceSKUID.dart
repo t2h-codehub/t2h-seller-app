@@ -423,26 +423,30 @@ if (selectedItem.variants != null && selectedItem.variants!.length > 1) {
       Navigator.pop(context, updatedData);
     },
     image: selectedItem.images,
-    //: selectedItem.sId ?? '',
     skuid: selectedItem.skuId ?? '',
     mrp: selectedItem.mrp?.toString() ?? '0',
     discountPrice: selectedItem.price?.toString() ?? '0',
     productId: selectedItem.sId ?? '',
+    isUnlimitedInventory: isUnlimitedInventory,
   ),
 );
 
 
                           if (result != null) {
                             setState(() {
-                              selectedItem.stock = int.parse(result['stock'] ?? '0');
+                              // Handle stock value based on unlimited inventory
+                              if (isUnlimitedInventory) {
+                                selectedItem.stock = 0; // Set to 0 for unlimited
+                                selectedItem.unlimitedStock = true;
+                              } else {
+                                selectedItem.stock = int.parse(result['stock'] ?? '0');
+                                selectedItem.unlimitedStock = false;
+                              }
+                              
                               selectedItem.sId = selectedItem.sId;
                               selectedItem.skuId = result['sku_id'] ?? '';
-                              // selectedItem.mrp = int.parse(result['price'] ?? '0');
-                              
-                              // selectedItem.price = int.parse(result['discount'] ?? '0');
                               selectedItem.mrp = double.parse(result['price']?.toString() ?? '0.0');
-selectedItem.price = double.parse(result['discount']?.toString() ?? '0.0');
-
+                              selectedItem.price = double.parse(result['discount']?.toString() ?? '0.0');
                               selectedItem.images = result['selectedImages'] ?? '';
                              
                               int index = manageInventorySkuidPriceApiResModel.combinations?.indexWhere((item) => item.sId == selectedItem.sId) ?? -1;
@@ -502,7 +506,7 @@ Future<ManageInventorySkuidPriceApiResModel> syncProductVariants() async {
       .getAllCombinationValues(widget.productId);
 
   // Print the response to see if data is being fetched
-  log('My response is: ${manageInventorySkuidPriceApiResModel.toJson()}');
+  //log('My response is: ${manageInventorySkuidPriceApiResModel.toJson()}');
   if (manageInventorySkuidPriceApiResModel.combinations != null && manageInventorySkuidPriceApiResModel.combinations!.isNotEmpty) {
     // isApiDataAvailable = true;
     setState(() {

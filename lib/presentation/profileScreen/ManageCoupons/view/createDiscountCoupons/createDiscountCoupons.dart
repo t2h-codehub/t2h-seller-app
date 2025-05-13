@@ -327,7 +327,7 @@ setState(() {
     debugPrint('My Admin category function');
     productCategoryApiResModel.categories?.forEach((element) {
       adminCategories.add(element.title ?? '');
-      debugPrint('My Admin caetgpry is: $adminCategories');
+    //  debugPrint('My Admin caetgpry is: $adminCategories');
     });
     isApiDataAvailable = true;
     setState(() {});

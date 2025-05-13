@@ -45,7 +45,6 @@ class _EditCardScreenState extends ConsumerState<EditProfileScreen>
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final UserDetailService _userDetailService = getIt<UserDetailService>();
-  late final AuthViewModel _viewModel;
   late VideoPlayerController _controller;
   int selectedIndex = 0;
   bool isDirect = false;
@@ -61,6 +60,8 @@ class _EditCardScreenState extends ConsumerState<EditProfileScreen>
   bool customBrandTheme = false;
 
   int index = 0;
+  late VoidCallback _videoListener;
+  bool _isControllerDisposed = false;
 
   @override
   void initState() {
@@ -70,15 +71,12 @@ class _EditCardScreenState extends ConsumerState<EditProfileScreen>
     debugPrint(
         'My custom branding: ${_userDetailService.userDetailResponse?.user?.isCustomBranding}');
     Future.delayed(Duration(milliseconds: 200)).then((value) {
-      setState(() {
-        langIndexSelect = SharedPreferenceService.getInt("language") ?? 0;
-      });
+      if (mounted) {
+        setState(() {
+          langIndexSelect = SharedPreferenceService.getInt("language") ?? 0;
+        });
+      }
     });
-    _viewModel = ref.read(authViewModel);
-    _viewModel.attachView(this);
-
-    // print('Yrrfjfv----: ${_userDetailService.userDetailResponse?.user?.color}');
-    // qrCustomColor = (_userDetailService.userDetailResponse?.user?.color ?? '') as Color?;
     selectedIndex = _userDetailService.userDetailResponse?.user?.color == null
         ? 0
         : _userDetailService.userDetailResponse?.user?.color?.index ?? 0;
@@ -100,27 +98,32 @@ class _EditCardScreenState extends ConsumerState<EditProfileScreen>
       if ((_userDetailService.userDetailResponse?.user?.coverVideo != null &&
               coverVideo.contains(".png")) ||
           (coverVideo.contains(".jpg") || coverVideo.contains(".jpeg"))) {
-        setState(() {
-          isImage = true;
-        });
+        if (mounted) {
+          setState(() {
+            isImage = true;
+          });
+        }
       }
     }
     if (!isImage) {
       _controller = VideoPlayerController.network(
           _userDetailService.userDetailResponse?.user?.coverVideo ?? "");
-
-      _controller.addListener(() {
-        setState(() {});
-      });
+      _isControllerDisposed = false;
+      _videoListener = () {
+        if (mounted) setState(() {});
+      };
+      _controller.addListener(_videoListener);
       _controller.setLooping(true);
-      _controller.initialize().then((_) => setState(() {}));
-      _controller.play();
+      _controller.initialize().then((_) {
+        if (mounted) setState(() {});
+        _controller.play();
+      });
     }
 
     nameController.text =
         _userDetailService.userDetailResponse?.user?.name ?? "";
-    designationController.text =
-        _userDetailService.userDetailResponse?.user?.designation ?? "";
+    // designationController.text =
+    //     _userDetailService.userDetailResponse?.user?.designation ?? "";
     bioController.text = _userDetailService.userDetailResponse?.user?.bio ?? "";
     uploadImageController.text =
         _userDetailService.userDetailResponse?.user?.profileImg ?? "";
@@ -275,24 +278,34 @@ SizedBox(
           onTap: () {
             openPickImageVideoModalSheet(context).then((value) {
               if (value != null) {
-                _viewModel.uploadSingleFile(value).then((fileURL) {
+                ref.read(authViewModel).uploadSingleFile(value).then((fileURL) {
                   if (fileURL != null) {
-                    setState(() {
-                      uploadCoverController.text = fileURL;
-
-                      if (_isImageFile(fileURL)) {
-                        isImage = true;
-                      } else {
-                        isImage = false;
-                        _controller = VideoPlayerController.network(fileURL)
-                          ..addListener(() => setState(() {}))
-                          ..setLooping(true)
-                          ..initialize().then((_) {
-                            setState(() {});
+                    if (mounted) {
+                      setState(() {
+                        uploadCoverController.text = fileURL;
+                        if (_isImageFile(fileURL)) {
+                          isImage = true;
+                        } else {
+                          isImage = false;
+                          if (!_isControllerDisposed) {
+                            _controller.removeListener(_videoListener);
+                            _controller.dispose();
+                            _isControllerDisposed = true;
+                          }
+                          _controller = VideoPlayerController.network(fileURL);
+                          _isControllerDisposed = false;
+                          _videoListener = () {
+                            if (mounted) setState(() {});
+                          };
+                          _controller.addListener(_videoListener);
+                          _controller.setLooping(true);
+                          _controller.initialize().then((_) {
+                            if (mounted) setState(() {});
                             _controller.play();
                           });
-                      }
-                    });
+                        }
+                      });
+                    }
                   }
                 });
               }
@@ -344,11 +357,13 @@ SizedBox(
         highlightColor: Colors.transparent,
         onTap: () => openPickImageModalSheet(context).then((value) {
           if (value != null) {
-            _viewModel.uploadSingleFile(value).then((fileURL) {
+            ref.read(authViewModel).uploadSingleFile(value).then((fileURL) {
               if (fileURL != null) {
-                setState(() {
-                  uploadImageController.text = fileURL;
-                });
+                if (mounted) {
+                  setState(() {
+                    uploadImageController.text = fileURL;
+                  });
+                }
               }
             });
           }
@@ -675,17 +690,17 @@ SizedBox(
                             size: 26,
                           ),
                           margin: getMargin(left: 16, top: 24, right: 16)),
-                      CustomTextFormField(
-                          controller: designationController,
-                          label: AppConstants.designation[index],
-                          hintText: AppConstants.designation[index],
-                          suffix: Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(16.0, 16, 14, 16),
-                            child: Image.asset("assets/newIcons/company.png"),
-                          ),
-                          margin: getMargin(left: 16, top: 15, right: 16),
-                          textInputAction: TextInputAction.done),
+                      // CustomTextFormField(
+                      //     controller: designationController,
+                      //     label: AppConstants.designation[index],
+                      //     hintText: AppConstants.designation[index],
+                      //     suffix: Padding(
+                      //       padding:
+                      //           const EdgeInsets.fromLTRB(16.0, 16, 14, 16),
+                      //       child: Image.asset("assets/newIcons/company.png"),
+                      //     ),
+                      //     margin: getMargin(left: 16, top: 15, right: 16),
+                      //     textInputAction: TextInputAction.done),
                       // CustomTextFormField(
                       //     controller: companyController,
                       //     suffix: Padding(
@@ -766,8 +781,7 @@ hintText: AppConstants.company[index],// Optional hint
                     setState(() {
                       isCustomBranding =
                       !isCustomBranding;
-                      _viewModel.toggleStatus(
-                          "isCustomBranding");
+                      ref.read(authViewModel).toggleStatus("isCustomBranding");
                     });
                   },
                   child: Container(
@@ -833,7 +847,7 @@ hintText: AppConstants.company[index],// Optional hint
                                 setState(() {
                                   isCustomBranding =
                                   !isCustomBranding;
-                                  _viewModel.toggleStatus(
+                                  ref.read(authViewModel).toggleStatus(
                                       "isCustomBranding");
                                 });
                               });
@@ -889,7 +903,7 @@ hintText: AppConstants.company[index],// Optional hint
                                   true) {
                                 setState(() {
                                   isDirect = !isDirect;
-                                  _viewModel
+                                  ref.read(authViewModel)
                                       .toggleStatus("helloDirect")
                                       .then((value) => {
                                             if (isDirect)
@@ -902,7 +916,7 @@ hintText: AppConstants.company[index],// Optional hint
                                                   context: context,
                                                   builder: (context) =>
                                                       HelloDirectBottomSheet(
-                                                          _viewModel),
+                                                          ref.read(authViewModel)),
                                                 )
                                               }
                                           });
@@ -1305,7 +1319,7 @@ hintText: AppConstants.company[index],// Optional hint
                                                 .contains("Quick Intro")) {
                                               setState(() {
                                                 isQuickIntro = b;
-                                                _viewModel
+                                                ref.read(authViewModel)
                                                     .toggleStatus("quickIntro");
                                               });
                                             } else {
@@ -1346,7 +1360,7 @@ hintText: AppConstants.company[index],// Optional hint
                                 ));
                                 setState(() {
                                   isCustomBranding = !isCustomBranding;
-                                  _viewModel.toggleStatus("isCustomBranding");
+                                  ref.read(authViewModel).toggleStatus("isCustomBranding");
                                 });
                               } else if (_userDetailService
                                       .userDetailResponse?.user?.isProPlus ==
@@ -1363,7 +1377,7 @@ hintText: AppConstants.company[index],// Optional hint
                                 } else {
                                   setState(() {
                                     isCustomBranding = !isCustomBranding;
-                                    _viewModel.toggleStatus("isCustomBranding");
+                                    ref.read(authViewModel).toggleStatus("isCustomBranding");
                                   });
                                 }
                               } else {
@@ -1510,18 +1524,18 @@ hintText: AppConstants.company[index],// Optional hint
 
   void onSave(GlobalKey<FormState> formKey, BuildContext context) async {
     if (formKey.currentState!.validate()) {
-      _viewModel.updateUserRequest = UpdateUserRequest(
-          designation: designationController.text,
+      ref.read(authViewModel).updateUserRequest = UpdateUserRequest(
+         // designation: designationController.text,
           bio: bioController.text,
           companyName: companyController.text,
           name: nameController.text,
           phone: _userDetailService.userDetailResponse?.user?.phone ?? "",
           coverVideo: uploadCoverController.text,
           profileImg: uploadImageController.text);
-      _viewModel.changeTheme(selectedIndex);
+      ref.read(authViewModel).changeTheme(selectedIndex);
       // _viewModel.addCustomBranding(File(''), qrCustomColor as String?);
-      _viewModel.updateUser(
-        _viewModel.updateUserRequest,
+      ref.read(authViewModel).updateUser(
+        ref.read(authViewModel).updateUserRequest,
         context,
       );
     }
@@ -1529,9 +1543,12 @@ hintText: AppConstants.company[index],// Optional hint
 
   @override
   void dispose() {
-    // TODO: implement dispose
+    if (!_isControllerDisposed && !isImage) {
+      _controller.removeListener(_videoListener);
+      _controller.dispose();
+      _isControllerDisposed = true;
+    }
     super.dispose();
-    _controller.dispose();
   }
 
   @override

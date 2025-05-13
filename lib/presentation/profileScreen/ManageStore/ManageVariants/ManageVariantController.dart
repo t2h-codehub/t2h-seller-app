@@ -52,7 +52,7 @@ class ManageVariantController {
       );
       if(response.statusCode == 200) {
         final result = jsonDecode(response.body);
-        debugPrint('API Response akshay: $result');
+       // debugPrint('API Response akshay: $result');
         printLongJson(result);
         manageInventorySkuidPriceApiResModel = ManageInventorySkuidPriceApiResModel.fromJson(result);
       } else {
@@ -163,33 +163,76 @@ class ManageVariantController {
   }
 
   /// get save variant
-  Future<GetSaveVariantApiResModel> getSaveVariant(body) async {
-    GetSaveVariantApiResModel getSaveVariantApiResModel = GetSaveVariantApiResModel();
-    debugPrint('My save variant body is: $body');
-    debugPrint('My save variant body is: ${AppConstants.token}');
-    try {
-      // final response = await ApiFun.apiRequestHttpRawBody('user/save-variant-value', body);
-      var headers = {
-        "token": AppConstants.token,
-        'Content-Type': 'application/json'
-      };
-      var request = http.Request('PUT', Uri.parse("${AppConstants.baseUrl}user/update-variant-value"));
-      request.body = json.encode(body);
-      request.headers.addAll(headers);
-      http.StreamedResponse response = await request.send();
-      var responseData = await response.stream.toBytes();
-      String responseString = String.fromCharCodes(responseData);
-      final jsonData = jsonDecode(responseString);
-      debugPrint('----  user/save-variant-value Api response : $responseString');
-      debugPrint('---- Request body : ${request.body}');
+  
 
-      // return jsonData;
-      getSaveVariantApiResModel = GetSaveVariantApiResModel.fromJson(jsonData);
-    } catch (e) {
-      debugPrint('Get All Variant Api: $e');
-    }
-    return getSaveVariantApiResModel;
+  Future<GetSaveVariantApiResModel> getSaveVariant(body) async {
+  GetSaveVariantApiResModel getSaveVariantApiResModel = GetSaveVariantApiResModel();
+  debugPrint('My save variant body is:');
+  printLongJson1(body);
+  debugPrint('Token: ${AppConstants.token}');
+
+  try {
+    var headers = {
+      "token": AppConstants.token,
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request('PUT', Uri.parse("${AppConstants.baseUrl}user/update-variant-value"));
+    request.body = json.encode(body);
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+    var responseData = await response.stream.toBytes();
+    String responseString = String.fromCharCodes(responseData);
+
+    debugPrint('---- API response :');
+    printLongJson(jsonDecode(responseString));
+    debugPrint('---- Request body : ${request.body}');
+
+    getSaveVariantApiResModel = GetSaveVariantApiResModel.fromJson(jsonDecode(responseString));
+  } catch (e) {
+    debugPrint('Get All Variant Api: $e');
   }
+
+  return getSaveVariantApiResModel;
+}
+
+void printLongJson1(dynamic jsonObject) {
+  const int chunkSize = 800;
+  final jsonString = const JsonEncoder.withIndent('  ').convert(jsonObject);
+  for (var i = 0; i < jsonString.length; i += chunkSize) {
+    debugPrint(jsonString.substring(i, i + chunkSize > jsonString.length ? jsonString.length : i + chunkSize));
+  }
+}
+
+
+  // Future<GetSaveVariantApiResModel> getSaveVariant(body) async {
+  //   GetSaveVariantApiResModel getSaveVariantApiResModel = GetSaveVariantApiResModel();
+  //   debugPrint('My save variant body is: ');
+  //   printLongJson(body);
+  //   debugPrint('My save variant body is: ${AppConstants.token}');
+  //   try {
+  //     // final response = await ApiFun.apiRequestHttpRawBody('user/save-variant-value', body);
+  //     var headers = {
+  //       "token": AppConstants.token,
+  //       'Content-Type': 'application/json'
+  //     };
+  //     var request = http.Request('PUT', Uri.parse("${AppConstants.baseUrl}user/update-variant-value"));
+  //     request.body = json.encode(body);
+  //     request.headers.addAll(headers);
+  //     http.StreamedResponse response = await request.send();
+  //     var responseData = await response.stream.toBytes();
+  //     String responseString = String.fromCharCodes(responseData);
+  //     final jsonData = jsonDecode(responseString);
+  //     debugPrint('----  user/save-variant-value Api response : $responseString');
+  //     debugPrint('---- Request body : ${request.body}');
+
+  //     // return jsonData;
+  //     getSaveVariantApiResModel = GetSaveVariantApiResModel.fromJson(jsonData);
+  //   } catch (e) {
+  //     debugPrint('Get All Variant Api: $e');
+  //   }
+  //   return getSaveVariantApiResModel;
+  // }
 
   /// Edit variant value
   Future<EditVariantApiResModel> editVariant(objectId, body) async {
