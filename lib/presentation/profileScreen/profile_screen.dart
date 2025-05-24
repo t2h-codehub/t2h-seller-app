@@ -52,27 +52,31 @@ class _EditProfileScreenState extends ConsumerState<ProfileScreen>
     _viewModel = ref.read(authViewModel);
     _viewModel.attachView(this);
     _viewModel.getUserDetail();
-    _viewModel.getUserServices().then((value) => setState(() {
-// if(_viewModel.userServicesResponse?.services!=null){
-//      _viewModel.userServicesResponse?.services!.sort((a, b) => a.orderId!.toInt().compareTo(b.orderId!.toInt()));}
-// List<Service> service=[];
-// _viewModel.userServicesResponse?.services?.forEach((element) {service.add(element);});
-// service.forEach((element) { });
-//        _viewModel.userServicesResponse?.services?.sort();
-          _items = List<Widget>.generate(
-              _viewModel.userServicesResponse?.services?.length ?? 0,
-              (int index) => ProfileItemWidget(
-                  key: Key(
-                      _viewModel.userServicesResponse?.services![index].id ??
-                          ""),
-                  showMenuIcon: true,
-                  _viewModel.userServicesResponse?.services?[index].active ??
-                      false,
-                  _viewModel.userServicesResponse?.services?[index].logo ?? "",
-                  _viewModel.userServicesResponse?.services?[index].title ?? "",
-                  _viewModel.userServicesResponse?.services?[index].id ?? ""));
-        }));
+    _loadUserServices();
     setUserNameToController();
+  }
+
+  Future<void> _loadUserServices() async {
+    try {
+      await _viewModel.getUserServices();
+      if (!mounted) return;
+      
+      setState(() {
+        _items = List<Widget>.generate(
+          _viewModel.userServicesResponse?.services?.length ?? 0,
+          (int index) => ProfileItemWidget(
+            key: Key(_viewModel.userServicesResponse?.services![index].id ?? ""),
+            showMenuIcon: true,
+            _viewModel.userServicesResponse?.services?[index].active ?? false,
+            _viewModel.userServicesResponse?.services?[index].logo ?? "",
+            _viewModel.userServicesResponse?.services?[index].title ?? "",
+            _viewModel.userServicesResponse?.services?[index].id ?? "",
+          ),
+        );
+      });
+    } catch (e) {
+      debugPrint('Error loading user services: $e');
+    }
   }
 
   void setUserNameToController() {
@@ -299,29 +303,29 @@ class _EditProfileScreenState extends ConsumerState<ProfileScreen>
                                                                       FontWeight
                                                                           .bold)),
                                                     ),
-                                                    SizedBox(height: 6),
-                                                    if(_userDetailService.userDetailResponse?.user?.designation != '') SizedBox(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              3,
-                                                      child: Text(
-                                                          _userDetailService.userDetailResponse?.user?.designation ?? "Update Designation",
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          textAlign:
-                                                              TextAlign.left,
-                                                          style: AppStyle
-                                                              .txtPoppinsMedium12
-                                                              .copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  fontSize: 14,
-                                                                  color: Color(
-                                                                      0xFF858585))),
-                                                    ),
+                                                  //  SizedBox(height: 6),
+                                                    // if(_userDetailService.userDetailResponse?.user?.designation != '') SizedBox(
+                                                    //   width:
+                                                    //       MediaQuery.of(context)
+                                                    //               .size
+                                                    //               .width /
+                                                    //           3,
+                                                    //   child: Text(
+                                                    //       _userDetailService.userDetailResponse?.user?.designation ?? "Update Designation",
+                                                    //       overflow: TextOverflow
+                                                    //           .ellipsis,
+                                                    //       textAlign:
+                                                    //           TextAlign.left,
+                                                    //       style: AppStyle
+                                                    //           .txtPoppinsMedium12
+                                                    //           .copyWith(
+                                                    //               fontWeight:
+                                                    //                   FontWeight
+                                                    //                       .w400,
+                                                    //               fontSize: 14,
+                                                    //               color: Color(
+                                                    //                   0xFF858585))),
+                                                    // ),
                                                     Padding(
                                                         padding:
                                                             getPadding(top: 8),
@@ -668,28 +672,7 @@ class _EditProfileScreenState extends ConsumerState<ProfileScreen>
                                             _viewModel = ref.read(authViewModel);
                                             _viewModel.attachView(this);
                                             _viewModel.getUserDetail();
-                                            _viewModel.getUserServices().then((value) => setState(() {
-// if(_viewModel.userServicesResponse?.services!=null){
-//      _viewModel.userServicesResponse?.services!.sort((a, b) => a.orderId!.toInt().compareTo(b.orderId!.toInt()));}
-// List<Service> service=[];
-// _viewModel.userServicesResponse?.services?.forEach((element) {service.add(element);});
-// service.forEach((element) { });
-//        _viewModel.userServicesResponse?.services?.sort();
-                                              _items = List<Widget>.generate(
-                                                  _viewModel.userServicesResponse?.services?.length ?? 0,
-                                                      (int index) => ProfileItemWidget(
-                                                      key: Key(
-                                                          _viewModel.userServicesResponse?.services![index].id ??
-                                                              ""),
-                                                      showMenuIcon: true,
-                                                      _viewModel.userServicesResponse?.services?[index].active ??
-                                                          false,
-                                                      _viewModel.userServicesResponse?.services?[index].logo ?? "",
-                                                      _viewModel.userServicesResponse?.services?[index].title ?? "",
-                                                      _viewModel.userServicesResponse?.services?[index].id ?? ""));
-                                            }));
-                                            setUserNameToController();
-                                            // setState(() {});
+                                            _loadUserServices();
                                           }
                                         },
                                         child: Icon(

@@ -39,6 +39,7 @@ class _ManageCollectionScreenState extends State<ManageCollectionScreen> {
   void initState() {
     super.initState();
     _future = getCollection();
+    print(_userDetailService.userDetailResponse?.user?.domain);
   }
 
  
@@ -175,17 +176,41 @@ class _ManageCollectionScreenState extends State<ManageCollectionScreen> {
     //   ),
     // ),
     InkWell(
+  // onTap: () {
+  //   Clipboard.setData(ClipboardData(
+  //     text: "${_userDetailService.userDetailResponse?.user?.domain}/collectiondetails/${manageCollectionApiResModel.collections![index].title?.trim().replaceAll(RegExp(r'\s+'), "")}",
+  //   ));
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: Text('Link copied to clipboard!'),
+  //       duration: Duration(seconds: 2),
+  //     ),
+  //   );
+  // },
   onTap: () {
-    Clipboard.setData(ClipboardData(
-      text: "${AppConstants.storeUrl}${_userDetailService.userDetailResponse?.user?.username}/collectiondetails/${manageCollectionApiResModel.collections![index].title?.trim().replaceAll(RegExp(r'\s+'), "")}",
-    ));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Link copied to clipboard!'),
-        duration: Duration(seconds: 2),
-      ),
-    );
-  },
+  final user = _userDetailService.userDetailResponse?.user;
+  final domain = user?.domain?.trim();
+  final username = user?.username ?? '';
+  final title = manageCollectionApiResModel.collections![index].title
+      ?.trim()
+      .replaceAll(RegExp(r'\s+'), "") ?? '';
+
+  final baseUrl = (domain != null && domain.isNotEmpty)
+      ? domain
+      : "${AppConstants.storeUrl}$username";
+
+  final link = "$baseUrl/collectiondetails/$title";
+
+  Clipboard.setData(ClipboardData(text: link));
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text('Link copied to clipboard!'),
+      duration: Duration(seconds: 2),
+    ),
+  );
+},
+
   child: Image.asset(
     'assets/newIcons/pro_link.png',
     height: 20,

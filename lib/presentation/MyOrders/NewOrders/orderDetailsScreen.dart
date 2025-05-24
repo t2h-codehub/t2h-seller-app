@@ -809,16 +809,16 @@ Future<void> showCancelOrderDialog(BuildContext context) async {
       children: [
         _buildDetailRow('Order Number:', widget.orderDetails?.orderNumber),
         _buildDetailRow('Order Status:', widget.orderDetails?.orderStatus, isBold: true, color: Colors.green),
-        _buildDetailRow('Order Date:', widget.orderDetails?.orderDate),
+        _buildDetailRow('Order Date:', widget.orderDetails?.orderDate, maxLines: 2,),
         _buildDetailRow('Customer Name:', widget.orderDetails?.address?.name),
         // _buildDetailRow('Customer Address:', widget.orderDetails?.address?.addressLine1 + widget.orderDetails?.address?.addressLine2, maxLines: 4),
         _buildDetailRow(
   'Customer Address:',
-  (widget.orderDetails?.address?.addressLine1 ?? '') + '' + (widget.orderDetails?.address?.addressLine2 ?? '') + ',' + (widget.orderDetails?.address?.city ?? '') + ',' + (widget.orderDetails?.address?.state ?? '') + ',' + (widget.orderDetails?.address?.zip ?? ''),
+  (widget.orderDetails?.address?.addressLine1 ?? '') + '' + (widget.orderDetails?.address?.addressLine2 ?? '') + ',' + (widget.orderDetails?.address?.city ?? '') +  (widget.orderDetails?.address?.city == null ? "" : ',')  + (widget.orderDetails?.address?.state ?? '') + ',' + (widget.orderDetails?.address?.zip ?? ''),
   maxLines: 4,
 ),
 
-        _buildDetailRow('Customer Email:', widget.orderDetails?.address?.email),
+        _buildDetailRow('Customer Email:', widget.orderDetails?.address?.email, maxLines: 2,),
         _buildDetailRow('Customer Mobile:', widget.orderDetails?.address?.mobile),
         
         
@@ -867,9 +867,50 @@ Future<void> showCancelOrderDialog(BuildContext context) async {
           final product = widget.orderDetails?.products?[index];
           return ListTile(
             title: Text(product?.productName ?? '-'),
-            subtitle: Text(
-  'Qty: ${product?.quantity ?? '-'} | Price: Rs. ${product?.price == 0 ? product?.mrp : product?.price ?? '-'}',
+//             subtitle: Text(
+//   'Qty: ${product?.quantity ?? '-'} | Price: Rs. ${product?.price == 0 ? product?.mrp : product?.price ?? '-'}',
+// ),
+subtitle: Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  mainAxisSize: MainAxisSize.min,
+  children: [
+    Text(
+      'Qty: ${product?.quantity ?? '-'}',
+      style: TextStyle(fontSize: 14),
+    ),
+    if (product?.price != null && product!.price != 0) ...[
+      Row(
+        children: [
+          Text(
+            'MRP: ',
+            style: TextStyle(fontSize: 14, color: Colors.grey),
+          ),
+          Text(
+            'Rs. ${product.mrp}',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey,
+              decoration: TextDecoration.lineThrough,
+            ),
+          ),
+        ],
+      ),
+      Text(
+        'Price: Rs. ${product.price}',
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ),
+      ),
+    ] else
+      Text(
+        'Price: Rs. ${product?.mrp ?? '-'}',
+        style: TextStyle(fontSize: 14),
+      ),
+  ],
 ),
+
             // leading: Image.network(product?.productImage.first ?? '', width: 50, height: 50, fit: BoxFit.cover),
 //             leading: Image.network(
 //   (product?.productImage != null && product!.productImage!.isNotEmpty)

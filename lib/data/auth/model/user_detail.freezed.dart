@@ -262,6 +262,7 @@ mixin _$User {
   @JsonKey(name: "customBranding")
   CustomBranding? get customBranding => throw _privateConstructorUsedError;
   String? get username => throw _privateConstructorUsedError;
+  String? get domain => throw _privateConstructorUsedError;
   List<String>? get cards => throw _privateConstructorUsedError;
   @JsonKey(name: "plan")
   Plan? get plan => throw _privateConstructorUsedError;
@@ -309,6 +310,7 @@ abstract class $UserCopyWith<$Res> {
       bool? isCustomBranding,
       @JsonKey(name: "customBranding") CustomBranding? customBranding,
       String? username,
+      String? domain,
       List<String>? cards,
       @JsonKey(name: "plan") Plan? plan,
       String? type});
@@ -361,6 +363,7 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
     Object? isCustomBranding = freezed,
     Object? customBranding = freezed,
     Object? username = freezed,
+    Object? domain = freezed,
     Object? cards = freezed,
     Object? plan = freezed,
     Object? type = freezed,
@@ -474,6 +477,10 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
               as String?,
+               domain: freezed == domain
+          ? _value.domain
+          : domain // ignore: cast_nullable_to_non_nullable
+              as String?,
       cards: freezed == cards
           ? _value.cards
           : cards // ignore: cast_nullable_to_non_nullable
@@ -581,6 +588,7 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
       bool? isCustomBranding,
       @JsonKey(name: "customBranding") CustomBranding? customBranding,
       String? username,
+      String? domain,
       List<String>? cards,
       @JsonKey(name: "plan") Plan? plan,
       String? type});
@@ -634,9 +642,11 @@ class __$$UserImplCopyWithImpl<$Res>
     Object? isCustomBranding = freezed,
     Object? customBranding = freezed,
     Object? username = freezed,
+    Object? domain = freezed,
     Object? cards = freezed,
     Object? plan = freezed,
     Object? type = freezed,
+
   }) {
     return _then(_$UserImpl(
       id: freezed == id
@@ -747,6 +757,10 @@ class __$$UserImplCopyWithImpl<$Res>
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
               as String?,
+      domain: freezed == domain
+          ? _value.domain
+          : domain // ignore: cast_nullable_to_non_nullable
+              as String?,        
       cards: freezed == cards
           ? _value._cards
           : cards // ignore: cast_nullable_to_non_nullable
@@ -795,6 +809,7 @@ class _$UserImpl implements _User {
       this.isCustomBranding,
       @JsonKey(name: "customBranding") this.customBranding,
       this.username,
+      this.domain,
       final List<String>? cards,
       @JsonKey(name: "plan") this.plan,
       this.type})
@@ -889,6 +904,7 @@ class _$UserImpl implements _User {
   final CustomBranding? customBranding;
   @override
   final String? username;
+  final String? domain;
   final List<String>? _cards;
   @override
   List<String>? get cards {
@@ -907,7 +923,7 @@ class _$UserImpl implements _User {
 
   @override
   String toString() {
-    return 'User(id: $id, name: $name, email: $email, phone: $phone, designation: $designation, bio: $bio, profileImg: $profileImg, coverVideo: $coverVideo, qrCode: $qrCode, companyName: $companyName, active: $active, services: $services, color: $color, theme: $theme, lang: $lang, contacts: $contacts, gainLeads: $gainLeads, quickIntro: $quickIntro, helloDirect: $helloDirect, customServices: $customServices, helloService: $helloService, isPro: $isPro, isProPlus: $isProPlus, isMobileVerified: $isMobileVerified, isCustomBranding: $isCustomBranding, customBranding: $customBranding, username: $username, cards: $cards, plan: $plan, type: $type)';
+    return 'User(id: $id, name: $name, email: $email, phone: $phone, designation: $designation, bio: $bio, profileImg: $profileImg, coverVideo: $coverVideo, qrCode: $qrCode, companyName: $companyName, active: $active, services: $services, color: $color, theme: $theme, lang: $lang, contacts: $contacts, gainLeads: $gainLeads, quickIntro: $quickIntro, helloDirect: $helloDirect, customServices: $customServices, helloService: $helloService, isPro: $isPro, isProPlus: $isProPlus, isMobileVerified: $isMobileVerified, isCustomBranding: $isCustomBranding, customBranding: $customBranding, username: $username, domain: $domain, cards: $cards, plan: $plan, type: $type)';
   }
 
   @override
@@ -956,6 +972,8 @@ class _$UserImpl implements _User {
                 other.customBranding == customBranding) &&
             (identical(other.username, username) ||
                 other.username == username) &&
+                (identical(other.domain, domain) ||
+                other.domain == domain) &&
             const DeepCollectionEquality().equals(other._cards, _cards) &&
             (identical(other.plan, plan) || other.plan == plan) &&
             (identical(other.type, type) || other.type == type));
@@ -992,6 +1010,7 @@ class _$UserImpl implements _User {
         isCustomBranding,
         customBranding,
         username,
+        domain,
         const DeepCollectionEquality().hash(_cards),
         plan,
         type
@@ -1043,6 +1062,7 @@ abstract class _User implements User {
       final bool? isCustomBranding,
       @JsonKey(name: "customBranding") final CustomBranding? customBranding,
       final String? username,
+      final String? domain,
       final List<String>? cards,
       @JsonKey(name: "plan") final Plan? plan,
       final String? type}) = _$UserImpl;
@@ -1108,6 +1128,8 @@ abstract class _User implements User {
   CustomBranding? get customBranding;
   @override
   String? get username;
+  @override
+  String? get domain;
   @override
   List<String>? get cards;
   @override

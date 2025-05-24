@@ -280,6 +280,8 @@ mixin _$Account {
   String? get type => throw _privateConstructorUsedError;
   @JsonKey(name: "username")
   String? get username => throw _privateConstructorUsedError;
+   @JsonKey(name: "domain")
+  String? get domain => throw _privateConstructorUsedError;
   @JsonKey(name: "email")
   String? get email => throw _privateConstructorUsedError;
   @JsonKey(name: "phone")
@@ -347,6 +349,7 @@ abstract class $AccountCopyWith<$Res> {
       @JsonKey(name: "parentId") String? parentId,
       @JsonKey(name: "type") String? type,
       @JsonKey(name: "username") String? username,
+      @JsonKey(name: "domain") String? domain,
       @JsonKey(name: "email") String? email,
       @JsonKey(name: "phone") String? phone,
       @JsonKey(name: "isMobileVerified") bool? isMobileVerified,
@@ -397,6 +400,7 @@ class _$AccountCopyWithImpl<$Res, $Val extends Account>
     Object? parentId = freezed,
     Object? type = freezed,
     Object? username = freezed,
+    Object? domain = freezed,
     Object? email = freezed,
     Object? phone = freezed,
     Object? isMobileVerified = freezed,
@@ -448,6 +452,11 @@ class _$AccountCopyWithImpl<$Res, $Val extends Account>
       username: freezed == username
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
+          
+              as String?,
+      domain: freezed == domain
+          ? _value.domain
+          : domain 
               as String?,
       email: freezed == email
           ? _value.email
@@ -598,6 +607,7 @@ abstract class _$$AccountImplCopyWith<$Res> implements $AccountCopyWith<$Res> {
       @JsonKey(name: "parentId") String? parentId,
       @JsonKey(name: "type") String? type,
       @JsonKey(name: "username") String? username,
+      @JsonKey(name: "domain") String? domain,
       @JsonKey(name: "email") String? email,
       @JsonKey(name: "phone") String? phone,
       @JsonKey(name: "isMobileVerified") bool? isMobileVerified,
@@ -649,6 +659,7 @@ class __$$AccountImplCopyWithImpl<$Res>
     Object? parentId = freezed,
     Object? type = freezed,
     Object? username = freezed,
+    Object? domain = freezed,
     Object? email = freezed,
     Object? phone = freezed,
     Object? isMobileVerified = freezed,
@@ -701,6 +712,10 @@ class __$$AccountImplCopyWithImpl<$Res>
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
               as String?,
+      domain: freezed == domain
+          ? _value.domain
+          : domain // ignore: cast_nullable_to_non_nullable
+              as String?,        
       email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -804,6 +819,7 @@ class _$AccountImpl implements _Account {
       @JsonKey(name: "parentId") this.parentId,
       @JsonKey(name: "type") this.type,
       @JsonKey(name: "username") this.username,
+      @JsonKey(name: "domain") this.domain,
       @JsonKey(name: "email") this.email,
       @JsonKey(name: "phone") this.phone,
       @JsonKey(name: "isMobileVerified") this.isMobileVerified,
@@ -856,6 +872,9 @@ class _$AccountImpl implements _Account {
   @override
   @JsonKey(name: "username")
   final String? username;
+   @override
+  @JsonKey(name: "domain")
+  final String? domain;
   @override
   @JsonKey(name: "email")
   final String? email;
@@ -957,7 +976,7 @@ class _$AccountImpl implements _Account {
 
   @override
   String toString() {
-    return 'Account(plan: $plan, customBranding: $customBranding, id: $id, name: $name, parentId: $parentId, type: $type, username: $username, email: $email, phone: $phone, isMobileVerified: $isMobileVerified, designation: $designation, bio: $bio, profileImg: $profileImg, coverVideo: $coverVideo, qrCode: $qrCode, companyName: $companyName, cards: $cards, active: $active, services: $services, customServices: $customServices, theme: $theme, gainLeads: $gainLeads, quickIntro: $quickIntro, isCustomBranding: $isCustomBranding, contacts: $contacts, helloDirect: $helloDirect, color: $color, isPro: $isPro, isProPlus: $isProPlus)';
+    return 'Account(plan: $plan, customBranding: $customBranding, id: $id, name: $name, parentId: $parentId, type: $type, username: $username, domain: $domain, email: $email, phone: $phone, isMobileVerified: $isMobileVerified, designation: $designation, bio: $bio, profileImg: $profileImg, coverVideo: $coverVideo, qrCode: $qrCode, companyName: $companyName, cards: $cards, active: $active, services: $services, customServices: $customServices, theme: $theme, gainLeads: $gainLeads, quickIntro: $quickIntro, isCustomBranding: $isCustomBranding, contacts: $contacts, helloDirect: $helloDirect, color: $color, isPro: $isPro, isProPlus: $isProPlus)';
   }
 
   @override
@@ -975,6 +994,8 @@ class _$AccountImpl implements _Account {
             (identical(other.type, type) || other.type == type) &&
             (identical(other.username, username) ||
                 other.username == username) &&
+                (identical(other.domain, domain) ||
+                other.domain == domain) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.isMobileVerified, isMobileVerified) ||
@@ -1021,6 +1042,7 @@ class _$AccountImpl implements _Account {
         parentId,
         type,
         username,
+        domain,
         email,
         phone,
         isMobileVerified,
@@ -1070,6 +1092,7 @@ abstract class _Account implements Account {
       @JsonKey(name: "parentId") final String? parentId,
       @JsonKey(name: "type") final String? type,
       @JsonKey(name: "username") final String? username,
+      @JsonKey(name: "domain") final String? domain,
       @JsonKey(name: "email") final String? email,
       @JsonKey(name: "phone") final String? phone,
       @JsonKey(name: "isMobileVerified") final bool? isMobileVerified,
@@ -1117,6 +1140,9 @@ abstract class _Account implements Account {
   @override
   @JsonKey(name: "username")
   String? get username;
+   @override
+  @JsonKey(name: "domain")
+  String? get domain;
   @override
   @JsonKey(name: "email")
   String? get email;

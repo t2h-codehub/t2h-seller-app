@@ -68,6 +68,7 @@ _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
       designation: json['designation'] as String?,
       profileImg: json['profileImg'] as String?,
       username: json['username'] as String?,
+      domain: json['domain'] as String?,
     );
 
 Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
@@ -100,6 +101,7 @@ Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
       'designation': instance.designation,
       'profileImg': instance.profileImg,
       'username': instance.username,
+      'domain': instance.domain,
     };
 
 _$PlanImpl _$$PlanImplFromJson(Map<String, dynamic> json) => _$PlanImpl(

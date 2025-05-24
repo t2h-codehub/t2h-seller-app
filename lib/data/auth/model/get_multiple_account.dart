@@ -39,6 +39,7 @@ class Account with _$Account {
     @JsonKey(name: "parentId") String? parentId,
     @JsonKey(name: "type") String? type,
     @JsonKey(name: "username") String? username,
+    @JsonKey(name: "domain") String? domain,
     @JsonKey(name: "email") String? email,
     @JsonKey(name: "phone") String? phone,
     @JsonKey(name: "isMobileVerified") bool? isMobileVerified,

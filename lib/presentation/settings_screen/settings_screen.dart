@@ -259,17 +259,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                                     color: Colors.black),
                                               ),
                                               SizedBox(height: 8),
-                                              Text(
-                                                _userDetailService
-                                                        .userDetailResponse
-                                                        ?.user
-                                                        ?.designation ??
-                                                    "Update Designation",
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Color(0xFF858585)),
-                                              )
+                                              // Text(
+                                              //   _userDetailService
+                                              //           .userDetailResponse
+                                              //           ?.user
+                                              //           ?.designation ??
+                                              //       "Update Designation",
+                                              //   style: TextStyle(
+                                              //       fontSize: 14,
+                                              //       fontWeight: FontWeight.w400,
+                                              //       color: Color(0xFF858585)),
+                                              // )
                                             ],
                                           )
                                         ],

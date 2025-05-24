@@ -28,6 +28,7 @@ class _MyWebViewState extends State<ProfileScreenWebview> {
   late InAppWebViewController _webViewController;
   late InAppWebViewGroupOptions options;
   final UserDetailService _userDetailService = getIt<UserDetailService>();
+  bool _isDisposed = false;
 
   @override
   void initState() {
@@ -41,84 +42,91 @@ class _MyWebViewState extends State<ProfileScreenWebview> {
 
   @override
   void dispose() {
-    // Do not manually dispose or stop the controller!
-    // The widget will handle it.
+    _isDisposed = true;
+    if (!_isDisposed) {
+      _webViewController.dispose();
+    }
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-            appBar: AppBar(
-        backgroundColor: Colors.white,
-        leading: InkWell(
-          onTap: () {
-            Navigator.of(context).pop();
-          },
-          child: Padding(
+    return WillPopScope(
+      onWillPop: () async {
+        if (_webViewController != null) {
+          if (await _webViewController.canGoBack()) {
+            await _webViewController.goBack();
+            return false;
+          }
+        }
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          leading: InkWell(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
               child: Image.asset(
                 "assets/images/back.png",
                 height: 24,
-              )),
-        ),
-        title: Text(
-          "Preview SocioShop",
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 17,
-          ),
-        ),
-        actions: [
-          InkWell(
-            onTap: () {
-              debugPrint('My User ID: ${_userDetailService.userDetailResponse?.user?.id}');
-              Clipboard.setData(ClipboardData(
-                  text: (_userDetailService
-                                  .userDetailResponse?.user?.username !=
-                              "" &&
-                          _userDetailService
-                                  .userDetailResponse?.user?.username !=
-                              null)
-                      ? "${AppConstants.storeUrl}${_userDetailService.userDetailResponse?.user?.username}"
-                      : "${AppConstants.storeUrl}${_userDetailService.userDetailResponse?.user?.id}"));
-              Share.share(
-                  "${AppConstants.storeUrl}${_userDetailService.userDetailResponse?.user?.username}");
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Image.asset(
-                "assets/images/share.png",
-                height: 24,
               ),
             ),
           ),
-        ],
-        centerTitle: true,
-      ),
-      body: Container(
-        color: Colors.grey,
-        child: InAppWebView(
-          
-          initialUrlRequest: URLRequest(url: WebUri("${AppConstants.storeUrl}${_userDetailService.userDetailResponse?.user?.username}")),
-          initialOptions: options,
-          
-          onWebViewCreated: (controller) {
-            
-            _webViewController = controller;
-          },
-          onReceivedServerTrustAuthRequest: (controller, challenge) async {
-            // Here you can handle SSL errors.
-            // If you need to accept self-signed or untrusted certificates, you can do so here.
-            // Make sure not to use this in production for security reasons.
-        
-            if (challenge.protectionSpace.host == "${AppConstants.domainName}") {
+          title: Text(
+            "Preview SocioShop",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 17,
+            ),
+          ),
+          actions: [
+            InkWell(
+              onTap: () {
+                debugPrint('My User ID: ${_userDetailService.userDetailResponse?.user?.id}');
+                Clipboard.setData(ClipboardData(
+                    text: (_userDetailService
+                                    .userDetailResponse?.user?.username !=
+                                "" &&
+                            _userDetailService
+                                    .userDetailResponse?.user?.username !=
+                                null)
+                        ? "${AppConstants.storeUrl}${_userDetailService.userDetailResponse?.user?.username}"
+                        : "${AppConstants.storeUrl}${_userDetailService.userDetailResponse?.user?.id}"));
+                Share.share(
+                    "${AppConstants.storeUrl}${_userDetailService.userDetailResponse?.user?.username}");
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Image.asset(
+                  "assets/images/share.png",
+                  height: 24,
+                ),
+              ),
+            ),
+          ],
+          centerTitle: true,
+        ),
+        body: Container(
+          color: Colors.grey,
+          child: InAppWebView(
+            initialUrlRequest: URLRequest(
+              url: WebUri("${AppConstants.storeUrl}${_userDetailService.userDetailResponse?.user?.username}"),
+            ),
+            initialOptions: options,
+            onWebViewCreated: (controller) {
+              _webViewController = controller;
+            },
+            onReceivedServerTrustAuthRequest: (controller, challenge) async {
+              if (challenge.protectionSpace.host == "${AppConstants.domainName}") {
+                return ServerTrustAuthResponse(action: ServerTrustAuthResponseAction.PROCEED);
+              }
               return ServerTrustAuthResponse(action: ServerTrustAuthResponseAction.PROCEED);
-            }
-           return ServerTrustAuthResponse(action: ServerTrustAuthResponseAction.PROCEED);
-           // return ServerTrustAuthResponse(action: ServerTrustAuthResponseAction.CANCEL);
-          },
+            },
+          ),
         ),
       ),
     );

@@ -578,16 +578,23 @@ class AuthViewModel extends BaseViewModel<BaseScreenView> {
   }
 
   Future<void> getUserServices() async {
-    // toggleLoading();
+    if (disposed) return;
+    
     await _authRepo.getUserServices().then(
           (value) => value.fold((l) {
-            view?.showSnackbar(l.message, color: Colors.red);
+            if (!disposed) {
+              view?.showSnackbar(l.message, color: Colors.red);
+            }
           }, (r) async {
-            _userServicesResponse = r;
+            if (!disposed) {
+              _userServicesResponse = r;
+            }
           }),
         );
-    // toggleLoading();
-    notifyListeners();
+    
+    if (!disposed) {
+      notifyListeners();
+    }
   }
 
   Future<void> deleteAccount() async {

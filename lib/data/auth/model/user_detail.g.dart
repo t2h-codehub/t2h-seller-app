@@ -65,6 +65,7 @@ _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
           : CustomBranding.fromJson(
               json['customBranding'] as Map<String, dynamic>),
       username: json['username'] as String?,
+      domain: json['domain'] as String?,
       cards:
           (json['cards'] as List<dynamic>?)?.map((e) => e as String).toList(),
       plan: json['plan'] == null
@@ -102,6 +103,7 @@ Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
       'isCustomBranding': instance.isCustomBranding,
       'customBranding': instance.customBranding,
       'username': instance.username,
+      'domain': instance.domain,
       'cards': instance.cards,
       'plan': instance.plan,
       'type': instance.type,

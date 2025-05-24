@@ -888,22 +888,19 @@ String? findIdByTitle(String title) {
                         child: Container(
                           child: TextFormField(
                             controller: _mrpController,
-                            // initialValue: '₹ ${_mrpController.text}',
-                            // inputFormatters: [AmountInputFormatter()],
-                            // // [
-                            // //             FilteringTextInputFormatter.allow(
-                            // //                 RegExp(r'^[0-9]+(\.[0-9]*)?$'))
-                            // //           ],
-                            //           //r'^[0-9]+.?[0-9]*'
-                            //           keyboardType:
-                            //               TextInputType.numberWithOptions(
-                            //                   decimal: true),
                             keyboardType: TextInputType.numberWithOptions(decimal: true),
-  inputFormatters: [AmountInputFormatter()],
+                            inputFormatters: [AmountInputFormatter()],
                             autovalidateMode: AutovalidateMode.onUserInteraction,
                             validator: (value) {
                               if (value != null && value.isEmpty) {
                                 return 'MRP price is required';
+                              }
+                              if (value != null && !value.isEmpty) {
+                                try {
+                                  double.parse(value);
+                                } catch (e) {
+                                  return 'Please enter a valid number';
+                                }
                               }
                               return null;
                             },
@@ -927,24 +924,16 @@ String? findIdByTitle(String title) {
                         child: Container(
                           child: TextFormField(
                             controller: _discountPriceController,
-                            // initialValue: '₹ ${_discountPriceController.text}',
-                              // inputFormatters: [AmountInputFormatter()],
-                              // // [
-                              // //           FilteringTextInputFormatter.allow(
-                              // //               RegExp(r'^[0-9]+(\.[0-9]*)?$'))
-                              // //         ],
-                              //         keyboardType:
-                              //             TextInputType.numberWithOptions(
-                              //                 decimal: true),
-                              keyboardType: TextInputType.numberWithOptions(decimal: true),
-  inputFormatters: [AmountInputFormatter()],
+                            keyboardType: TextInputType.numberWithOptions(decimal: true),
+                            inputFormatters: [AmountInputFormatter()],
                             decoration: InputDecoration(
                               labelText: 'Discounted Price',
-                              errorText: _discountPriceController
-                                          .text.isNotEmpty &&
-                                      double.parse(
-                                              _discountPriceController.text) >
-                                          double.parse(_mrpController.text)
+                              errorText: _discountPriceController.text.isNotEmpty && 
+                                      _mrpController.text.isNotEmpty &&
+                                      double.tryParse(_discountPriceController.text) != null &&
+                                      double.tryParse(_mrpController.text) != null &&
+                                      double.parse(_discountPriceController.text) >
+                                      double.parse(_mrpController.text)
                                   ? 'Discount price cannot be greater than MRP price'
                                   : null,
                               floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -954,10 +943,16 @@ String? findIdByTitle(String title) {
                             ),
                             autovalidateMode: AutovalidateMode.onUserInteraction,
                             validator: (value) {
-                              if(_mrpController.text.isNotEmpty && _discountPriceController.text.isNotEmpty) {
-                                if (double.parse(value!) >
-                                    double.parse(_mrpController.text)) {
-                                  return 'Discount price cannot be greater than MRP price';
+                              if (value != null && !value.isEmpty) {
+                                final discount = double.tryParse(value);
+                                if (discount == null) {
+                                  return 'Please enter a valid number';
+                                }
+                                if (_mrpController.text.isNotEmpty) {
+                                  final mrp = double.tryParse(_mrpController.text);
+                                  if (mrp != null && discount > mrp) {
+                                    return 'Discount price cannot be greater than MRP price';
+                                  }
                                 }
                               }
                               return null;
@@ -986,7 +981,6 @@ String? findIdByTitle(String title) {
                                               RegExp("[0-9]"))
                                         ],
                               controller: _inventoryController,
-                              // initialValue: '₹ ${_inventoryController.text}',
                               keyboardType: TextInputType.number,
                               readOnly: isUnlimitedStock ? true : false,
                               autovalidateMode: AutovalidateMode.onUserInteraction,

@@ -325,6 +325,8 @@ mixin _$User {
   String? get profileImg => throw _privateConstructorUsedError;
   @JsonKey(name: "username")
   String? get username => throw _privateConstructorUsedError;
+  @JsonKey(name: "domain")
+  String? get domain => throw _privateConstructorUsedError;
 
   /// Serializes this User to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -368,7 +370,9 @@ abstract class $UserCopyWith<$Res> {
       @JsonKey(name: "coverVideo") String? coverVideo,
       @JsonKey(name: "designation") String? designation,
       @JsonKey(name: "profileImg") String? profileImg,
-      @JsonKey(name: "username") String? username});
+      @JsonKey(name: "username") String? username,
+      @JsonKey(name: "domain") String? domain
+      });
 
   $PlanCopyWith<$Res>? get plan;
   $CustomBrandingCopyWith<$Res>? get customBranding;
@@ -418,6 +422,7 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
     Object? designation = freezed,
     Object? profileImg = freezed,
     Object? username = freezed,
+    Object? domain = freezed,
   }) {
     return _then(_value.copyWith(
       plan: freezed == plan
@@ -532,6 +537,10 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
               as String?,
+      domain: freezed == domain
+          ? _value.domain
+          : domain // ignore: cast_nullable_to_non_nullable
+              as String?,        
     ) as $Val);
   }
 
@@ -613,7 +622,10 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
       @JsonKey(name: "coverVideo") String? coverVideo,
       @JsonKey(name: "designation") String? designation,
       @JsonKey(name: "profileImg") String? profileImg,
-      @JsonKey(name: "username") String? username});
+      @JsonKey(name: "username") String? username,
+      @JsonKey(name: "domain") String? domain
+      });
+      
 
   @override
   $PlanCopyWith<$Res>? get plan;
@@ -663,6 +675,7 @@ class __$$UserImplCopyWithImpl<$Res>
     Object? designation = freezed,
     Object? profileImg = freezed,
     Object? username = freezed,
+    Object? domain = freezed,
   }) {
     return _then(_$UserImpl(
       plan: freezed == plan
@@ -777,6 +790,10 @@ class __$$UserImplCopyWithImpl<$Res>
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
               as String?,
+       domain: freezed == domain
+          ? _value.domain
+          : domain // ignore: cast_nullable_to_non_nullable
+              as String?,        
     ));
   }
 }
@@ -813,7 +830,9 @@ class _$UserImpl implements _User {
       @JsonKey(name: "coverVideo") this.coverVideo,
       @JsonKey(name: "designation") this.designation,
       @JsonKey(name: "profileImg") this.profileImg,
-      @JsonKey(name: "username") this.username})
+      @JsonKey(name: "username") this.username,
+      @JsonKey(name: "domain") this.domain
+      })
       : _cards = cards,
         _services = services,
         _customServices = customServices,
@@ -938,10 +957,12 @@ class _$UserImpl implements _User {
   @override
   @JsonKey(name: "username")
   final String? username;
+  @JsonKey(name: "domain")
+  final String? domain;
 
   @override
   String toString() {
-    return 'User(plan: $plan, customBranding: $customBranding, id: $id, name: $name, parentId: $parentId, email: $email, phone: $phone, isMobileVerified: $isMobileVerified, cards: $cards, active: $active, theme: $theme, gainLeads: $gainLeads, quickIntro: $quickIntro, isCustomBranding: $isCustomBranding, helloDirect: $helloDirect, color: $color, isPro: $isPro, isProPlus: $isProPlus, services: $services, customServices: $customServices, contacts: $contacts, qrCode: $qrCode, bio: $bio, companyName: $companyName, coverVideo: $coverVideo, designation: $designation, profileImg: $profileImg, username: $username)';
+    return 'User(plan: $plan, customBranding: $customBranding, id: $id, name: $name, parentId: $parentId, email: $email, phone: $phone, isMobileVerified: $isMobileVerified, cards: $cards, active: $active, theme: $theme, gainLeads: $gainLeads, quickIntro: $quickIntro, isCustomBranding: $isCustomBranding, helloDirect: $helloDirect, color: $color, isPro: $isPro, isProPlus: $isProPlus, services: $services, customServices: $customServices, contacts: $contacts, qrCode: $qrCode, bio: $bio, companyName: $companyName, coverVideo: $coverVideo, designation: $designation, profileImg: $profileImg, username: $username, domain: $domain)';
   }
 
   @override
@@ -990,7 +1011,12 @@ class _$UserImpl implements _User {
             (identical(other.profileImg, profileImg) ||
                 other.profileImg == profileImg) &&
             (identical(other.username, username) ||
-                other.username == username));
+                other.username == username
+                ) &&
+            (identical(other.domain, domain) ||
+                other.domain == domain
+                )
+                );
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1024,7 +1050,9 @@ class _$UserImpl implements _User {
         coverVideo,
         designation,
         profileImg,
-        username
+        username,
+        domain
+
       ]);
 
   /// Create a copy of User
@@ -1073,6 +1101,7 @@ abstract class _User implements User {
       @JsonKey(name: "coverVideo") final String? coverVideo,
       @JsonKey(name: "designation") final String? designation,
       @JsonKey(name: "profileImg") final String? profileImg,
+      @JsonKey(name: "domain") final String? domain,
       @JsonKey(name: "username") final String? username}) = _$UserImpl;
 
   factory _User.fromJson(Map<String, dynamic> json) = _$UserImpl.fromJson;
@@ -1161,6 +1190,8 @@ abstract class _User implements User {
   @override
   @JsonKey(name: "username")
   String? get username;
+  @JsonKey(name: "domain")
+  String? get domain;
 
   /// Create a copy of User
   /// with the given fields replaced by the non-null parameter values.

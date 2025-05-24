@@ -22,10 +22,10 @@ abstract class BaseViewModel<T> extends ChangeNotifier {
     _errorMessage = value;
   }
 
-  // void detachView() {
-  //   disposed = true;
-  //   view = null;
-  // }
+  void detachView() {
+    disposed = true;
+    view = null;
+  }
 
   void updateView() {
     if (!disposed) {

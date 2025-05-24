@@ -58,6 +58,7 @@ class User with _$User {
     bool? isCustomBranding,
     @JsonKey(name: "customBranding") CustomBranding? customBranding,
     String? username,
+    String? domain,
     List<String>? cards,
     @JsonKey(name: "plan") Plan? plan,
     String? type,

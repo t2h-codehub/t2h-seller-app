@@ -54,6 +54,9 @@ class User with _$User {
     @JsonKey(name: "designation") String? designation,
     @JsonKey(name: "profileImg") String? profileImg,
     @JsonKey(name: "username") String? username,
+    @JsonKey(name: "domain") String? domain,
+    
+   
   }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

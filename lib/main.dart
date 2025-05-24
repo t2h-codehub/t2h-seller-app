@@ -248,36 +248,36 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  void _handleIncomingLinks() {
-    if (!kIsWeb) {
-      // It will handle app links while the app is already started - be it in
-      // the foreground or in the background.
-     // final appLinks = AppLinks();
-      _appLinks = AppLinks();
-      _sub = _appLinks.uriLinkStream.listen((uri) {
-        if (!mounted) return;
-        print('got uri: $uri');
-        setState(() {
-          _latestUri = uri;
-          _err = null;
-          AppConstants.deeplink = _latestUri;
-        });
+  // void _handleIncomingLinks() {
+  //   if (!kIsWeb) {
+  //     // It will handle app links while the app is already started - be it in
+  //     // the foreground or in the background.
+  //    // final appLinks = AppLinks();
+  //     _appLinks = AppLinks();
+  //     _sub = _appLinks.uriLinkStream.listen((uri) {
+  //       if (!mounted) return;
+  //       print('got uri: $uri');
+  //       setState(() {
+  //         _latestUri = uri;
+  //         _err = null;
+  //         AppConstants.deeplink = _latestUri;
+  //       });
 
-        // openAppLink(_latestUri!);
-      }, onError: (Object err) {
-        if (!mounted) return;
-        print('got err: $err');
-        setState(() {
-          _latestUri = null;
-          if (err is FormatException) {
-            _err = err;
-          } else {
-            _err = null;
-          }
-        });
-      });
-    }
-  }
+  //       // openAppLink(_latestUri!);
+  //     }, onError: (Object err) {
+  //       if (!mounted) return;
+  //       print('got err: $err');
+  //       setState(() {
+  //         _latestUri = null;
+  //         if (err is FormatException) {
+  //           _err = err;
+  //         } else {
+  //           _err = null;
+  //         }
+  //       });
+  //     });
+  //   }
+  // }
 
   Future<void> _handleInitialUri() async {
     _appLinks = AppLinks();

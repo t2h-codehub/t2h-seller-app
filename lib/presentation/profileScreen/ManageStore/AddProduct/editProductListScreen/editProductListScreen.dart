@@ -1148,137 +1148,127 @@ String? findIdByTitle(String title) {
                                 SizedBox(height: 24),
       
                                 /// MRP and Discount Price Row
-                                Visibility(
-                                  visible: (editProductApiResModel.product?.additionalInfo
-                                      ?.productVariants ??
-                                      []).isNotEmpty && (editProductApiResModel.product?.additionalInfo
-                                      ?.attributes ??
-                                      [])
-                                      .isNotEmpty? false : (editProductApiResModel.product?.additionalInfo
-                                      ?.productVariants ??
-                                      []).isNotEmpty ? false : true,
-                                  child: Row(
-                                    children: [
-                                      /// MRP Field
-                                      Expanded(
-                                        child: Container(
-                                          child: TextFormField(
-                                            controller: _mrpController,
-                                            // initialValue: '₹ ${_mrpController.text}',
-                                             inputFormatters: [
-                                        FilteringTextInputFormatter.allow(
-                                            RegExp(r'^[0-9]+.?[0-9]*'))
-                                      ],
-                                      keyboardType:
-                                          TextInputType.numberWithOptions(
-                                              decimal: true),
-                                            readOnly: (editProductApiResModel.product?.additionalInfo
-                                                ?.productVariants ??
-                                                []).isNotEmpty && (editProductApiResModel.product?.additionalInfo
-                                                ?.attributes ??
-                                                [])
-                                                .isNotEmpty? false : (editProductApiResModel.product?.additionalInfo
-                                                ?.productVariants ??
-                                                []).isNotEmpty ? true : false,
-                                            decoration: InputDecoration(
-                                              labelText: 'MRP (inc GST)*',
-                                              floatingLabelBehavior:
-                                                  FloatingLabelBehavior.always,
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                            ),
-                                            onChanged: (value) {
-                                              _mrpController.text = value;
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(width: 16),
-      
-                                      /// Discount Field
-                                      Expanded(
-                                        child: Container(
-                                          child: TextFormField(
-                                            controller: _discountPriceController,
-                                            // initialValue: '₹ ${_discountPriceController.text}',
-                                           
-                                             inputFormatters: [
-                                        FilteringTextInputFormatter.allow(
-                                            RegExp(r'^[0-9]+.?[0-9]*'))
-                                      ],
-                                      keyboardType:
-                                          TextInputType.numberWithOptions(
-                                              decimal: true),
-                                            readOnly: (editProductApiResModel.product?.additionalInfo
-                                                ?.productVariants ??
-                                                []).isNotEmpty && (editProductApiResModel.product?.additionalInfo
-                                                ?.attributes ??
-                                                [])
-                                                .isNotEmpty? false : (editProductApiResModel.product?.additionalInfo
-                                                ?.productVariants ??
-                                                []).isNotEmpty ? true : false,
-                                                
-                                            decoration: InputDecoration(
-                                              labelText: 'Discounted Price',
-                                              // errorText: _discountPriceController
-                                              //             .text.isNotEmpty &&
-                                              //         double.parse(
-                                              //                 _discountPriceController
-                                              //                     .text) >
-                                              //             double.parse(
-                                              //                 _mrpController.text)
-                                              //     ? 'Discount price cannot be greater than MRP price'
-                                              //     : null,
-                                              errorText: _discountPriceController.text.isNotEmpty &&
-           _mrpController.text.isNotEmpty &&
-           double.tryParse(_discountPriceController.text) != null &&
-           double.tryParse(_mrpController.text) != null &&
-           double.parse(_discountPriceController.text) >
-           double.parse(_mrpController.text)
-    ? 'Discount price cannot be greater than MRP price'
-    : null,
-
-
-                                                  
-                                              floatingLabelBehavior:
-                                                  FloatingLabelBehavior.always,
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                            ),
-                                            // validator: (value) {
-                                            //   if (value!.isEmpty) {
-                                            //     return 'Discount price is required';
-                                            //   } else if (double.parse(value) >
-                                            //       double.parse(
-                                            //           _mrpController.text)) {
-                                            //     return 'Discount price cannot be greater than MRP price';
-                                            //   }
-                                            //   return null;
-                                            // },
-                                            validator: (value) {
-  final discount = double.tryParse(value ?? '');
-  final mrp = double.tryParse(_mrpController.text);
-
-  if ((value ?? '').isEmpty) {
-    return 'Discount price is required';
-  } else if (discount != null && mrp != null && discount > mrp) {
-    return 'Discount price cannot be greater than MRP price';
-  }
-  return null;
-},
-
-                                            onChanged: (value) {
-                                              _discountPriceController.text = value;
-                                            },
-                                          ),
-                                        ),
-                                      ),
+                                Row(
+                                  children: [
+                                    /// MRP Field
+                                    Expanded(
+                                      child: Container(
+                                        child: TextFormField(
+                                          controller: _mrpController,
+                                          // initialValue: '₹ ${_mrpController.text}',
+                                           inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp(r'^[0-9]+.?[0-9]*'))
                                     ],
-                                  ),
+                                    keyboardType:
+                                        TextInputType.numberWithOptions(
+                                            decimal: true),
+                                          readOnly: (editProductApiResModel.product?.additionalInfo
+                                              ?.productVariants ??
+                                              []).isNotEmpty && (editProductApiResModel.product?.additionalInfo
+                                              ?.attributes ??
+                                              [])
+                                              .isNotEmpty? false : (editProductApiResModel.product?.additionalInfo
+                                              ?.productVariants ??
+                                              []).isNotEmpty ? true : false,
+                                          decoration: InputDecoration(
+                                            labelText: 'MRP (inc GST)*',
+                                            floatingLabelBehavior:
+                                                FloatingLabelBehavior.always,
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                          onChanged: (value) {
+                                            _mrpController.text = value;
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 16),
+                                      
+                                    /// Discount Field
+                                    Expanded(
+                                      child: Container(
+                                        child: TextFormField(
+                                          controller: _discountPriceController,
+                                          // initialValue: '₹ ${_discountPriceController.text}',
+                                         
+                                           inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp(r'^[0-9]+.?[0-9]*'))
+                                    ],
+                                    keyboardType:
+                                        TextInputType.numberWithOptions(
+                                            decimal: true),
+                                          readOnly: (editProductApiResModel.product?.additionalInfo
+                                              ?.productVariants ??
+                                              []).isNotEmpty && (editProductApiResModel.product?.additionalInfo
+                                              ?.attributes ??
+                                              [])
+                                              .isNotEmpty? false : (editProductApiResModel.product?.additionalInfo
+                                              ?.productVariants ??
+                                              []).isNotEmpty ? true : false,
+                                              
+                                          decoration: InputDecoration(
+                                            labelText: 'Discounted Price',
+                                            // errorText: _discountPriceController
+                                            //             .text.isNotEmpty &&
+                                            //         double.parse(
+                                            //                 _discountPriceController
+                                            //                     .text) >
+                                            //             double.parse(
+                                            //                 _mrpController.text)
+                                            //     ? 'Discount price cannot be greater than MRP price'
+                                            //     : null,
+                                            errorText: _discountPriceController.text.isNotEmpty &&
+                                           _mrpController.text.isNotEmpty &&
+                                           double.tryParse(_discountPriceController.text) != null &&
+                                           double.tryParse(_mrpController.text) != null &&
+                                           double.parse(_discountPriceController.text) >
+                                           double.parse(_mrpController.text)
+                                    ? 'Discount price cannot be greater than MRP price'
+                                    : null,
+                                
+                                
+                                                
+                                            floatingLabelBehavior:
+                                                FloatingLabelBehavior.always,
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                          // validator: (value) {
+                                          //   if (value!.isEmpty) {
+                                          //     return 'Discount price is required';
+                                          //   } else if (double.parse(value) >
+                                          //       double.parse(
+                                          //           _mrpController.text)) {
+                                          //     return 'Discount price cannot be greater than MRP price';
+                                          //   }
+                                          //   return null;
+                                          // },
+                                          validator: (value) {
+                                  final discount = double.tryParse(value ?? '');
+                                  final mrp = double.tryParse(_mrpController.text);
+                                
+                                  if ((value ?? '').isEmpty) {
+                                    return 'Discount price is required';
+                                  } else if (discount != null && mrp != null && discount > mrp) {
+                                    return 'Discount price cannot be greater than MRP price';
+                                  }
+                                  return null;
+                                },
+                                
+                                          onChanged: (value) {
+                                            _discountPriceController.text = value;
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 SizedBox(height: 24),
       
